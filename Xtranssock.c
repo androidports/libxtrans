@@ -1,4 +1,4 @@
-/* $XdotOrg: xc/lib/xtrans/Xtranssock.c,v 1.1.4.4 2003/12/15 16:00:01 kaleb Exp $ */
+/* $XdotOrg: xc/lib/xtrans/Xtranssock.c,v 1.1.4.6 2004/02/23 21:34:49 kaleb Exp $ */
 /* $Xorg: Xtranssock.c,v 1.11 2001/02/09 02:04:06 xorgcvs Exp $ */
 /*
 
@@ -28,7 +28,7 @@ other dealings in this Software without prior written authorization
 from the copyright holders.
 
 */
-/* $XFree86: xc/lib/xtrans/Xtranssock.c,v 3.67 2003/12/05 05:12:50 dawes Exp $ */
+/* $XFree86: xc/lib/xtrans/Xtranssock.c,v 3.69 2004/02/14 00:10:13 dawes Exp $ */
 
 /* Copyright 1993, 1994 NCR Corporation - Dayton, Ohio, USA
  *
@@ -83,7 +83,7 @@ from the copyright holders.
 #include <sys/stat.h>
 #endif
 
-#if defined(hpux) || defined(__UNIXOS2__) || (defined(MOTOROLA) && defined(SYSV))
+#if defined(hpux) || (defined(MOTOROLA) && defined(SYSV))
 #define NO_TCP_H
 #endif 
 
@@ -282,7 +282,9 @@ static int TRANS(SocketINETClose) (XtransConnInfo ciptr);
 #if defined(IPv6) && defined(AF_INET6)
 static const struct in6_addr local_in6addr_any = IN6ADDR_ANY_INIT;
 #pragma weak in6addr_any = local_in6addr_any
+#ifndef __USLC__
 #pragma weak getaddrinfo
+#endif
 static int haveIPv6 = 1;
 #endif
 
