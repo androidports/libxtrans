@@ -26,7 +26,7 @@ other dealings in this Software without prior written authorization
 from The Open Group.
 
 */
-/* $XFree86: xc/lib/xtrans/Xtransint.h,v 3.42 2003/11/29 01:48:28 dawes Exp $ */
+/* $XFree86$ */
 
 /* Copyright 1993, 1994 NCR Corporation - Dayton, Ohio, USA
  *
