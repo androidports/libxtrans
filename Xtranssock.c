@@ -1,4 +1,4 @@
-/* $XdotOrg: xc/lib/xtrans/Xtranssock.c,v 1.2 2004/04/23 18:44:27 eich Exp $ */
+/* $XdotOrg: xc/lib/xtrans/Xtranssock.c,v 1.3 2004/11/15 15:06:56 ago Exp $ */
 /* $Xorg: Xtranssock.c,v 1.11 2001/02/09 02:04:06 xorgcvs Exp $ */
 /*
 
@@ -91,10 +91,10 @@ from the copyright holders.
 #if defined(__osf__) || defined(linux) || defined(AIXV5)
 #include <sys/param.h>
 #endif /* osf */
-#if defined(__NetBSD__) || defined(__OpenBSD__) || defined(__FreeBSD__) 
+#if defined(__NetBSD__) || defined(__OpenBSD__) || defined(__FreeBSD__) || defined(__DragonFly__)
 #include <sys/param.h>
 #include <machine/endian.h>
-#endif /* __NetBSD__ || __OpenBSD__ || __FreeBSD__ */
+#endif /* __NetBSD__ || __OpenBSD__ || __FreeBSD__ || __DragonFly__ */
 #include <netinet/tcp.h>
 #endif /* !NO_TCP_H */
 
