@@ -1,3 +1,4 @@
+/* $XdotOrg: xc/lib/xtrans/Xtranssock.c,v 1.1.4.6.2.1 2004/03/04 17:47:15 eich Exp $ */
 /* $Xorg: Xtranssock.c,v 1.11 2001/02/09 02:04:06 xorgcvs Exp $ */
 /*
 
@@ -27,7 +28,7 @@ other dealings in this Software without prior written authorization
 from the copyright holders.
 
 */
-/* $XFree86: xc/lib/xtrans/Xtranssock.c,v 3.65 2003/11/20 00:41:37 dawes Exp $ */
+/* $XFree86: xc/lib/xtrans/Xtranssock.c,v 3.68 2004/01/07 04:28:02 dawes Exp $ */
 
 /* Copyright 1993, 1994 NCR Corporation - Dayton, Ohio, USA
  *
@@ -82,12 +83,12 @@ from the copyright holders.
 #include <sys/stat.h>
 #endif
 
-#if defined(hpux) || defined(__UNIXOS2__) || (defined(MOTOROLA) && defined(SYSV))
+#if defined(hpux) || (defined(MOTOROLA) && defined(SYSV))
 #define NO_TCP_H
 #endif 
 
 #ifndef NO_TCP_H
-#if defined(__osf__) || defined(linux)
+#if defined(__osf__) || defined(linux) || defined(AIXV5)
 #include <sys/param.h>
 #endif /* osf */
 #if defined(__NetBSD__) || defined(__OpenBSD__) || defined(__FreeBSD__) 
@@ -206,6 +207,9 @@ static Sockettrans2dev Sockettrans2devtab[] = {
 
 #define NUMSOCKETFAMILIES (sizeof(Sockettrans2devtab)/sizeof(Sockettrans2dev))
 
+#ifdef TCPCONN
+static int TRANS(SocketINETClose) (XtransConnInfo ciptr);
+#endif
 
 #ifdef UNIXCONN
 
@@ -278,6 +282,10 @@ static Sockettrans2dev Sockettrans2devtab[] = {
 #if defined(IPv6) && defined(AF_INET6)
 static const struct in6_addr local_in6addr_any = IN6ADDR_ANY_INIT;
 #pragma weak in6addr_any = local_in6addr_any
+#ifndef __USLC__
+#pragma weak getaddrinfo
+#endif
+static int haveIPv6 = 1;
 #endif
 
 /*
@@ -312,19 +320,32 @@ TRANS(SocketINETGetAddr) (XtransConnInfo ciptr)
 
 {
 #if defined(IPv6) && defined(AF_INET6)
-    struct sockaddr_storage sockname;
-#else
-    struct sockaddr_in 	sockname;
+    struct sockaddr_storage socknamev6;
 #endif
+    struct sockaddr_in socknamev4;
+    void *socknamePtr;
 #if defined(SVR4) || defined(SCO325)
-    size_t namelen = sizeof sockname;
+    size_t namelen;
 #else
-    int namelen = sizeof sockname;
+    int namelen;
 #endif
 
     PRMSG (3,"SocketINETGetAddr(%p)\n", ciptr, 0, 0);
 
-    if (getsockname (ciptr->fd,(struct sockaddr *) &sockname,
+#if defined(IPv6) && defined(AF_INET6)
+    if (haveIPv6)
+    {
+	namelen = sizeof(socknamev6);
+	socknamePtr = &socknamev6;
+    }
+    else
+#endif
+    {
+	namelen = sizeof(socknamev4);
+	socknamePtr = &socknamev4;
+    }
+
+    if (getsockname (ciptr->fd,(struct sockaddr *) socknamePtr,
 		     (void *)&namelen) < 0)
     {
 	PRMSG (1,"SocketINETGetAddr: getsockname() failed: %d\n",
@@ -345,12 +366,17 @@ TRANS(SocketINETGetAddr) (XtransConnInfo ciptr)
     }
 
 #if defined(IPv6) && defined(AF_INET6)
-    ciptr->family = ((struct sockaddr *)&sockname)->sa_family;
-#else
-    ciptr->family = sockname.sin_family;
+    if (haveIPv6)
+    {
+	ciptr->family = ((struct sockaddr *)socknamePtr)->sa_family;
+    }
+    else
 #endif
+    {
+	ciptr->family = socknamev4.sin_family;
+    }
     ciptr->addrlen = namelen;
-    memcpy (ciptr->addr, &sockname, ciptr->addrlen);
+    memcpy (ciptr->addr, socknamePtr, ciptr->addrlen);
 
     return 0;
 }
@@ -366,19 +392,32 @@ TRANS(SocketINETGetPeerAddr) (XtransConnInfo ciptr)
 
 {
 #if defined(IPv6) && defined(AF_INET6)
-    struct sockaddr_storage sockname;
-#else
-    struct sockaddr_in 	sockname;
+    struct sockaddr_storage socknamev6;
 #endif
+    struct sockaddr_in 	socknamev4;
+    void *socknamePtr;
 #if defined(SVR4) || defined(SCO325)
-    size_t namelen = sizeof sockname;
+    size_t namelen;
 #else
-    int namelen = sizeof sockname;
+    int namelen;
 #endif
+
+#if defined(IPv6) && defined(AF_INET6)
+    if (haveIPv6 && ciptr->family == AF_INET6)
+    {
+	namelen = sizeof(socknamev6);
+	socknamePtr = &socknamev6;
+    }
+    else
+#endif
+    {
+	namelen = sizeof(socknamev4);
+	socknamePtr = &socknamev4;
+    }
 
     PRMSG (3,"SocketINETGetPeerAddr(%p)\n", ciptr, 0, 0);
 
-    if (getpeername (ciptr->fd, (struct sockaddr *) &sockname,
+    if (getpeername (ciptr->fd, (struct sockaddr *) socknamePtr,
 		     (void *)&namelen) < 0)
     {
 	PRMSG (1,"SocketINETGetPeerAddr: getpeername() failed: %d\n",
@@ -399,7 +438,7 @@ TRANS(SocketINETGetPeerAddr) (XtransConnInfo ciptr)
     }
 
     ciptr->peeraddrlen = namelen;
-    memcpy (ciptr->peeraddr, &sockname, ciptr->peeraddrlen);
+    memcpy (ciptr->peeraddr, socknamePtr, ciptr->peeraddrlen);
 
     return 0;
 }
@@ -412,6 +451,14 @@ TRANS(SocketOpen) (int i, int type)
     XtransConnInfo	ciptr;
 
     PRMSG (3,"SocketOpen(%d,%d)\n", i, type, 0);
+
+#if defined(IPv6) && defined(AF_INET6)
+    if (getaddrinfo == NULL)
+	haveIPv6 = 0;
+
+    if (!haveIPv6 && Sockettrans2devtab[i].family == AF_INET6)
+	return NULL;
+#endif
 
     if ((ciptr = (XtransConnInfo) xcalloc (
 	1, sizeof(struct _XtransConnInfo))) == NULL)
@@ -488,19 +535,18 @@ TRANS(SocketReopen) (int i, int type, int fd, char *port)
 #ifdef TRANS_CLIENT
 
 static XtransConnInfo
-TRANS(SocketOpenCOTSClient) (Xtransport *thistrans, char *protocol, 
-			     char *host, char *port)
-
+TRANS(SocketOpenCOTSClientBase) (char *transname, char *protocol,
+				char *host, char *port, int previndex)
 {
     XtransConnInfo	ciptr;
-    int			i = -1;
+    int			i = previndex;
 
     PRMSG (2, "SocketOpenCOTSClient(%s,%s,%s)\n",
 	protocol, host, port);
 
     SocketInitOnce();
 
-    while ((i = TRANS(SocketSelectFamily) (i, thistrans->TransName)) >= 0) {
+    while ((i = TRANS(SocketSelectFamily) (i, transname)) >= 0) {
 	if ((ciptr = TRANS(SocketOpen) (
 		 i, Sockettrans2devtab[i].devcotsname)) != NULL)
 	    break;
@@ -508,10 +554,10 @@ TRANS(SocketOpenCOTSClient) (Xtransport *thistrans, char *protocol,
     if (i < 0) {
 	if (i == -1)
 	    PRMSG (1,"SocketOpenCOTSClient: Unable to open socket for %s\n",
-		   thistrans->TransName, 0, 0);
+		   transname, 0, 0);
 	else
 	    PRMSG (1,"SocketOpenCOTSClient: Unable to determine socket type for %s\n",
-		   thistrans->TransName, 0, 0);
+		   transname, 0, 0);
 	return NULL;
     }
 
@@ -521,6 +567,15 @@ TRANS(SocketOpenCOTSClient) (Xtransport *thistrans, char *protocol,
 
     return ciptr;
 }
+
+static XtransConnInfo
+TRANS(SocketOpenCOTSClient) (Xtransport *thistrans, char *protocol, 
+			     char *host, char *port)
+{
+    return TRANS(SocketOpenCOTSClientBase)(
+			thistrans->TransName, protocol, host, port, -1);
+}
+
 
 #endif /* TRANS_CLIENT */
 
@@ -1335,9 +1390,8 @@ TRANS(SocketINETConnect) (XtransConnInfo ciptr, char *host, char *port)
 #if defined(IPv6) && defined(AF_INET6)
     struct addrinfo 	hints;
     char		ntopbuf[INET6_ADDRSTRLEN];
-    struct sockaddr_in6 tmpsin6;
     int			resetonce = 0;
-#else
+#endif
     struct sockaddr_in	sockname;
 #ifdef XTHREADS_NEEDS_BYNAMEPARAMS
     _Xgethostbynameparams hparams;
@@ -1346,14 +1400,11 @@ TRANS(SocketINETConnect) (XtransConnInfo ciptr, char *host, char *port)
     struct hostent	*hostp;
     struct servent	*servp;
     unsigned long 	tmpaddr;
-#endif
 #ifdef X11_t
     char	portbuf[PORTBUFSIZE];
 #endif
 
-#if defined(X11_t) || !defined(IPv6) || !defined(AF_INET6)
     long		tmpport;
-#endif
     char 		hostnamebuf[256];		/* tmp space */
 
     PRMSG (2,"SocketINETConnect(%d,%s,%s)\n", ciptr->fd, host, port);
@@ -1384,208 +1435,233 @@ TRANS(SocketINETConnect) (XtransConnInfo ciptr, char *host, char *port)
 #endif
 
 #if defined(IPv6) && defined(AF_INET6)
-    if (addrlist != NULL) {
-	if (strcmp(host,addrlist->host) || strcmp(port,addrlist->port)) {
-	    if (addrlist->firstaddr)
-	     	freeaddrinfo(addrlist->firstaddr);
-	    addrlist->firstaddr = NULL;
-	}
-    } else {
-	addrlist = malloc(sizeof(struct addrlist));
-	addrlist->firstaddr = NULL;
-    }
-
-    if (addrlist->firstaddr == NULL) {
-	strncpy(addrlist->port, port, sizeof(addrlist->port));
-	addrlist->port[sizeof(addrlist->port) - 1] = '\0';
-	strncpy(addrlist->host, host, sizeof(addrlist->host));
-	addrlist->host[sizeof(addrlist->host) - 1] = '\0';
-
-	bzero(&hints,sizeof(hints));
-	hints.ai_socktype = Sockettrans2devtab[ciptr->index].devcotsname;
-
-	res = getaddrinfo(host,port,&hints,&addrlist->firstaddr);
-	if (res != 0) {
-	    PRMSG (1,
-	      "TRANS(SocketINETConnect) () can't get address for %s:%s: %s\n",
-	      host, port, gai_strerror(res));
-	    ESET(EINVAL);
-	    return TRANS_CONNECT_FAILED;
-	}
-	for (res = 0, addrlist->addr = addrlist->firstaddr; addrlist->addr ; res++) {
-	    addrlist->addr = addrlist->addr->ai_next;
-	}
-	PRMSG(4,"Got New Address list with %d addresses\n", res, 0, 0);
-	res = 0;
-	addrlist->addr = NULL;
-    }
-
-    while ( socketaddr == NULL ) {
-	if (addrlist->addr == NULL) {
-	    if (resetonce) { 
-		/* Already checked entire list - no usable addresses */
-		PRMSG (1,
-	      "TRANS(SocketINETConnect) () no usable address for %s:%s\n",
-		  host, port, 0);
-		return TRANS_CONNECT_FAILED;
-	    } else {
-		/* Go back to beginning of list */
-		resetonce = 1;
-		addrlist->addr = addrlist->firstaddr;
-	    }
-	} 
-	    
-
-	socketaddr = addrlist->addr->ai_addr;
-	socketaddrlen = addrlist->addr->ai_addrlen;
-    
-	if (addrlist->addr->ai_family == AF_INET) {
-	    struct sockaddr_in	*sin = (struct sockaddr_in *) socketaddr;
-	    
-	    PRMSG (4,"TRANS(SocketINETConnect) sockname.sin_addr = %s\n",
-	      inet_ntop(addrlist->addr->ai_family,&sin->sin_addr,
-		ntopbuf,sizeof(ntopbuf)), 0, 0); 
-
-	    PRMSG (4,"TRANS(SocketINETConnect) sockname.sin_port = %d\n",
-	      ntohs(sin->sin_port), 0, 0); 
-
-	    if (Sockettrans2devtab[ciptr->index].family == AF_INET6) {
-		/* We have IPv6 socket, need to map IPv4 address to IPv6 */
-		char *v4addr = (char *) &sin->sin_addr.s_addr;
-		bzero(&tmpsin6, sizeof(tmpsin6));
-#ifdef SIN6_LEN
-		tmpsin6.sin6_len = sizeof(tmpsin6);
-#endif
-		tmpsin6.sin6_family = AF_INET6;
-		tmpsin6.sin6_port = sin->sin_port;
-		tmpsin6.sin6_addr.s6_addr[10] = 0xff;
-		tmpsin6.sin6_addr.s6_addr[11] = 0xff;
-		tmpsin6.sin6_addr.s6_addr[12] = v4addr[0];
-		tmpsin6.sin6_addr.s6_addr[13] = v4addr[1];
-		tmpsin6.sin6_addr.s6_addr[14] = v4addr[2];
-		tmpsin6.sin6_addr.s6_addr[15] = v4addr[3];
-		
-		socketaddr = (struct sockaddr *) &tmpsin6;
-		socketaddrlen = sizeof(tmpsin6);
-		PRMSG (4,"TRANS(SocketINETConnect) sockname.sin6_addr = %s\n",
-		  inet_ntop(AF_INET6, &tmpsin6.sin6_addr, ntopbuf,
-		    sizeof(ntopbuf)), 0, 0); 
-	    }
-	} else if (addrlist->addr->ai_family == AF_INET6) {
-	    struct sockaddr_in6	*sin6 = (struct sockaddr_in6 *) socketaddr;
-	
-	    PRMSG (4,"TRANS(SocketINETConnect) sockname.sin6_addr = %s\n",
-	      inet_ntop(addrlist->addr->ai_family, &sin6->sin6_addr,ntopbuf,sizeof(ntopbuf)),
-	      0, 0); 
-	    PRMSG (4,"TRANS(SocketINETConnect) sockname.sin6_port = %d\n",
-	      ntohs(sin6->sin6_port), 0, 0); 
-
-	    if (Sockettrans2devtab[ciptr->index].family == AF_INET) {
-		PRMSG (4,"TRANS(SocketINETConnect) Skipping IPv6 address\n",
-		  0,0,0);
-		socketaddr = NULL;
+    if (haveIPv6) {
+	if (addrlist != NULL) {
+	    if (strcmp(host,addrlist->host) || strcmp(port,addrlist->port)) {
+		if (addrlist->firstaddr)
+		    freeaddrinfo(addrlist->firstaddr);
+		addrlist->firstaddr = NULL;
 	    }
 	} else {
-	    socketaddr = NULL; /* Unsupported address type */
+	    addrlist = malloc(sizeof(struct addrlist));
+	    addrlist->firstaddr = NULL;
 	}
-	if (socketaddr == NULL) {
-	    addrlist->addr = addrlist->addr->ai_next;
+
+	if (addrlist->firstaddr == NULL) {
+	    strncpy(addrlist->port, port, sizeof(addrlist->port));
+	    addrlist->port[sizeof(addrlist->port) - 1] = '\0';
+	    strncpy(addrlist->host, host, sizeof(addrlist->host));
+	    addrlist->host[sizeof(addrlist->host) - 1] = '\0';
+
+	    bzero(&hints,sizeof(hints));
+	    hints.ai_socktype = Sockettrans2devtab[ciptr->index].devcotsname;
+
+	    res = getaddrinfo(host,port,&hints,&addrlist->firstaddr);
+	    if (res != 0) {
+		PRMSG (1, "SocketINETConnect() can't get address "
+			"for %s:%s: %s\n", host, port, gai_strerror(res));
+		ESET(EINVAL);
+		return TRANS_CONNECT_FAILED;
+	    }
+	    for (res = 0, addrlist->addr = addrlist->firstaddr;
+		 addrlist->addr ; res++) {
+		addrlist->addr = addrlist->addr->ai_next;
+	    }
+	    PRMSG(4,"Got New Address list with %d addresses\n", res, 0, 0);
+	    res = 0;
+	    addrlist->addr = NULL;
 	}
-    } 
-#else
-    /*
-     * Build the socket name.
-     */
+
+	while (socketaddr == NULL) {
+	    if (addrlist->addr == NULL) {
+		if (resetonce) { 
+		    /* Already checked entire list - no usable addresses */
+		    PRMSG (1, "SocketINETConnect() no usable address "
+			   "for %s:%s\n", host, port, 0);
+		    return TRANS_CONNECT_FAILED;
+		} else {
+		    /* Go back to beginning of list */
+		    resetonce = 1;
+		    addrlist->addr = addrlist->firstaddr;
+		}
+	    } 
+
+	    socketaddr = addrlist->addr->ai_addr;
+	    socketaddrlen = addrlist->addr->ai_addrlen;
+
+	    if (addrlist->addr->ai_family == AF_INET) {
+		struct sockaddr_in *sin = (struct sockaddr_in *) socketaddr;
+
+		PRMSG (4,"SocketINETConnect() sockname.sin_addr = %s\n",
+			inet_ntop(addrlist->addr->ai_family,&sin->sin_addr,
+			ntopbuf,sizeof(ntopbuf)), 0, 0); 
+
+		PRMSG (4,"SocketINETConnect() sockname.sin_port = %d\n",
+			ntohs(sin->sin_port), 0, 0); 
+
+		if (Sockettrans2devtab[ciptr->index].family == AF_INET6) {
+		    if (strcmp(Sockettrans2devtab[ciptr->index].transname,
+				"tcp") == 0) {
+			XtransConnInfo newciptr;
+
+			/*
+			 * Our socket is an IPv6 socket, but the address is
+			 * IPv4.  Close it and get an IPv4 socket.  This is
+			 * needed for IPv4 connections to work on platforms
+			 * that don't allow IPv4 over IPv6 sockets.
+			 */
+			TRANS(SocketINETClose)(ciptr);
+			newciptr = TRANS(SocketOpenCOTSClientBase)(
+					"tcp", "tcp", host, port, ciptr->index);
+			if (newciptr)
+			    ciptr->fd = newciptr->fd;
+			if (!newciptr ||
+			    Sockettrans2devtab[newciptr->index].family !=
+				AF_INET) {
+			    socketaddr = NULL;
+			    PRMSG (4,"SocketINETConnect() Cannot get IPv4 "
+					" socketfor IPv4 address\n", 0,0,0);
+			}
+			if (newciptr)
+			    xfree(newciptr);
+		    } else {
+			socketaddr = NULL;
+			PRMSG (4,"SocketINETConnect Skipping IPv4 address\n",
+				0,0,0);
+		    }
+		}
+	    } else if (addrlist->addr->ai_family == AF_INET6) {
+		struct sockaddr_in6 *sin6 = (struct sockaddr_in6 *) socketaddr;
+	
+		PRMSG (4,"SocketINETConnect() sockname.sin6_addr = %s\n",
+			inet_ntop(addrlist->addr->ai_family,
+				  &sin6->sin6_addr,ntopbuf,sizeof(ntopbuf)),
+			0, 0); 
+		PRMSG (4,"SocketINETConnect() sockname.sin6_port = %d\n",
+			ntohs(sin6->sin6_port), 0, 0); 
+
+		if (Sockettrans2devtab[ciptr->index].family == AF_INET) {
+		    if (strcmp(Sockettrans2devtab[ciptr->index].transname,
+				"tcp") == 0) {
+			XtransConnInfo newciptr;
+
+			/*
+			 * Close the IPv4 socket and try to open an IPv6 socket.
+			 */
+			TRANS(SocketINETClose)(ciptr);
+			newciptr = TRANS(SocketOpenCOTSClientBase)(
+					"tcp", "tcp", host, port, -1);
+			if (newciptr)
+			    ciptr->fd = newciptr->fd;
+			if (!newciptr ||
+			    Sockettrans2devtab[newciptr->index].family !=
+					AF_INET6) {
+			    socketaddr = NULL;
+			    PRMSG (4,"SocketINETConnect() Cannot get IPv6 "
+				   "socket for IPv6 address\n", 0,0,0);
+			}
+			if (newciptr)
+			    xfree(newciptr);
+		    }
+		    else
+		    {
+			socketaddr = NULL;
+			PRMSG (4,"SocketINETConnect() Skipping IPv6 address\n",
+				0,0,0);
+		    }
+		}
+	    } else {
+		socketaddr = NULL; /* Unsupported address type */
+	    }
+	    if (socketaddr == NULL) {
+		addrlist->addr = addrlist->addr->ai_next;
+	    }
+	} 
+    } else
+#endif
+    {
+	/*
+	 * Build the socket name.
+	 */
 
 #ifdef BSD44SOCKETS
-    sockname.sin_len = sizeof (struct sockaddr_in);
+	sockname.sin_len = sizeof (struct sockaddr_in);
 #endif
-    sockname.sin_family = AF_INET;
+	sockname.sin_family = AF_INET;
 
-    /*
-     * fill in sin_addr
-     */
+	/*
+	 * fill in sin_addr
+	 */
 
-    /* check for ww.xx.yy.zz host string */
+	/* check for ww.xx.yy.zz host string */
 
-    if (isascii (host[0]) && isdigit (host[0])) {
-	tmpaddr = inet_addr (host); /* returns network byte order */
-    } else {
-	tmpaddr = -1;
-    }
-
-    PRMSG (4,"SocketINETConnect: inet_addr(%s) = %x\n",
-	host, tmpaddr, 0);
-
-    if ((long)tmpaddr == -1L)
-    {
-	if ((hostp = _XGethostbyname(host,hparams)) == NULL)
-	{
-	    PRMSG (1,"SocketINETConnect: Can't get address for %s\n",
-		  host, 0, 0);
-	    ESET(EINVAL);
-	    return TRANS_CONNECT_FAILED;
+	if (isascii (host[0]) && isdigit (host[0])) {
+	    tmpaddr = inet_addr (host); /* returns network byte order */
+	} else {
+	    tmpaddr = -1;
 	}
-	if (hostp->h_addrtype != AF_INET)  /* is IP host? */
-	{
-	    PRMSG (1,"SocketINETConnect: not INET host%s\n",
-		  host, 0, 0);
-	    ESET(EPROTOTYPE);
-	    return TRANS_CONNECT_FAILED;
-	}
+
+	PRMSG (4,"SocketINETConnect() inet_addr(%s) = %x\n", host, tmpaddr, 0);
+
+	if ((long)tmpaddr == -1L) {
+	    if ((hostp = _XGethostbyname(host,hparams)) == NULL) {
+		PRMSG (1,"SocketINETConnect: Can't get address for %s\n",
+			host, 0, 0);
+		ESET(EINVAL);
+		return TRANS_CONNECT_FAILED;
+	    }
+	    if (hostp->h_addrtype != AF_INET) {  /* is IP host? */
+		PRMSG (1,"SocketINETConnect: not INET host%s\n", host, 0, 0);
+		ESET(EPROTOTYPE);
+		return TRANS_CONNECT_FAILED;
+	    }
 	
 #if defined(CRAY) && defined(OLDTCP)
-        /* Only Cray UNICOS3 and UNICOS4 will define this */
-        {
-	long t;
-	memcpy ((char *)&t, (char *) hostp->h_addr, sizeof (t));
-	sockname.sin_addr = t;
+	    /* Only Cray UNICOS3 and UNICOS4 will define this */
+	    {
+		long t;
+		memcpy ((char *)&t, (char *) hostp->h_addr, sizeof (t));
+		sockname.sin_addr = t;
+	    }
+#else
+	    memcpy ((char *) &sockname.sin_addr, (char *) hostp->h_addr,
+		    sizeof (sockname.sin_addr));
+#endif /* CRAY and OLDTCP */
+
+	} else {
+#if defined(CRAY) && defined(OLDTCP)
+	    /* Only Cray UNICOS3 and UNICOS4 will define this */
+	    sockname.sin_addr = tmpaddr;
+#else
+	    sockname.sin_addr.s_addr = tmpaddr;
+#endif /* CRAY and OLDTCP */
         }
-#else
-        memcpy ((char *) &sockname.sin_addr, (char *) hostp->h_addr,
-		sizeof (sockname.sin_addr));
-#endif /* CRAY and OLDTCP */
-	
-    }
-else
-    {
-#if defined(CRAY) && defined(OLDTCP)
-	/* Only Cray UNICOS3 and UNICOS4 will define this */
-	sockname.sin_addr = tmpaddr;
-#else
-	sockname.sin_addr.s_addr = tmpaddr;
-#endif /* CRAY and OLDTCP */
-    }
 
-    /*
-     * fill in sin_port
-     */
-    
-    /* Check for number in the port string */
+	/*
+	 * fill in sin_port
+	 */
 
-    if (!is_numeric (port))
-    {
-	if ((servp = _XGetservbyname (port,"tcp",sparams)) == NULL)
-	{
-	    PRMSG (1,"SocketINETConnect: can't get service for %s\n",
-		  port, 0, 0);
-	    return TRANS_CONNECT_FAILED;
+	/* Check for number in the port string */
+
+	if (!is_numeric (port)) {
+	    if ((servp = _XGetservbyname (port,"tcp",sparams)) == NULL) {
+		PRMSG (1,"SocketINETConnect: can't get service for %s\n",
+			port, 0, 0);
+		return TRANS_CONNECT_FAILED;
+	    }
+	    sockname.sin_port = htons (servp->s_port);
+	} else {
+	    tmpport = strtol (port, (char**)NULL, 10);
+	    if (tmpport < 1024 || tmpport > USHRT_MAX)
+		return TRANS_CONNECT_FAILED;
+	    sockname.sin_port = htons (((unsigned short) tmpport));
 	}
-	sockname.sin_port = htons (servp->s_port);
+
+	PRMSG (4,"SocketINETConnect: sockname.sin_port = %d\n",
+		ntohs(sockname.sin_port), 0, 0);
+	socketaddr = (struct sockaddr *) &sockname;
+	socketaddrlen = sizeof(sockname);
     }
-    else
-    {
-	tmpport = strtol (port, (char**)NULL, 10);
-	if (tmpport < 1024 || tmpport > USHRT_MAX)
-	    return TRANS_CONNECT_FAILED;
-	sockname.sin_port = htons (((unsigned short) tmpport));
-    }
-    
-    PRMSG (4,"SocketINETConnect: sockname.sin_port = %d\n",
-	  ntohs(sockname.sin_port), 0, 0);
-    socketaddr = (struct sockaddr *) &sockname;
-    socketaddrlen = sizeof(sockname);
-#endif    /* IPv6 */
 
     /*
      * Turn on socket keepalive so the client process will eventually
@@ -1636,10 +1712,14 @@ else
 
 	if (olderrno == ECONNREFUSED || olderrno == EINTR
 #if defined(IPv6) && defined(AF_INET6)
-	  || ( ((addrlist->addr->ai_next != NULL) || 
+	  || (haveIPv6 && ((addrlist->addr->ai_next != NULL) || 
 	        (addrlist->addr != addrlist->firstaddr)) &&
                (olderrno == ENETUNREACH || olderrno == EAFNOSUPPORT ||
-		 olderrno == EADDRNOTAVAIL || olderrno == ETIMEDOUT))
+		 olderrno == EADDRNOTAVAIL || olderrno == ETIMEDOUT
+#if defined(EHOSTDOWN)
+		   || olderrno == EHOSTDOWN
+#endif
+	       ))
 #endif
 	    )
 	    res = TRANS_TRY_CONNECT_AGAIN;
@@ -1678,7 +1758,7 @@ else
     }
 
 #if defined(IPv6) && defined(AF_INET6)
-   if (res != 0) { 
+   if (haveIPv6 && res != 0) { 
 	addrlist->addr = addrlist->addr->ai_next;
    }
 #endif
@@ -1702,15 +1782,20 @@ UnixHostReallyLocal (char *host)
 {
     char hostnamebuf[256];
 
+#if defined(IPv6) && defined(AF_INET6)
+    if (getaddrinfo == NULL)
+	haveIPv6 = 0;
+#endif
+
     TRANS(GetHostname) (hostnamebuf, sizeof (hostnamebuf));
 
     if (strcmp (hostnamebuf, host) == 0)
     {
 	return (1);
     }
-    else
-    {
 #if defined(IPv6) && defined(AF_INET6)
+    else if (haveIPv6)
+    {
 	struct addrinfo *localhostaddr;
 	struct addrinfo *otherhostaddr;
 	struct addrinfo *i, *j;
@@ -1756,7 +1841,10 @@ UnixHostReallyLocal (char *host)
 	freeaddrinfo(localhostaddr);
 	freeaddrinfo(otherhostaddr);
 	return equiv;
-#else
+    }
+#endif
+    else
+    {
 	/*
 	 * A host may have more than one network address.  If any of the
 	 * network addresses of 'host' (specified to the connect call)
@@ -1824,9 +1912,7 @@ UnixHostReallyLocal (char *host)
 
 	    i++;
 	}
-	
-    return (equiv);
-#endif
+	return (equiv);
     }
 }
 
@@ -2135,7 +2221,13 @@ TRANS(SocketUNIXCloseForCloning) (XtransConnInfo ciptr)
 
 #ifdef TCPCONN
 # ifdef TRANS_SERVER
-static char* tcp_nolisten[] = { "inet", "inet6", NULL };
+static char* tcp_nolisten[] = {
+	"inet",
+#if defined(IPv6) && defined(AF_INET6)
+	"inet6",
+#endif
+	NULL
+};
 # endif
 
 Xtransport	TRANS(SocketTCPFuncs) = {

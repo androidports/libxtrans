@@ -1,3 +1,4 @@
+/* $XdotOrg: xc/lib/xtrans/Xtransint.h,v 1.1.4.3.4.1 2004/03/04 17:47:15 eich Exp $ */
 /* $Xorg: Xtransint.h,v 1.4 2001/02/09 02:04:06 xorgcvs Exp $ */
 /*
 
@@ -132,7 +133,7 @@ from The Open Group.
 #   endif
 #  endif
 #  ifndef OPEN_MAX
-#   if defined(_SC_OPEN_MAX)
+#   if defined(_SC_OPEN_MAX) && !defined(__UNIXOS2__)
 #    define OPEN_MAX (sysconf(_SC_OPEN_MAX))
 #   else
 #    ifdef SVR4

@@ -1,3 +1,4 @@
+/* $XdotOrg: xc/lib/xtrans/Xtrans.c,v 1.1.4.3.4.1 2004/03/04 17:47:15 eich Exp $ */
 /* $Xorg: Xtrans.c,v 1.4 2001/02/09 02:04:06 xorgcvs Exp $ */
 /*
 
@@ -783,7 +784,7 @@ TRANS(NoListen) (char * protocol)
    
    if ((trans = TRANS(SelectTransport)(protocol)) == NULL) 
    {
-	PRMSG (1,"TRANS(TransNoListen): unable to find transport: %s\n", 
+	PRMSG (1,"TransNoListen: unable to find transport: %s\n", 
 	       protocol, 0, 0);
 
 	return -1;
