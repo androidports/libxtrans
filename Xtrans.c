@@ -1,3 +1,4 @@
+/* $XdotOrg: Xtrans.c,v 1.4 2001/02/09 02:04:06 xorgcvs Exp $ */
 /* $Xorg: Xtrans.c,v 1.4 2001/02/09 02:04:06 xorgcvs Exp $ */
 /*
 
@@ -26,7 +27,7 @@ other dealings in this Software without prior written authorization
 from The Open Group.
 
 */
-/* $XFree86: xc/lib/xtrans/Xtrans.c,v 3.33 2003/08/11 17:41:29 eich Exp $ */
+/* $XFree86: xc/lib/xtrans/Xtrans.c,v 3.34 2003/12/05 05:12:50 dawes Exp $ */
 
 /* Copyright 1993, 1994 NCR Corporation - Dayton, Ohio, USA
  *
@@ -783,7 +784,7 @@ TRANS(NoListen) (char * protocol)
    
    if ((trans = TRANS(SelectTransport)(protocol)) == NULL) 
    {
-	PRMSG (1,"TRANS(TransNoListen): unable to find transport: %s\n", 
+	PRMSG (1,"TransNoListen: unable to find transport: %s\n", 
 	       protocol, 0, 0);
 
 	return -1;

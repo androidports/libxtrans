@@ -1,4 +1,4 @@
-/* $XdotOrg: xc/lib/xtrans/Xtranssock.c,v 1.1.4.3 2003/12/06 13:24:23 kaleb Exp $ */
+/* $XdotOrg: xc/lib/xtrans/Xtranssock.c,v 1.1.4.4 2003/12/15 16:00:01 kaleb Exp $ */
 /* $Xorg: Xtranssock.c,v 1.11 2001/02/09 02:04:06 xorgcvs Exp $ */
 /*
 
@@ -28,7 +28,7 @@ other dealings in this Software without prior written authorization
 from the copyright holders.
 
 */
-/* $XFree86: xc/lib/xtrans/Xtranssock.c,v 3.66 2003/12/02 20:00:09 dawes Exp $ */
+/* $XFree86: xc/lib/xtrans/Xtranssock.c,v 3.67 2003/12/05 05:12:50 dawes Exp $ */
 
 /* Copyright 1993, 1994 NCR Corporation - Dayton, Ohio, USA
  *
@@ -2219,7 +2219,13 @@ TRANS(SocketUNIXCloseForCloning) (XtransConnInfo ciptr)
 
 #ifdef TCPCONN
 # ifdef TRANS_SERVER
-static char* tcp_nolisten[] = { "inet", "inet6", NULL };
+static char* tcp_nolisten[] = {
+	"inet",
+#if defined(IPv6) && defined(AF_INET6)
+	"inet6",
+#endif
+	NULL
+};
 # endif
 
 Xtransport	TRANS(SocketTCPFuncs) = {
