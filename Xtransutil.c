@@ -501,31 +501,70 @@ is_numeric (char *str)
 #define lstat(a,b) stat(a,b)
 #endif
 
+#define FAIL_IF_NOMODE  1
+#define FAIL_IF_NOT_ROOT 2
+#define WARN_NO_ACCESS 4
+
+/*
+ * We make the assumption that when the 'sticky' (t) bit is requested
+ * it's not save if the directory has non-root ownership or the sticky
+ * bit cannot be set and fail.
+ */
 static int 
 trans_mkdir(char *path, int mode)
 {
     struct stat buf;
 
-    if (mkdir(path, mode) == 0) {
-	chmod(path, mode);
-	return 0;
-    }
-    /* If mkdir failed with EEXIST, test if it is a directory with 
-       the right modes, else fail */
-    if (errno == EEXIST) {
-	if (lstat(path, &buf) != 0) {
-	    PRMSG(1, "mkdir: (l)stat failed for %s (%d)\n",
+    if (lstat(path, &buf) != 0) {
+	if (errno != ENOENT) {
+	    PRMSG(1, "mkdir: ERROR: (l)stat failed for %s (%d)\n",
 		  path, errno, 0);
 	    return -1;
 	}
+	/* Dir doesn't exist. Try to create it */
+
+	/*
+	 * 'sticky' bit requested: assume application makes
+	 * certain security implications. If effective user ID
+	 * is != 0: fail as we may not be able to meet them.
+	 */
+	if (geteuid() != 0) {
+	    if (mode & 01000) {
+		PRMSG(1, "mkdir: ERROR: euid != 0,"
+		      "directory %s will not be created.\n",
+		      path, 0, 0);	    
+		return -1;
+	    } else {
+		PRMSG(1, "mkdir: Cannot create %s with root ownership\n",
+		      path, 0, 0);
+	    }
+	}
+	
+	if (mkdir(path, mode) == 0) {
+	    if (chmod(path, mode)) {
+		PRMSG(1, "mkdir: ERROR: Mode of %s should be set to %04o\n",
+		      path, mode, 0);
+		return -1;
+	    }
+	} else {
+	    PRMSG(1, "mkdir: ERROR: Cannot create %s\n",
+		  path, 0, 0);
+	    return -1;
+	}
+
+	return 0;
+	
+    } else {
 	if (S_ISDIR(buf.st_mode)) {
 	    int updateOwner = 0;
 	    int updateMode = 0;
 	    int updatedOwner = 0;
 	    int updatedMode = 0;
+	    int status = 0;
 	    /* Check if the directory's ownership is OK. */
 	    if (buf.st_uid != 0)
 		updateOwner = 1;
+
 	    /*
 	     * Check if the directory's mode is OK.  An exact match isn't
 	     * required, just a mode that isn't more permissive than the
@@ -533,9 +572,29 @@ trans_mkdir(char *path, int mode)
 	     */
 	    if ((~mode) & 0077 & buf.st_mode)
 		updateMode = 1;
-	    if ((mode & 01000) &&
-		(buf.st_mode & 0002) && !(buf.st_mode & 01000))
+	    
+	    /*
+	     * If the directory is not writeable not everybody may
+	     * be able to create sockets. Therefore warn if mode
+	     * cannot be fixed.
+	     */
+	    if ((~buf.st_mode) & 0022 & mode) {
 		updateMode = 1;
+		status |= WARN_NO_ACCESS;
+	    }
+	    
+	    /*
+	     * If 'sticky' bit is requested fail if owner isn't root
+	     * as we assume the caller makes certain security implications
+	     */
+	    if (mode & 01000) {
+		status |= FAIL_IF_NOT_ROOT;
+		if (!(buf.st_mode & 01000)) {
+		    status |= FAIL_IF_NOMODE;
+		    updateMode = 1;
+		}
+	    }
+	    
 #ifdef HAS_FCHOWN
 	    /*
 	     * If fchown(2) and fchmod(2) are available, try to correct the
@@ -547,7 +606,7 @@ trans_mkdir(char *path, int mode)
 		struct stat fbuf;
 		if ((fd = open(path, O_RDONLY)) != -1) {
 		    if (fstat(fd, &fbuf) == -1) {
-			PRMSG(1, "mkdir: fstat failed for %s (%d)\n",
+			PRMSG(1, "mkdir: ERROR: fstat failed for %s (%d)\n",
 			      path, errno, 0);
 			return -1;
 		    }
@@ -558,7 +617,7 @@ trans_mkdir(char *path, int mode)
 		    if (!S_ISDIR(fbuf.st_mode) ||
 			buf.st_dev != fbuf.st_dev ||
 			buf.st_ino != fbuf.st_ino) {
-			PRMSG(1, "mkdir: inode for %s changed\n",
+			PRMSG(1, "mkdir: ERROR: inode for %s changed\n",
 			      path, 0, 0);
 			return -1;
 		    }
@@ -570,23 +629,35 @@ trans_mkdir(char *path, int mode)
 		}
 	    }
 #endif
+	    
 	    if (updateOwner && !updatedOwner) {
+		if (status & FAIL_IF_NOT_ROOT) {
+		    PRMSG(1, "mkdir: ERROR: Owner of %s must be set to root\n",
+			  path, 0, 0);
+		    return -1;
+		}
 	  	PRMSG(1, "mkdir: Owner of %s should be set to root\n",
 		      path, 0, 0);
-#if 0 && !defined(__CYGWIN__) && !defined(__DARWIN__)
-		sleep(5);
-#endif
 	    }
+	    
 	    if (updateMode && !updatedMode) {
+		if (status & FAIL_IF_NOMODE) {
+		    PRMSG(1, "mkdir: ERROR: Mode of %s must be set to %04o\n",
+			  path, mode, 0);
+		    return -1;
+		}
 	  	PRMSG(1, "mkdir: Mode of %s should be set to %04o\n",
 		      path, mode, 0);
-#if 0 && !defined(__CYGWIN__) && !defined(__DARWIN__)
-		sleep(5);
-#endif
+		if (status & WARN_NO_ACCESS) {
+		    PRMSG(1, "mkdir: this may cause subsequent errors\n",
+			  0, 0, 0);
+		}
 	    }
 	    return 0;
 	}
+	return -1;
     }
+
     /* In all other cases, fail */
     return -1;
 }
