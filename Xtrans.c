@@ -1,4 +1,4 @@
-/* $XdotOrg: xc/lib/xtrans/Xtrans.c,v 1.2 2004/04/23 18:44:27 eich Exp $ */
+/* $XdotOrg: xc/lib/xtrans/Xtrans.c,v 1.3 2004/07/17 01:13:31 alanc Exp $ */
 /* $Xorg: Xtrans.c,v 1.4 2001/02/09 02:04:06 xorgcvs Exp $ */
 /*
 
@@ -726,7 +726,11 @@ TRANS(SetOption) (XtransConnInfo ciptr, int option, int arg)
 #else
 #if (defined(AIXV3) || defined(uniosu) || defined(WIN32) || defined(__UNIXOS2__) || defined(__QNX__)) && defined(FIONBIO)
 	{
+#ifdef WIN32
+	    u_long arg;
+#else
 	    int arg;
+#endif
 	    arg = 1;
 /* IBM TCP/IP understands this option too well: it causes TRANS(Read) to fail
  * eventually with EWOULDBLOCK */

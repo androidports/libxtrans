@@ -1,4 +1,4 @@
-/* $XdotOrg$ */
+/* $XdotOrg: xc/lib/xtrans/Xtranssock.c,v 1.2 2004/04/23 18:44:27 eich Exp $ */
 /* $Xorg: Xtranssock.c,v 1.11 2001/02/09 02:04:06 xorgcvs Exp $ */
 /*
 
@@ -114,6 +114,7 @@ from the copyright holders.
 #else /* !WIN32 */
 
 #include <X11/Xwinsock.h>
+#include <X11/Xwindows.h>
 #include <X11/Xw32defs.h>
 #undef close
 #define close closesocket
@@ -122,6 +123,7 @@ from the copyright holders.
 #define EPROTOTYPE WSAEPROTOTYPE
 #undef EWOULDBLOCK
 #define EWOULDBLOCK WSAEWOULDBLOCK
+#define EINPROGRESS WSAEINPROGRESS
 #undef EINTR
 #define EINTR WSAEINTR
 #define X_INCLUDE_NETDB_H
@@ -348,6 +350,9 @@ TRANS(SocketINETGetAddr) (XtransConnInfo ciptr)
     if (getsockname (ciptr->fd,(struct sockaddr *) socknamePtr,
 		     (void *)&namelen) < 0)
     {
+#ifdef WIN32
+	errno = WSAGetLastError();
+#endif
 	PRMSG (1,"SocketINETGetAddr: getsockname() failed: %d\n",
 	    EGET(),0, 0);
 	return -1;
@@ -420,6 +425,9 @@ TRANS(SocketINETGetPeerAddr) (XtransConnInfo ciptr)
     if (getpeername (ciptr->fd, (struct sockaddr *) socknamePtr,
 		     (void *)&namelen) < 0)
     {
+#ifdef WIN32
+	errno = WSAGetLastError();
+#endif
 	PRMSG (1,"SocketINETGetPeerAddr: getpeername() failed: %d\n",
 	    EGET(), 0, 0);
 	return -1;
@@ -475,6 +483,9 @@ TRANS(SocketOpen) (int i, int type)
 #endif
 #endif
       ) {
+#ifdef WIN32
+	errno = WSAGetLastError();
+#endif
 	PRMSG (2, "SocketOpen: socket() failed for %s\n",
 	    Sockettrans2devtab[i].transname, 0, 0);
 
@@ -1233,6 +1244,9 @@ TRANS(SocketINETAccept) (XtransConnInfo ciptr, int *status)
     if ((newciptr->fd = accept (ciptr->fd,
 	(struct sockaddr *) &sockname, (void *)&namelen)) < 0)
     {
+#ifdef WIN32
+	errno = WSAGetLastError();
+#endif
 	PRMSG (1, "SocketINETAccept: accept() failed\n", 0, 0, 0);
 	xfree (newciptr);
 	*status = TRANS_ACCEPT_FAILED;
@@ -2081,7 +2095,11 @@ TRANS(SocketBytesReadable) (XtransConnInfo ciptr, BytesReadable_t *pend)
     *pend = 0L; /* FIONREAD only returns a short. Zero out upper bits */
 #endif
 #ifdef WIN32
-    return ioctlsocket ((SOCKET) ciptr->fd, FIONREAD, (u_long *) pend);
+    {
+	int ret = ioctlsocket ((SOCKET) ciptr->fd, FIONREAD, (u_long *) pend);
+	errno = WSAGetLastError();
+	return ret;
+    }
 #else
 #if (defined(i386) && defined(SYSV) && !defined(sco)) || (defined(_SEQUENT_) && _SOCKET_VERSION == 1)
     return ioctl (ciptr->fd, I_NREAD, (char *) pend);
@@ -2103,7 +2121,13 @@ TRANS(SocketRead) (XtransConnInfo ciptr, char *buf, int size)
     PRMSG (2,"SocketRead(%d,%p,%d)\n", ciptr->fd, buf, size);
 
 #if defined(WIN32) || defined(__UNIXOS2__)
-    return recv ((SOCKET)ciptr->fd, buf, size, 0);
+    {
+	int ret = recv ((SOCKET)ciptr->fd, buf, size, 0);
+#ifdef WIN32
+	errno = WSAGetLastError();
+#endif
+	return ret;
+    }
 #else
     return read (ciptr->fd, buf, size);
 #endif /* WIN32 */
@@ -2117,7 +2141,13 @@ TRANS(SocketWrite) (XtransConnInfo ciptr, char *buf, int size)
     PRMSG (2,"SocketWrite(%d,%p,%d)\n", ciptr->fd, buf, size);
 
 #if defined(WIN32) || defined(__UNIXOS2__)
-    return send ((SOCKET)ciptr->fd, buf, size, 0);
+    {
+	int ret = send ((SOCKET)ciptr->fd, buf, size, 0);
+#ifdef WIN32
+	errno = WSAGetLastError();
+#endif
+	return ret;
+    }
 #else
     return write (ciptr->fd, buf, size);
 #endif /* WIN32 */
@@ -2150,7 +2180,15 @@ TRANS(SocketDisconnect) (XtransConnInfo ciptr)
 {
     PRMSG (2,"SocketDisconnect(%p,%d)\n", ciptr, ciptr->fd, 0);
 
+#ifdef WIN32
+    { 
+	int ret = shutdown (ciptr->fd, 2);
+	errno = WSAGetLastError();
+	return ret;
+    }
+#else
     return shutdown (ciptr->fd, 2); /* disallow further sends and receives */
+#endif
 }
 
 
@@ -2161,7 +2199,15 @@ TRANS(SocketINETClose) (XtransConnInfo ciptr)
 {
     PRMSG (2,"SocketINETClose(%p,%d)\n", ciptr, ciptr->fd, 0);
 
+#ifdef WIN32
+    {
+	int ret = close (ciptr->fd);
+	errno = WSAGetLastError();
+	return ret;
+    }
+#else
     return close (ciptr->fd);
+#endif
 }
 
 #endif /* TCPCONN */
