@@ -1,4 +1,4 @@
-/* $XdotOrg: xc/lib/xtrans/Xtrans.c,v 1.1.4.3.4.1 2004/03/04 17:47:15 eich Exp $ */
+/* $XdotOrg: xc/lib/xtrans/Xtrans.c,v 1.3 2004/07/17 01:13:31 alanc Exp $ */
 /* $Xorg: Xtrans.c,v 1.4 2001/02/09 02:04:06 xorgcvs Exp $ */
 /*
 
@@ -1132,7 +1132,7 @@ TRANS(MakeAllCOTSServerListeners) (char *port, int *partial, int *count_ret,
     *partial = (*count_ret < complete_network_count());
 
     PRMSG (5,
-     "MakeAllCLTSServerListeners: partial=%d, actual=%d, complete=%d \n",
+     "MakeAllCOTSServerListeners: partial=%d, actual=%d, complete=%d \n",
 	*partial, *count_ret, complete_network_count());
 
     if (*count_ret > 0)

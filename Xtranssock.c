@@ -1,4 +1,4 @@
-/* $XdotOrg: xc/lib/xtrans/Xtranssock.c,v 1.1.4.6.2.1 2004/03/04 17:47:15 eich Exp $ */
+/* $XdotOrg: xc/lib/xtrans/Xtranssock.c,v 1.2 2004/04/23 18:44:27 eich Exp $ */
 /* $Xorg: Xtranssock.c,v 1.11 2001/02/09 02:04:06 xorgcvs Exp $ */
 /*
 
