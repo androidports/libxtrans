@@ -865,9 +865,10 @@ TRANS(SocketCreateListener) (XtransConnInfo ciptr,
 	if (errno == EADDRINUSE) {
 	    if (flags & ADDR_IN_USE_ALLOWED)
 		break;
-	} else
-	    return TRANS_ADDR_IN_USE;
-
+	    else
+		return TRANS_ADDR_IN_USE;
+	}
+	
 	if (retry-- == 0) {
 	    PRMSG (1, "SocketCreateListener: failed to bind listener\n",
 		0, 0, 0);
