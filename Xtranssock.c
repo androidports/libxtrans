@@ -28,7 +28,7 @@ other dealings in this Software without prior written authorization
 from the copyright holders.
 
 */
-/* $XFree86: xc/lib/xtrans/Xtranssock.c,v 3.69 2004/02/14 00:10:13 dawes Exp $ */
+/* $XFree86: xc/lib/xtrans/Xtranssock.c,v 3.68 2004/01/07 04:28:02 dawes Exp $ */
 
 /* Copyright 1993, 1994 NCR Corporation - Dayton, Ohio, USA
  *

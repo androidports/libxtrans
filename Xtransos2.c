@@ -1,4 +1,4 @@
-/* $XFree86: xc/lib/xtrans/Xtransos2.c,v 3.10 2003/08/26 15:38:39 tsi Exp $ */
+/* $XFree86: xc/lib/xtrans/Xtransos2.c,v 3.9tsi Exp $ */
 
 /*
  * (c) Copyright 1996 by Sebastien Marineau and Holger Veit
