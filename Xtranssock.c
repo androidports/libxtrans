@@ -27,7 +27,7 @@ other dealings in this Software without prior written authorization
 from the copyright holders.
 
 */
-/* $XFree86: xc/lib/xtrans/Xtranssock.c,v 3.68 2004/01/07 04:28:02 dawes Exp $ */
+/* $XFree86: xc/lib/xtrans/Xtranssock.c,v 3.69 2004/02/14 00:10:13 dawes Exp $ */
 
 /* Copyright 1993, 1994 NCR Corporation - Dayton, Ohio, USA
  *
@@ -82,7 +82,7 @@ from the copyright holders.
 #include <sys/stat.h>
 #endif
 
-#if defined(hpux) || defined(__UNIXOS2__) || (defined(MOTOROLA) && defined(SYSV))
+#if defined(hpux) || (defined(MOTOROLA) && defined(SYSV))
 #define NO_TCP_H
 #endif 
 
