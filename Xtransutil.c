@@ -533,7 +533,9 @@ trans_mkdir(char *path, int mode)
 		PRMSG(1, "mkdir: ERROR: euid != 0,"
 		      "directory %s will not be created.\n",
 		      path, 0, 0);	    
+#ifdef FAIL_HARD
 		return -1;
+#endif
 	    } else {
 		PRMSG(1, "mkdir: Cannot create %s with root ownership\n",
 		      path, 0, 0);
@@ -544,7 +546,9 @@ trans_mkdir(char *path, int mode)
 	    if (chmod(path, mode)) {
 		PRMSG(1, "mkdir: ERROR: Mode of %s should be set to %04o\n",
 		      path, mode, 0);
+#ifdef FAIL_HARD
 		return -1;
+#endif
 	    }
 	} else {
 	    PRMSG(1, "mkdir: ERROR: Cannot create %s\n",
@@ -631,21 +635,25 @@ trans_mkdir(char *path, int mode)
 #endif
 	    
 	    if (updateOwner && !updatedOwner) {
+#ifdef FAIL_HARD
 		if (status & FAIL_IF_NOT_ROOT) {
 		    PRMSG(1, "mkdir: ERROR: Owner of %s must be set to root\n",
 			  path, 0, 0);
 		    return -1;
 		}
+#endif
 	  	PRMSG(1, "mkdir: Owner of %s should be set to root\n",
 		      path, 0, 0);
 	    }
 	    
 	    if (updateMode && !updatedMode) {
+#ifdef FAIL_HARD
 		if (status & FAIL_IF_NOMODE) {
 		    PRMSG(1, "mkdir: ERROR: Mode of %s must be set to %04o\n",
 			  path, mode, 0);
 		    return -1;
 		}
+#endif
 	  	PRMSG(1, "mkdir: Mode of %s should be set to %04o\n",
 		      path, mode, 0);
 		if (status & WARN_NO_ACCESS) {
