@@ -26,6 +26,7 @@ other dealings in this Software without prior written authorization
 from The Open Group.
 
 */
+/* $XFree86: xc/lib/xtrans/Xtransutil.c,v 3.23 2003/02/12 15:01:38 alanh Exp $ */
 
 /* Copyright 1993, 1994 NCR Corporation - Dayton, Ohio, USA
  *
@@ -85,13 +86,11 @@ from The Open Group.
  */
 
 int
-TRANS(ConvertAddress)(familyp,addrlenp,addrp)
-int	*familyp;
-int	*addrlenp;
-Xtransaddr	**addrp;
+TRANS(ConvertAddress)(int *familyp, int *addrlenp, Xtransaddr **addrp)
+
 {
 
-    PRMSG(2,"TRANS(ConvertAddress)(%d,%d,%x)\n",*familyp,*addrlenp,*addrp);
+    PRMSG(2,"ConvertAddress(%d,%d,%x)\n",*familyp,*addrlenp,*addrp);
 
     switch( *familyp )
     {
@@ -156,23 +155,9 @@ Xtransaddr	**addrp;
     }
 #endif /* defined(UNIXCONN) || defined(LOCALCONN) */
 
-#if defined(AMRPCCONN)
-    case AF_AMOEBA:
-    {
-	*familyp=FamilyAmoeba;
-	break;
-    }
-#endif
-#if defined(AMTCPCONN) && !(defined(TCPCONN) || defined(STREAMSCONN))
-    case AF_INET:
-    {
-	*familyp=FamilyInternet;
-	break;
-    }
-#endif
 
     default:
-	PRMSG(1,"TRANS(ConvertFamily) Unknown family type %d\n",
+	PRMSG(1,"ConvertAddress: Unknown family type %d\n",
 	      *familyp, 0,0 );
 	return -1;
     }
@@ -191,11 +176,11 @@ Xtransaddr	**addrp;
 	if (len > 0) {
 	    if (*addrp && *addrlenp < (len + 1))
 	    {
-		free ((char *) *addrp);
+		xfree ((char *) *addrp);
 		*addrp = NULL;
 	    }
 	    if (!*addrp)
-		*addrp = (Xtransaddr *) malloc (len + 1);
+		*addrp = (Xtransaddr *) xalloc (len + 1);
 	    if (*addrp) {
 		strcpy ((char *) *addrp, hostnamebuf);
 		*addrlenp = len;
@@ -206,7 +191,7 @@ Xtransaddr	**addrp;
 	else
 	{
 	    if (*addrp)
-		free ((char *) *addrp);
+		xfree ((char *) *addrp);
 	    *addrp = NULL;
 	    *addrlenp = 0;
 	}
@@ -222,13 +207,10 @@ Xtransaddr	**addrp;
 #include <signal.h>
 
 char *
-TRANS(GetMyNetworkId) (ciptr)
-
-XtransConnInfo  ciptr;
+TRANS(GetMyNetworkId) (XtransConnInfo ciptr)
 
 {
     int		family = ciptr->family;
-    int		addrlen = ciptr->addrlen;
     char 	*addr = ciptr->addr;
     char	hostnamebuf[256];
     char 	*networkId = NULL;
@@ -245,7 +227,7 @@ XtransConnInfo  ciptr;
     case AF_UNIX:
     {
 	struct sockaddr_un *saddr = (struct sockaddr_un *) addr;
-	networkId = (char *) malloc (3 + strlen (transName) +
+	networkId = (char *) xalloc (3 + strlen (transName) +
 	    strlen (hostnamebuf) + strlen (saddr->sun_path));
 	sprintf (networkId, "%s/%s:%s", transName,
 	    hostnamebuf, saddr->sun_path);
@@ -260,7 +242,7 @@ XtransConnInfo  ciptr;
 	char portnumbuf[10];
 
 	sprintf (portnumbuf, "%d", ntohs (saddr->sin_port));
-	networkId = (char *) malloc (3 + strlen (transName) +
+	networkId = (char *) xalloc (3 + strlen (transName) +
 	    strlen (hostnamebuf) + strlen (portnumbuf));
 	sprintf (networkId, "%s/%s:%s", transName, hostnamebuf, portnumbuf);
 	break;
@@ -272,7 +254,7 @@ XtransConnInfo  ciptr;
     {
 	struct sockaddr_dn *saddr = (struct sockaddr_dn *) addr;
 
-	networkId = (char *) malloc (
+	networkId = (char *) xalloc (
 	    13 + strlen (hostnamebuf) + saddr->sdn_objnamel);
 	sprintf (networkId, "dnet/%s::%s",
 	    hostnamebuf, saddr->sdn_objname);
@@ -299,7 +281,7 @@ int
 #else
 void
 #endif
-nameserver_lost(sig)
+nameserver_lost(int sig)
 {
   nameserver_timedout = 1;
   longjmp (env, -1);
@@ -312,16 +294,12 @@ nameserver_lost(sig)
 
 
 char *
-TRANS(GetPeerNetworkId) (ciptr)
-
-XtransConnInfo  ciptr;
+TRANS(GetPeerNetworkId) (XtransConnInfo ciptr)
 
 {
     int		family = ciptr->family;
-    int		peer_addrlen = ciptr->peeraddrlen;
     char	*peer_addr = ciptr->peeraddr;
     char	*hostname;
-    char	*networkId = NULL;
     char	addrbuf[256];
     char	*addr = NULL;
 
@@ -341,12 +319,10 @@ XtransConnInfo  ciptr;
     case AF_INET:
     {
 	struct sockaddr_in *saddr = (struct sockaddr_in *) peer_addr;
+#ifdef XTHREADS_NEEDS_BYNAMEPARAMS
 	_Xgethostbynameparams hparams;
-	struct hostent * hostp;
-
-#ifndef WIN32
- 	char *inet_ntoa();
 #endif
+	struct hostent * volatile hostp = NULL;
 
 #ifdef SIGALRM
 	/*
@@ -394,31 +370,12 @@ XtransConnInfo  ciptr;
     }
 #endif /* defined(DNETCONN) */
 
-#if defined(AMRPCCONN)
-    case AF_AMOEBA:
-    {
-	addr = "Amoeba"; /* not really used */
-	break;
-    }
-#endif
-#if defined(AMTCPCONN) && !(defined(TCPCONN) || defined(STREAMSCONN))
-    case AF_INET:
-    {
-	if (gethostname (addrbuf, sizeof (addrbuf)) == 0) {
-	    addr = addrbuf;
-	} else {
-	    addr = "";
-	}
-	break;
-    }
-#endif
-
     default:
 	return (NULL);
     }
 
 
-    hostname = (char *) malloc (
+    hostname = (char *) xalloc (
 	strlen (ciptr->transptr->TransName) + strlen (addr) + 2);
     strcpy (hostname, ciptr->transptr->TransName);
     strcat (hostname, "/");
@@ -433,11 +390,11 @@ XtransConnInfo  ciptr;
 
 #if defined(WIN32) && (defined(TCPCONN) || defined(DNETCONN))
 int
-TRANS(WSAStartup) ()
+TRANS(WSAStartup) (void)
 {
     static WSADATA wsadata;
 
-    PRMSG (2,"TRANS(WSAStartup)()\n", 0, 0, 0);
+    PRMSG (2,"WSAStartup()\n", 0, 0, 0);
 
     if (!wsadata.wVersion && WSAStartup(MAKEWORD(1,1), &wsadata))
         return 1;
@@ -447,9 +404,7 @@ TRANS(WSAStartup) ()
 
 
 static int
-is_numeric (str)
-
-char *str;
+is_numeric (char *str)
 
 {
     int i;
@@ -460,3 +415,104 @@ char *str;
 
     return (1);
 }
+
+#ifdef TRANS_SERVER
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <errno.h>
+
+#if !defined(S_IFLNK) && !defined(S_ISLNK)
+#define lstat(a,b) stat(a,b)
+#endif
+
+static int 
+trans_mkdir(char *path, int mode)
+{
+    struct stat buf;
+
+    if (mkdir(path, mode) == 0) {
+	chmod(path, mode);
+	return 0;
+    }
+    /* If mkdir failed with EEXIST, test if it is a directory with 
+       the right modes, else fail */
+    if (errno == EEXIST) {
+	if (lstat(path, &buf) != 0) {
+	    PRMSG(1, "mkdir: (l)stat failed for %s (%d)\n",
+		  path, errno, 0);
+	    return -1;
+	}
+	if (S_ISDIR(buf.st_mode)) {
+	    int updateOwner = 0;
+	    int updateMode = 0;
+	    int updatedOwner = 0;
+	    int updatedMode = 0;
+	    /* Check if the directory's ownership is OK. */
+	    if (buf.st_uid != 0)
+		updateOwner = 1;
+	    /*
+	     * Check if the directory's mode is OK.  An exact match isn't
+	     * required, just a mode that isn't more permissive than the
+	     * one requested.
+	     */
+	    if ((~mode) & 0077 & buf.st_mode)
+		updateMode = 1;
+	    if ((mode & 01000) &&
+		(buf.st_mode & 0002) && !(buf.st_mode & 01000))
+		updateMode = 1;
+#ifdef HAS_FCHOWN
+	    /*
+	     * If fchown(2) and fchmod(2) are available, try to correct the
+	     * directory's owner and mode.  Otherwise it isn't safe to attempt
+	     * to do this.
+	     */
+	    if (updateMode || updateOwner) {
+		int fd = -1;
+		struct stat fbuf;
+		if ((fd = open(path, O_RDONLY)) != -1) {
+		    if (fstat(fd, &fbuf) == -1) {
+			PRMSG(1, "mkdir: fstat failed for %s (%d)\n",
+			      path, errno, 0);
+			return -1;
+		    }
+		    /*
+		     * Verify that we've opened the same directory as was
+		     * checked above.
+		     */
+		    if (!S_ISDIR(fbuf.st_mode) ||
+			buf.st_dev != fbuf.st_dev ||
+			buf.st_ino != fbuf.st_ino) {
+			PRMSG(1, "mkdir: inode for %s changed\n",
+			      path, 0, 0);
+			return -1;
+		    }
+		    if (updateOwner && fchown(fd, 0, 0) == 0)
+			updatedOwner = 1;
+		    if (updateMode && fchmod(fd, mode) == 0)
+			updatedMode = 1;
+		    close(fd);
+		}
+	    }
+#endif
+	    if (updateOwner && !updatedOwner) {
+	  	PRMSG(1, "mkdir: Owner of %s should be set to root\n",
+		      path, 0, 0);
+#if !defined(__CYGWIN__)
+		sleep(5);
+#endif
+	    }
+	    if (updateMode && !updatedMode) {
+	  	PRMSG(1, "mkdir: Mode of %s should be set to %04o\n",
+		      path, mode, 0);
+#if !defined(__CYGWIN__)
+		sleep(5);
+#endif
+	    }
+	    return 0;
+	}
+    }
+    /* In all other cases, fail */
+    return -1;
+}
+
+#endif /* TRANS_SERVER */

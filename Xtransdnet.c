@@ -26,6 +26,7 @@ other dealings in this Software without prior written authorization
 from The Open Group.
 
 */
+/* $XFree86: xc/lib/xtrans/Xtransdnet.c,v 3.7 2002/11/26 01:12:30 dawes Exp $ */
 
 /* Copyright 1993, 1994 NCR Corporation - Dayton, Ohio, USA
  *
@@ -100,19 +101,17 @@ from The Open Group.
  */
 
 static int
-TRANS(DNETGetAddr) (ciptr)
-
-XtransConnInfo ciptr;
+TRANS(DNETGetAddr) (XtransConnInfo ciptr)
 
 {
     struct sockaddr_dn	sockname;
     int			namelen = sizeof(sockname);
 
-    PRMSG (3,"TRANS(DNETGetAddr) (%x)\n", ciptr, 0, 0);
+    PRMSG (3,"DNETGetAddr(%x)\n", ciptr, 0, 0);
 
     if (getsockname (ciptr->fd, (struct sockaddr *) &sockname, &namelen) < 0)
     {
-	PRMSG (1,"TRANS(DNETGetAddr): getsockname() failed: %d\n",
+	PRMSG (1,"DNETGetAddr: getsockname() failed: %d\n",
 	      EGET(), 0, 0);
 	return -1;
     }
@@ -122,9 +121,9 @@ XtransConnInfo ciptr;
      * Everything looks good: fill in the XtransConnInfo structure.
      */
 
-    if ((ciptr->addr = (char *) malloc (namelen)) == NULL)
+    if ((ciptr->addr = (char *) xalloc (namelen)) == NULL)
     {
-        PRMSG (1, "TRANS(DNETGetAddr): Can't allocate space for the addr\n",
+        PRMSG (1, "DNETGetAddr: Can't allocate space for the addr\n",
 	       0, 0, 0);
         return -1;
     }
@@ -143,19 +142,17 @@ XtransConnInfo ciptr;
  */
 
 static int
-TRANS(DNETGetPeerAddr) (ciptr)
-
-XtransConnInfo ciptr;
+TRANS(DNETGetPeerAddr) (XtransConnInfo ciptr)
 
 {
     struct sockaddr_dn	sockname;
     int			namelen = sizeof(sockname);
 
-    PRMSG (3,"TRANS(DNETGetPeerAddr) (%x)\n", ciptr, 0, 0);
+    PRMSG (3,"DNETGetPeerAddr(%x)\n", ciptr, 0, 0);
 
     if (getpeername (ciptr->fd, (struct sockaddr *) &sockname, &namelen) < 0)
     {
-	PRMSG (1,"TRANS(DNETGetPeerAddr): getpeername() failed: %d\n",
+	PRMSG (1,"DNETGetPeerAddr: getpeername() failed: %d\n",
 	      EGET(), 0, 0);
 	return -1;
     }
@@ -164,10 +161,10 @@ XtransConnInfo ciptr;
      * Everything looks good: fill in the XtransConnInfo structure.
      */
 
-    if ((ciptr->peeraddr = (char *) malloc (namelen)) == NULL)
+    if ((ciptr->peeraddr = (char *) xalloc (namelen)) == NULL)
     {
         PRMSG (1,
-	      "TRANS(DNETGetPeerAddr): Can't allocate space for the addr\n",
+	      "DNETGetPeerAddr: Can't allocate space for the addr\n",
 	      0, 0, 0);
         return -1;
     }
@@ -182,22 +179,18 @@ XtransConnInfo ciptr;
 #ifdef TRANS_CLIENT
 
 static XtransConnInfo
-TRANS(DNETOpenCOTSClient) (thistrans, protocol, host, port)
-
-Xtransport	*thistrans;
-char		*protocol;
-char		*host;
-char		*port;
+TRANS(DNETOpenCOTSClient) (Xtransport *thistrans, char *protocol, 
+			   char *host, char *port)
 
 {
     XtransConnInfo	ciptr;
 
-    PRMSG (2,"TRANS(DNETOpenCOTSClient) (%s,%s,%s)\n", protocol, host, port);
+    PRMSG (2,"DNETOpenCOTSClient(%s,%s,%s)\n", protocol, host, port);
 
-    if ((ciptr = (XtransConnInfo) calloc (
+    if ((ciptr = (XtransConnInfo) xcalloc (
 	1, sizeof(struct _XtransConnInfo))) == NULL)
     {
-	PRMSG (1, "TRANS(DNETOpenCOTSClient): malloc failed\n", 0, 0, 0);
+	PRMSG (1, "DNETOpenCOTSClient: malloc failed\n", 0, 0, 0);
 	return NULL;
     }
 
@@ -214,28 +207,24 @@ char		*port;
 #ifdef TRANS_SERVER
 
 static XtransConnInfo
-TRANS(DNETOpenCOTSServer) (thistrans, protocol, host, port)
-
-Xtransport	*thistrans;
-char		*protocol;
-char		*host;
-char		*port;
+TRANS(DNETOpenCOTSServer) (Xtransport *thistrans, char *protocol, 
+			   char *host, char *port)
 
 {
     XtransConnInfo	ciptr;
 
-    PRMSG (2,"TRANS(DNETOpenCOTSServer) (%s,%s,%s)\n", protocol, host, port);
+    PRMSG (2,"DNETOpenCOTSServer(%s,%s,%s)\n", protocol, host, port);
 
-    if ((ciptr = (XtransConnInfo) calloc (
+    if ((ciptr = (XtransConnInfo) xcalloc (
 	1, sizeof(struct _XtransConnInfo))) == NULL)
     {
-	PRMSG (1, "TRANS(DNETOpenCOTSServer): malloc failed\n", 0, 0, 0);
+	PRMSG (1, "DNETOpenCOTSServer: malloc failed\n", 0, 0, 0);
 	return NULL;
     }
 
     if ((ciptr->fd = socket (AF_DECnet, SOCK_STREAM, 0)) < 0)
     {
-	free ((char *) ciptr);
+	xfree ((char *) ciptr);
 	return NULL;
     }
 
@@ -250,22 +239,18 @@ char		*port;
 #ifdef TRANS_CLIENT
 
 static XtransConnInfo
-TRANS(DNETOpenCLTSClient) (thistrans, protocol, host, port)
-
-Xtransport	*thistrans;
-char		*protocol;
-char		*host;
-char		*port;
+TRANS(DNETOpenCLTSClient) (Xtransport *thistrans, char *protocol, 
+			   char *host, char *port)
 
 {
     XtransConnInfo	ciptr;
 
-    PRMSG (2,"TRANS(DNETOpenCLTSClient) (%s,%s,%s)\n", protocol, host, port);
+    PRMSG (2,"DNETOpenCLTSClient(%s,%s,%s)\n", protocol, host, port);
 
-    if ((ciptr = (XtransConnInfo) calloc (
+    if ((ciptr = (XtransConnInfo) xcalloc (
 	1, sizeof (struct _XtransConnInfo))) == NULL)
     {
-	PRMSG (1, "TRANS(DNETOpenCLTSClient): malloc failed\n", 0, 0, 0);
+	PRMSG (1, "DNETOpenCLTSClient: malloc failed\n", 0, 0, 0);
 	return NULL;
     }
 
@@ -282,17 +267,13 @@ char		*port;
 #ifdef TRANS_SERVER
 
 static XtransConnInfo
-TRANS(DNETOpenCLTSServer) (thistrans, protocol, host, port)
-
-Xtransport	*thistrans;
-char		*protocol;
-char		*host;
-char		*port;
+TRANS(DNETOpenCLTSServer) (Xtransport *thistrans, char *protocol, 
+			   char *host, char *port)
 
 {
     /* NEED TO IMPLEMENT */
 
-    PRMSG (2,"TRANS(DNETOpenCLTSServer) (%s,%s,%s)\n", protocol, host, port);
+    PRMSG (2,"DNETOpenCLTSServer(%s,%s,%s)\n", protocol, host, port);
     return NULL;
 }
 
@@ -302,21 +283,17 @@ char		*port;
 #ifdef TRANS_REOPEN
 
 static XtransConnInfo
-TRANS(DNETReopenCOTSServer) (thistrans, fd, port)
-
-Xtransport	*thistrans;
-int		fd;
-char		*port;
+TRANS(DNETReopenCOTSServer) (Xtransport *thistrans, int fd, char *port)
 
 {
     XtransConnInfo	ciptr;
 
-    PRMSG (2,"TRANS(DNETReopenCOTSServer) (%d, %s)\n", fd, port, 0);
+    PRMSG (2,"DNETReopenCOTSServer(%d,%s)\n", fd, port, 0);
 
-    if ((ciptr = (XtransConnInfo) calloc (
+    if ((ciptr = (XtransConnInfo) xcalloc (
 	1, sizeof(struct _XtransConnInfo))) == NULL)
     {
-	PRMSG (1, "TRANS(DNETReopenCOTSServer): malloc failed\n", 0, 0, 0);
+	PRMSG (1, "DNETReopenCOTSServer: malloc failed\n", 0, 0, 0);
 	return NULL;
     }
 
@@ -327,21 +304,17 @@ char		*port;
 }
 
 static XtransConnInfo
-TRANS(DNETReopenCLTSServer) (thistrans, fd, port)
-
-Xtransport	*thistrans;
-int		fd;
-char		*port;
+TRANS(DNETReopenCLTSServer) (Xtransport *thistrans, int fd, char *port)
 
 {
     XtransConnInfo	ciptr;
 
-    PRMSG (2,"TRANS(DNETReopenCLTSServer) (%d, %s)\n", fd, port, 0);
+    PRMSG (2,"DNETReopenCLTSServer(%d,%s)\n", fd, port, 0);
 
-    if ((ciptr = (XtransConnInfo) calloc (
+    if ((ciptr = (XtransConnInfo) xcalloc (
 	1, sizeof(struct _XtransConnInfo))) == NULL)
     {
-	PRMSG (1, "TRANS(DNETReopenCLTSServer): malloc failed\n", 0, 0, 0);
+	PRMSG (1, "DNETReopenCLTSServer: malloc failed\n", 0, 0, 0);
 	return NULL;
     }
 
@@ -355,14 +328,10 @@ char		*port;
 
 
 static int
-TRANS(DNETSetOption) (ciptr, option, arg)
-
-XtransConnInfo	ciptr;
-int		option;
-int		arg;
+TRANS(DNETSetOption) (XtransConnInfo ciptr, int option, int arg)
 
 {
-    PRMSG (2,"TRANS(DNETSetOption) (%d,%d,%d)\n", ciptr->fd, option, arg);
+    PRMSG (2,"DNETSetOption(%d,%d,%d)\n", ciptr->fd, option, arg);
 
     return -1;
 }
@@ -371,16 +340,13 @@ int		arg;
 #ifdef TRANS_SERVER
 
 static int
-TRANS(DNETCreateListener) (ciptr, port)
-
-XtransConnInfo	ciptr;
-char		*port;
+TRANS(DNETCreateListener) (XtransConnInfo ciptr, char *port)
 
 {
     struct sockaddr_dn  dnsock;
     int			fd = ciptr->fd;
 
-    PRMSG (3, "TRANS(DNETCreateListener) (%x,%d)\n", ciptr, fd, 0);
+    PRMSG (3, "DNETCreateListener(%x,%d)\n", ciptr, fd, 0);
 
     bzero ((char *) &dnsock, sizeof (dnsock));
     dnsock.sdn_family = AF_DECnet;
@@ -411,29 +377,26 @@ char		*port;
 
     /* Set a flag to indicate that this connection is a listener */
 
-    ciptr->flags = 1;
+    ciptr->flags = 1 | (ciptr->flags & TRANS_KEEPFLAGS);
 
     return 0;
 }
 
 
 static XtransConnInfo
-TRANS(DNETAccept) (ciptr, status)
-
-XtransConnInfo	ciptr;
-int		*status;
+TRANS(DNETAccept) (XtransConnInfo ciptr, int *status)
 
 {
     XtransConnInfo	newciptr;
     struct sockaddr_dn	sockname;
     int			namelen = sizeof(sockname);
 
-    PRMSG (2, "TRANS(DNETAccept) (%x,%d)\n", ciptr, ciptr->fd, 0);
+    PRMSG (2, "DNETAccept(%x,%d)\n", ciptr, ciptr->fd, 0);
 
-    if ((newciptr = (XtransConnInfo) calloc(
+    if ((newciptr = (XtransConnInfo) xcalloc(
 	1, sizeof (struct _XtransConnInfo))) == NULL)
     {
-	PRMSG (1, "TRANS(DNETAccept): malloc failed\n", 0, 0, 0);
+	PRMSG (1, "DNETAccept: malloc failed\n", 0, 0, 0);
 	*status = TRANS_ACCEPT_BAD_MALLOC;
 	return NULL;
     }
@@ -441,9 +404,9 @@ int		*status;
     if((newciptr->fd = accept (ciptr->fd,
 	(struct sockaddr *) &sockname, &namelen)) < 0)
     {
-	PRMSG (1, "TRANS(DNETAccept): accept() failed\n", 0, 0, 0);
+	PRMSG (1, "DNETAccept: accept() failed\n", 0, 0, 0);
 
-	free (newciptr);
+	xfree (newciptr);
 	*status = TRANS_ACCEPT_FAILED;
 	return NULL;
     }
@@ -456,9 +419,9 @@ int		*status;
     if (TRANS(DNETGetAddr) (newciptr) < 0)
     {
 	PRMSG(1,
-	"TRANS(DNETAccept): TRANS(DNETGetAddr)() failed:\n", 0, 0, 0);
+	"DNETAccept: ...DNETGetAddr() failed:\n", 0, 0, 0);
 	close (newciptr->fd);
-	free (newciptr);
+	xfree (newciptr);
 	*status = TRANS_ACCEPT_MISC_ERROR;
         return NULL;
     }
@@ -466,11 +429,11 @@ int		*status;
     if (TRANS(DNETGetPeerAddr) (newciptr) < 0)
     {
 	PRMSG(1,
-	"TRANS(DNETAccept): TRANS(DNETGetPeerAddr)() failed:\n", 0, 0, 0);
+	"DNETAccept: ...DNETGetPeerAddr() failed:\n", 0, 0, 0);
 
 	close (newciptr->fd);
-	if (newciptr->addr) free (newciptr->addr);
-	free (newciptr);
+	if (newciptr->addr) xfree (newciptr->addr);
+	xfree (newciptr);
 	*status = TRANS_ACCEPT_MISC_ERROR;
         return NULL;
     }
@@ -488,18 +451,14 @@ int		*status;
 #define OBJBUFSIZE 64
 
 static int
-TRANS(DNETConnect) (ciptr, host, port)
-
-XtransConnInfo	ciptr;
-char		*host;
-char		*port;
+TRANS(DNETConnect) (XtransConnInfo ciptr, char *host, char *port)
 
 {
     char objname[OBJBUFSIZE];
 
     extern int dnet_conn();
     
-    PRMSG (2,"TRANS(DNETConnect) (%d,%s,%s)\n", ciptr->fd, host, port);
+    PRMSG (2,"DNETConnect(%d,%s,%s)\n", ciptr->fd, host, port);
 
 #ifdef X11_t
     /*
@@ -541,14 +500,14 @@ char		*port;
     if (TRANS(DNETGetAddr) (ciptr) < 0)
     {
 	PRMSG (1,
-	      "TRANS(DNETConnect): TRANS(DNETGetAddr) () failed:\n", 0, 0, 0);
+	      "DNETConnect: ...DNETGetAddr() failed:\n", 0, 0, 0);
 	return TRANS_CONNECT_FAILED;
     }
 
     if (TRANS(DNETGetPeerAddr) (ciptr) < 0)
     {
 	PRMSG (1,
-	      "TRANS(DNETConnect): TRANS(DNETGetPeerAddr) () failed:\n",
+	      "DNETConnect: ...DNETGetPeerAddr() failed:\n",
 	      0, 0, 0);
 	return TRANS_CONNECT_FAILED;
     }
@@ -560,13 +519,10 @@ char		*port;
 
 
 static int
-TRANS(DNETBytesReadable) (ciptr, pend)
-
-XtransConnInfo	ciptr;
-BytesReadable_t	*pend;
+TRANS(DNETBytesReadable) (XtransConnInfo ciptr, BytesReadable_t *pend)
 
 {
-    PRMSG (2,"TRANS(DNETBytesReadable) (%x,%d,%x)\n", ciptr, ciptr->fd, pend);
+    PRMSG (2,"DNETBytesReadable(%x,%d,%x)\n", ciptr, ciptr->fd, pend);
 
 #ifdef WIN32
     return ioctlsocket ((SOCKET) ciptr->fd, FIONREAD, (u_long *) pend);
@@ -577,14 +533,10 @@ BytesReadable_t	*pend;
 
 
 static int
-TRANS(DNETRead) (ciptr, buf, size)
-
-XtransConnInfo	ciptr;
-char		*buf;
-int		size;
+TRANS(DNETRead) (XtransConnInfo ciptr, char *buf, int size)
 
 {
-    PRMSG (2,"TRANS(DNETRead) (%d,%x,%d)\n", ciptr->fd, buf, size);
+    PRMSG (2,"DNETRead(%d,%x,%d)\n", ciptr->fd, buf, size);
 
 #ifdef WIN32
     return recv ((SOCKET)ciptr->fd, buf, size, 0);
@@ -595,14 +547,10 @@ int		size;
 
 
 static int
-TRANS(DNETWrite) (ciptr, buf, size)
-
-XtransConnInfo	ciptr;
-char		*buf;
-int		size;
+TRANS(DNETWrite) (XtransConnInfo ciptr, char *buf, int size)
 
 {
-    PRMSG (2,"TRANS(DNETWrite) (%d,%x,%d)\n", ciptr->fd, buf, size);
+    PRMSG (2,"DNETWrite(%d,%x,%d)\n", ciptr->fd, buf, size);
 
 #ifdef WIN32
     return send ((SOCKET)ciptr->fd, buf, size, 0);
@@ -613,52 +561,40 @@ int		size;
 
 
 static int
-TRANS(DNETReadv) (ciptr, buf, size)
-
-XtransConnInfo	ciptr;
-struct iovec	*buf;
-int		size;
+TRANS(DNETReadv) (XtransConnInfo ciptr, struct iovec *buf, int size)
 
 {
-    PRMSG (2,"TRANS(DNETReadv) (%d,%x,%d)\n", ciptr->fd, buf, size);
+    PRMSG (2,"DNETReadv(%d,%x,%d)\n", ciptr->fd, buf, size);
 
     return READV (ciptr, buf, size);
 }
 
 
 static int
-TRANS(DNETWritev) (ciptr, buf, size)
-
-XtransConnInfo	ciptr;
-struct iovec	*buf;
-int		size;
+TRANS(DNETWritev) (XtransConnInfo ciptr, struct iovec *buf, int size)
 
 {
-    PRMSG (2,"TRANS(DNETWritev) (%d,%x,%d)\n", ciptr->fd, buf, size);
+    PRMSG (2,"DNETWritev(%d,%x,%d)\n", ciptr->fd, buf, size);
 
     return WRITEV (ciptr, buf, size);
 }
 
 
 static int
-TRANS(DNETDisconnect) (ciptr)
-
-XtransConnInfo	ciptr;
+TRANS(DNETDisconnect) (XtransConnInfo ciptr)
 
 {
-    PRMSG (2,"TRANS(DNETDisconnect) (%x,%d)\n", ciptr, ciptr->fd, 0);
+    PRMSG (2,"DNETDisconnect(%x,%d)\n", ciptr, ciptr->fd, 0);
 
     return shutdown (ciptr->fd, 2); /* disallow further sends and receives */
 }
 
 
 static int
-TRANS(DNETClose) (ciptr)
-
-XtransConnInfo	ciptr;
+TRANS(DNETClose) (XtransConnInfo ciptr)
 
 {
-    PRMSG (2,"TRANS(DNETClose) (%x,%d)\n", ciptr, ciptr->fd, 0);
+    PRMSG (2,"DNETClose(%x,%d)\n", ciptr, ciptr->fd, 0);
 
     return close (ciptr->fd);
 }
