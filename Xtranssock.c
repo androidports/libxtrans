@@ -1,3 +1,4 @@
+/* $XdotOrg$ */
 /* $Xorg: Xtranssock.c,v 1.11 2001/02/09 02:04:06 xorgcvs Exp $ */
 /*
 
@@ -27,7 +28,7 @@ other dealings in this Software without prior written authorization
 from the copyright holders.
 
 */
-/* $XFree86: xc/lib/xtrans/Xtranssock.c,v 3.69 2004/02/14 00:10:13 dawes Exp $ */
+/* $XFree86: xc/lib/xtrans/Xtranssock.c,v 3.68 2004/01/07 04:28:02 dawes Exp $ */
 
 /* Copyright 1993, 1994 NCR Corporation - Dayton, Ohio, USA
  *
@@ -87,7 +88,7 @@ from the copyright holders.
 #endif 
 
 #ifndef NO_TCP_H
-#if defined(__osf__) || defined(linux)
+#if defined(__osf__) || defined(linux) || defined(AIXV5)
 #include <sys/param.h>
 #endif /* osf */
 #if defined(__NetBSD__) || defined(__OpenBSD__) || defined(__FreeBSD__) 
@@ -864,9 +865,10 @@ TRANS(SocketCreateListener) (XtransConnInfo ciptr,
 	if (errno == EADDRINUSE) {
 	    if (flags & ADDR_IN_USE_ALLOWED)
 		break;
-	} else
-	    return TRANS_ADDR_IN_USE;
-
+	    else
+		return TRANS_ADDR_IN_USE;
+	}
+	
 	if (retry-- == 0) {
 	    PRMSG (1, "SocketCreateListener: failed to bind listener\n",
 		0, 0, 0);
