@@ -1,4 +1,4 @@
-/* $XdotOrg: Xtranssock.c,v 1.11 2001/02/09 02:04:06 xorgcvs Exp $ */
+/* $XdotOrg: xc/lib/xtrans/Xtranssock.c,v 1.1.4.3 2003/12/06 13:24:23 kaleb Exp $ */
 /* $Xorg: Xtranssock.c,v 1.11 2001/02/09 02:04:06 xorgcvs Exp $ */
 /*
 
@@ -88,7 +88,7 @@ from the copyright holders.
 #endif 
 
 #ifndef NO_TCP_H
-#if defined(__osf__) || defined(linux)
+#if defined(__osf__) || defined(linux) || defined(AIXV5)
 #include <sys/param.h>
 #endif /* osf */
 #if defined(__NetBSD__) || defined(__OpenBSD__) || defined(__FreeBSD__) 
