@@ -26,7 +26,7 @@ other dealings in this Software without prior written authorization
 from The Open Group.
 
 */
-/* $XFree86: xc/lib/xtrans/Xtransint.h,v 3.41 2003/08/28 00:35:23 tsi Exp $ */
+/* $XFree86: xc/lib/xtrans/Xtransint.h,v 3.42 2003/11/29 01:48:28 dawes Exp $ */
 
 /* Copyright 1993, 1994 NCR Corporation - Dayton, Ohio, USA
  *
@@ -132,7 +132,7 @@ from The Open Group.
 #   endif
 #  endif
 #  ifndef OPEN_MAX
-#   if defined(_SC_OPEN_MAX)
+#   if defined(_SC_OPEN_MAX) && !defined(__UNIXOS2__)
 #    define OPEN_MAX (sysconf(_SC_OPEN_MAX))
 #   else
 #    ifdef SVR4
