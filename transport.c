@@ -26,6 +26,7 @@ other dealings in this Software without prior written authorization
 from The Open Group.
 
 */
+/* $XFree86: xc/lib/xtrans/transport.c,v 3.9 2002/05/31 18:45:51 dawes Exp $ */
 
 /* Copyright 1993, 1994 NCR Corporation - Dayton, Ohio, USA
  *
@@ -50,6 +51,16 @@ from The Open Group.
  * CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#ifdef XSERV_t
+#include "os.h"
+#else
+#include <stdlib.h>
+#define xalloc(_size)		malloc(_size)
+#define xcalloc(_num,_size)	calloc(_num,_size)
+#define xrealloc(_ptr,_size)	realloc(_ptr,_size)
+#define xfree(_ptr)		free(_ptr)
+#endif
+
 #include "Xtransint.h"
 
 #ifdef DNETCONN
@@ -63,9 +74,6 @@ from The Open Group.
 #endif
 #ifdef STREAMSCONN
 #include "Xtranstli.c"
-#endif
-#if defined(AMRPCCONN) || defined(AMTCPCONN)
-#include "Xtransam.c"
 #endif
 #include "Xtrans.c"
 #include "Xtransutil.c"
