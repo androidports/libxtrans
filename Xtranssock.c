@@ -1,4 +1,4 @@
-/* $XdotOrg: xc/lib/xtrans/Xtranssock.c,v 1.1.4.5 2003/12/20 00:28:22 kaleb Exp $ */
+/* $XdotOrg: xc/lib/xtrans/Xtranssock.c,v 1.1.4.6.2.2 2004/03/24 18:56:22 eich Exp $ */
 /* $Xorg: Xtranssock.c,v 1.11 2001/02/09 02:04:06 xorgcvs Exp $ */
 /*
 
@@ -865,9 +865,10 @@ TRANS(SocketCreateListener) (XtransConnInfo ciptr,
 	if (errno == EADDRINUSE) {
 	    if (flags & ADDR_IN_USE_ALLOWED)
 		break;
-	} else
-	    return TRANS_ADDR_IN_USE;
-
+	    else
+		return TRANS_ADDR_IN_USE;
+	}
+	
 	if (retry-- == 0) {
 	    PRMSG (1, "SocketCreateListener: failed to bind listener\n",
 		0, 0, 0);
