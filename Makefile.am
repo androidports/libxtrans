@@ -1,8 +1,7 @@
-Xtransincludedir = $(libdir)/X11/Xtrans
+Xtransincludedir = $(includedir)/X11/Xtrans
 Xtransinclude_HEADERS = \
 	Xtrans.h \
 	Xtrans.c \
-	Xtransdef.h \
 	Xtransdnet.c \
 	Xtransint.h \
 	Xtranslcl.c \
