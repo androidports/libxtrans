@@ -28,6 +28,8 @@ AC_INIT(xtrans, 0.2, [keithp@keithp.com], xtrans)
 AM_INIT_AUTOMAKE([dist-bzip2])
 AM_MAINTAINER_MODE
 
+AM_CONFIG_HEADER(Xtransdef.h)
+
 # Because xtrans is included into other modules rather than being linked
 # with, these defines have to be added to the cflags line
 
@@ -45,8 +47,6 @@ AC_SUBST(fchown_define)
 sticky_bit_define="-DHAS_STICKY_DIR_BIT"
 
 AC_SUBST(sticky_bit_define)
-
-
 
 AC_OUTPUT([Makefile
            xtrans.pc])

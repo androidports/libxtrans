@@ -1,0 +1,4 @@
+2005-05-12  Daniel Stone  <daniel@freedesktop.org>
+
+	* configure.ac:
+	Add Xtransdef.h.in as an AM_CONFIG_HEADER, so it gets generated.
