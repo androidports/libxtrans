@@ -7,4 +7,4 @@ xtransincludedir=@includedir@/X11/Xtrans
 Name: XTrans
 Description: Abstract network code for X
 Version: @PACKAGE_VERSION@
-Cflags: -I${xtransincludedir} -I${includedir} -D_BSD_SOURCE @fchown_define@ @sticky_bit_define@ @birnan@
+Cflags: -I${xtransincludedir} -I${includedir} -D_BSD_SOURCE @fchown_define@ @sticky_bit_define@

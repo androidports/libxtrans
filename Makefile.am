@@ -1,4 +1,4 @@
-Xtransincludedir = $(includedir)/X11/Xtrans
+Xtransincludedir = $(includedir)/X11/Xtrans/X11
 Xtransinclude_HEADERS = \
 	Xtrans.h \
 	Xtrans.c \
