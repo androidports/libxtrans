@@ -1,3 +1,8 @@
+Fri May 13 11:15:48 2005  Søren Sandmann  <sandmann@redhat.com>
+
+	* ChangeLog, configure.ac: Dummy changes to see if that fixes
+	group permissions.
+
 Thu May 12 11:49:10 2005  Søren Sandmann  <sandmann@redhat.com>
 
 	* Makefile.am, configure.ac: Remove references to Xtransdef.h.

@@ -48,4 +48,3 @@ AC_SUBST(sticky_bit_define)
 
 AC_OUTPUT([Makefile
            xtrans.pc])
-
