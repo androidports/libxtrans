@@ -1,0 +1,8 @@
+Thu May 12 11:49:10 2005  Søren Sandmann  <sandmann@redhat.com>
+
+	* Makefile.am, configure.ac: Remove references to Xtransdef.h.
+
+2005-05-12  Daniel Stone  <daniel@freedesktop.org>
+
+	* configure.ac:
+	Add Xtransdef.h.in as an AM_CONFIG_HEADER, so it gets generated.
