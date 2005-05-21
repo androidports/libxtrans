@@ -1,3 +1,12 @@
+2005-05-21  Alan Coopersmith  <alan.coopersmith@sun.com>
+
+	* Makefile.am:
+	* xtrans.m4:
+	Create autoconf macro XTRANS_CONNECTION_FLAGS to provide 
+	standard set of --enable flags for which transports to
+	support and common place to update for required libraries
+	for platforms that need certain libs for certain transports.
+
 Fri May 13 11:15:48 2005  Søren Sandmann  <sandmann@redhat.com>
 
 	* ChangeLog, configure.ac: Dummy changes to see if that fixes
