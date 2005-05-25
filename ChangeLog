@@ -1,3 +1,8 @@
+Wed May 25 15:40:19 2005  Søren Sandmann  <sandmann@redhat.com>
+
+	* xtrans.pc.in (Cflags): Go back to having the includedir be
+	X11/Xtrans.
+
 2005-05-21  Alan Coopersmith  <alan.coopersmith@sun.com>
 
 	* Makefile.am:
