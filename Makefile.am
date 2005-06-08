@@ -11,7 +11,7 @@ Xtransinclude_HEADERS = \
 	Xtransutil.c \
 	transport.c
 
-aclocaldir = $(datadir)/aclocal
+aclocaldir = @ACLOCALDIR@
 aclocal_DATA = xtrans.m4
 
 pkgconfigdir = $(libdir)/pkgconfig
