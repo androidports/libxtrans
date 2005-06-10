@@ -99,11 +99,11 @@ from the copyright holders.
 #endif /* !NO_TCP_H */
 
 #include <sys/ioctl.h>
-#if defined(SVR4) && !defined(SCO325) && !defined(DGUX) && !defined(_SEQUENT_)
+#if defined(SVR4) && !defined(DGUX) && !defined(_SEQUENT_)
 #include <sys/filio.h>
 #endif
 
-#if (defined(i386) && defined(SYSV)) && !defined(sco) && !defined(sun)
+#if (defined(i386) && defined(SYSV)) && !defined(SCO325) && !defined(sun)
 #include <net/errno.h>
 #endif 
 
@@ -326,7 +326,7 @@ TRANS(SocketINETGetAddr) (XtransConnInfo ciptr)
 #endif
     struct sockaddr_in socknamev4;
     void *socknamePtr;
-#if defined(SVR4) || defined(SCO325)
+#if defined(SVR4) || defined(__SCO__)
     size_t namelen;
 #else
     int namelen;
@@ -401,7 +401,7 @@ TRANS(SocketINETGetPeerAddr) (XtransConnInfo ciptr)
 #endif
     struct sockaddr_in 	socknamev4;
     void *socknamePtr;
-#if defined(SVR4) || defined(SCO325)
+#if defined(SVR4) || defined(__SCO__)
     size_t namelen;
 #else
     int namelen;
@@ -1099,7 +1099,7 @@ TRANS(SocketUNIXCreateListener) (XtransConnInfo ciptr, char *port,
 	sprintf (sockname.sun_path, "%s%ld", UNIX_PATH, (long)getpid());
     }
 
-#if defined(BSD44SOCKETS) && !defined(Lynx)
+#if (defined(BSD44SOCKETS) || defined(__UNIXWARE__)) && !defined(Lynx)
     sockname.sun_len = strlen(sockname.sun_path);
     namelen = SUN_LEN(&sockname);
 #else
@@ -1163,7 +1163,7 @@ TRANS(SocketUNIXResetListener) (XtransConnInfo ciptr)
 
     if (stat (unsock->sun_path, &statb) == -1 ||
         ((statb.st_mode & S_IFMT) !=
-#if (defined (sun) && defined(SVR4)) || defined(NCR) || defined(SCO) || defined(sco) || !defined(S_IFSOCK)
+#if (defined (sun) && defined(SVR4)) || defined(NCR) || defined(SCO325) || !defined(S_IFSOCK)
 	  		S_IFIFO))
 #else
 			S_IFSOCK))
@@ -1308,7 +1308,7 @@ TRANS(SocketUNIXAccept) (XtransConnInfo ciptr, int *status)
 {
     XtransConnInfo	newciptr;
     struct sockaddr_un	sockname;
-#if defined(SVR4) || defined(SCO325)
+#if defined(SVR4) || defined(__SCO__)
     size_t namelen = sizeof sockname;
 #else
     int namelen = sizeof sockname;
@@ -1985,7 +1985,7 @@ TRANS(SocketUNIXConnect) (XtransConnInfo ciptr, char *host, char *port)
 	return TRANS_CONNECT_FAILED;
     }
 
-#if defined(BSD44SOCKETS) && !defined(Lynx)
+#if (defined(BSD44SOCKETS) || defined(__UNIXWARE__)) && !defined(Lynx)
     sockname.sun_len = strlen (sockname.sun_path);
     namelen = SUN_LEN (&sockname);
 #else
@@ -2101,7 +2101,7 @@ TRANS(SocketBytesReadable) (XtransConnInfo ciptr, BytesReadable_t *pend)
 	return ret;
     }
 #else
-#if (defined(i386) && defined(SYSV) && !defined(sco)) || (defined(_SEQUENT_) && _SOCKET_VERSION == 1)
+#if (defined(i386) && defined(SYSV) && !defined(SCO325)) || (defined(_SEQUENT_) && _SOCKET_VERSION == 1)
     return ioctl (ciptr->fd, I_NREAD, (char *) pend);
 #else
 #if defined(__UNIXOS2__)

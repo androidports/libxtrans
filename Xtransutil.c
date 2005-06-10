@@ -192,6 +192,14 @@ TRANS(ConvertAddress)(int *familyp, int *addrlenp, Xtransaddr **addrp)
     }
 #endif /* defined(UNIXCONN) || defined(LOCALCONN) || defined(OS2PIPECONN)*/
 
+#if (defined(__SCO__) || defined(__UNIXWARE__)) && defined(LOCALCONN)
+    case 0:
+    {
+	*familyp=FamilyLocal;
+	break;
+    }
+#endif
+ 
 
     default:
 	PRMSG(1,"ConvertAddress: Unknown family type %d\n",
