@@ -50,3 +50,35 @@ AC_DEFUN([XTRANS_CONNECTION_FLAGS],
 	AC_DEFINE(IPv6,1,[Support IPv6 for TCP connections])
  fi
 ]) # XTRANS_CONNECTION_FLAGS
+
+
+# XTRANS_SECURE_RPC_FLAGS()
+# -------------------------
+# Check for Secure RPC functions - must come after XTRANS_CONNECTION_FLAGS
+# so that any necessary networking libraries are already found
+AC_DEFUN([XTRANS_SECURE_RPC_FLAGS],
+[AC_REQUIRE([XTRANS_CONNECTION_FLAGS])
+ AC_ARG_ENABLE(secure-rpc, 
+	AC_HELP_STRING([--enable-secure-rpc],[Enable Secure RPC]),
+        [SECURE_RPC=$enableval], [SECURE_RPC="try"])
+
+ if test "x$SECURE_RPC" == "xyes" -o "x$SECURE_RPC" == "xtry" ; then
+	FOUND_SECURE_RPC="no"
+	AC_CHECK_FUNCS([authdes_seccreate authdes_create],
+			[FOUND_SECURE_RPC="yes"])
+	if test "x$FOUND_SECURE_RPC" == "xno" ; then
+		if test "x$SECURE_RPC" == "xyes" ; then
+	AC_MSG_ERROR([Secure RPC requested, but required functions not found])
+		fi	
+		SECURE_RPC="no"
+	else
+		SECURE_RPC="yes"
+	fi
+ fi
+ AC_MSG_CHECKING([if Secure RPC authentication ("SUN-DES-1") should be supported for X11 clients])
+ if test "x$SECURE_RPC" == "xyes" ; then
+	AC_DEFINE(SECURE_RPC, 1, [Support Secure RPC ("SUN-DES-1") authentication for X11 clients])
+ fi
+ AC_MSG_RESULT($SECURE_RPC)
+]) # XTRANS_SECURE_RPC_FLAGS
+
