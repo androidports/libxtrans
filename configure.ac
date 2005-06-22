@@ -37,10 +37,6 @@ AC_CHECK_FUNC(fchown, [fchown_define="-DHAS_FCHOWN"], [fchown_define=""])
 
 AC_SUBST(fchown_define)
 
-ACLOCALDIR=`aclocal --print-ac-dir`
-
-AC_SUBST(ACLOCALDIR)
-
 # sticky bit
 # 
 # if any system exists without sticky dir bits this 

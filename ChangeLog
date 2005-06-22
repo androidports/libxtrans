@@ -1,3 +1,11 @@
+2005-06-22  Theo van Klaveren <t.vanklaveren@student.utwente.nl>
+
+	Fix make distcheck.
+
+	* Makefile.am: Add xtrans.m4 to EXTRA_DIST. Revert installation
+	of xtrans.m4 outside of prefix.
+	* configure.ac: Remove check for aclocal include dir.
+
 2005-06-09  Alexander Gottwald <ago@freedesktop.org>
 
 	* Makefile.am:
