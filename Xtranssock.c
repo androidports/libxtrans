@@ -1608,6 +1608,10 @@ TRANS(SocketINETConnect) (XtransConnInfo ciptr, char *host, char *port)
 	 * fill in sin_addr
 	 */
 
+#ifndef INADDR_NONE
+#define INADDR_NONE ((in_addr_t) 0xffffffff)
+#endif
+
 	/* check for ww.xx.yy.zz host string */
 
 	if (isascii (host[0]) && isdigit (host[0])) {
