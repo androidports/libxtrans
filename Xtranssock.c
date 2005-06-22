@@ -1613,12 +1613,12 @@ TRANS(SocketINETConnect) (XtransConnInfo ciptr, char *host, char *port)
 	if (isascii (host[0]) && isdigit (host[0])) {
 	    tmpaddr = inet_addr (host); /* returns network byte order */
 	} else {
-	    tmpaddr = -1;
+	    tmpaddr = INADDR_NONE;
 	}
 
 	PRMSG (4,"SocketINETConnect() inet_addr(%s) = %x\n", host, tmpaddr, 0);
 
-	if ((long)tmpaddr == -1L) {
+	if (tmpaddr == INADDR_NONE) {
 	    if ((hostp = _XGethostbyname(host,hparams)) == NULL) {
 		PRMSG (1,"SocketINETConnect: Can't get address for %s\n",
 			host, 0, 0);
