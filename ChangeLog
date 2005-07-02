@@ -1,3 +1,8 @@
+2005-07-03  Daniel Stone  <daniel@freedesktop.org>
+
+	* xtrans.pc.in:
+	Change ${includedir} to @includedir@, removing /X11/Xtrans.
+
 2005-06-22  Theo van Klaveren <t.vanklaveren@student.utwente.nl>
 
 	Fix make distcheck.
