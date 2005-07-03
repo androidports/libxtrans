@@ -56,7 +56,7 @@ from The Open Group.
 #endif
 
 #ifdef XSERV_t
-#include "os.h"
+#include <X11/os.h>
 #else
 #include <stdlib.h>
 #define xalloc(_size)		malloc(_size)
