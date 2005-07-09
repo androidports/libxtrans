@@ -1,0 +1,13 @@
+aclocal.m4
+autom4te.cache
+config.log
+config.status
+configure
+INSTALL
+install-sh
+Makefile
+Makefile.in
+MakeOut
+missing
+mkinstalldirs
+xtrans.pc

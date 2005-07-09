@@ -1,3 +1,8 @@
+2005-07-08  Keith Packard  <keithp@keithp.com>
+
+	* .cvsignore:
+	Add .cvsignore files
+
 2005-07-03  Daniel Stone  <daniel@freedesktop.org>
 
 	* xtrans.pc.in:
