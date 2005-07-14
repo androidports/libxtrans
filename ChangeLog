@@ -1,3 +1,11 @@
+2005-07-14  Alan Coopersmith  <alan.coopersmith@sun.com>
+
+	* xtrans.m4: 
+	Split out TCP library/IPv6 support checks into XTRANS_TCP_FLAGS for
+	sharing with code like xdm that doesn't use Xtrans but accesses TCP
+	sockets directly.
+	Clean up --enable flags and report settings in configure output.
+
 2005-07-08  Keith Packard  <keithp@keithp.com>
 
 	* .cvsignore:
