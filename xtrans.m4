@@ -62,11 +62,11 @@ AC_DEFUN([XTRANS_CONNECTION_FLAGS],
  fi
  AC_MSG_RESULT($UNIXCONN)
  AC_MSG_CHECKING([if Xtrans should support TCP socket connections])
+ AC_MSG_RESULT($TCPCONN)
  if test "$TCPCONN" = "yes"; then
 	AC_DEFINE(TCPCONN,1,[Support TCP socket connections])
 	XTRANS_TCP_FLAGS
  fi
- AC_MSG_RESULT($TCPCONN)
 ]) # XTRANS_CONNECTION_FLAGS
 
 
