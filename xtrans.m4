@@ -54,7 +54,7 @@ AC_DEFUN([XTRANS_CONNECTION_FLAGS],
 	AC_HELP_STRING([--enable-unix-transport],[Enable UNIX domain socket transport]),
 	[UNIXCONN=$enableval], [UNIXCONN=yes])
  AC_ARG_ENABLE(tcp-transport, 
-	AC_HELP_STRING([--enable-unix-transport],[Enable TCP socket transport]),
+	AC_HELP_STRING([--enable-tcp-transport],[Enable TCP socket transport]),
 	[TCPCONN=$enableval], [TCPCONN=yes])
  AC_MSG_CHECKING([if Xtrans should support UNIX socket connections])
  if test "$UNIXCONN" = "yes"; then
