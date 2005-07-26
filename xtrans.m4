@@ -50,7 +50,8 @@ AC_DEFUN([XTRANS_TCP_FLAGS],[
 # Standard checks for which Xtrans transports to use by the Xorg packages
 # that use Xtrans functions
 AC_DEFUN([XTRANS_CONNECTION_FLAGS],
-[AC_ARG_ENABLE(unix-transport,
+[AC_REQUIRE([AC_TYPE_SIGNAL])
+ AC_ARG_ENABLE(unix-transport,
 	AC_HELP_STRING([--enable-unix-transport],[Enable UNIX domain socket transport]),
 	[UNIXCONN=$enableval], [UNIXCONN=yes])
  AC_ARG_ENABLE(tcp-transport, 
