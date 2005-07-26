@@ -327,11 +327,15 @@ static jmp_buf env;
 #ifdef SIGALRM
 static volatile int nameserver_timedout = 0;
 
-static 
+static
+#ifdef RETSIGTYPE /* set by autoconf AC_TYPE_SIGNAL */
+RETSIGTYPE
+#else /* Imake */
 #ifdef SIGNALRETURNSINT
 int
 #else
 void
+#endif
 #endif
 nameserver_lost(int sig)
 {
