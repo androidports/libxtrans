@@ -42,7 +42,16 @@ AC_DEFUN([XTRANS_TCP_FLAGS],[
  if test "$IPV6CONN" = "yes"; then
 	AC_DEFINE(IPv6,1,[Support IPv6 for TCP connections])
  fi
- AC_MSG_RESULT($IPV6CONN)	
+ AC_MSG_RESULT($IPV6CONN)
+
+ # 4.3BSD-Reno added a new member to struct sockaddr_in
+ AC_CHECK_MEMBER([struct sockaddr_in.sin_len], 
+	AC_DEFINE([BSD44SOCKETS],1,
+ 	    [Define to 1 if `struct sockaddr_in' has a `sin_len' member]), [], [
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+ ])
 ]) # XTRANS_TCP_FLAGS
 
 # XTRANS_CONNECTION_FLAGS()
