@@ -1,3 +1,10 @@
+2005-08-17  Charlie &  <anholt@FreeBSD.org>
+
+	* xtrans.m4:
+	On FreeBSD, some of the symbols necessary for secure RPC support are in
+	librpcsvc, so check for their presence in rpcsvc so that the library
+	will be added.
+
 2005-07-14  Alan Coopersmith  <alan.coopersmith@sun.com>
 
 	* xtrans.m4: 

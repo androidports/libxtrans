@@ -1,4 +1,4 @@
-dnl $XdotOrg: $
+dnl $XdotOrg: lib/xtrans/xtrans.m4,v 1.6 2005/07/26 18:59:11 alanc Exp $
 dnl
 dnl Copyright 2005 Sun Microsystems, Inc.  All rights reserved.
 dnl 
@@ -100,6 +100,8 @@ AC_DEFUN([XTRANS_SECURE_RPC_FLAGS],
 		fi	
 		SECURE_RPC="no"
 	else
+		dnl FreeBSD keeps getsecretkey in librpcsvc
+		AC_SEARCH_LIBS(getsecretkey, [rpcsvc])
 		SECURE_RPC="yes"
 	fi
  fi
