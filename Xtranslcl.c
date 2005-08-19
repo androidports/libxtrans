@@ -227,7 +227,12 @@ static void _dummy(int sig)
 #define X_STREAMS_DIR	"/tmp/.X11-pipe"
 #endif
 #endif
+
+#ifdef _AIX
+#define DEV_PTMX	"/dev/ptc"
+#else
 #define DEV_PTMX	"/dev/ptmx"
+#endif
 
 #if defined(X11_t)
 
@@ -319,9 +324,9 @@ TRANS(PTSOpenClient)(XtransConnInfo ciptr, char *port)
      * Open the streams based pipe that will be this connection.
      */
 
-    if ((fd = open("/dev/ptmx", O_RDWR)) < 0) {
-	PRMSG(1,"PTSOpenClient: failed to open /dev/ptmx\n", 0,0,0);
-	return -1;
+    if ((fd = open(DEV_PTMX, O_RDWR)) < 0) {
+	PRMSG(1,"PTSOpenClient: failed to open %s\n", DEV_PTMX, 0,0);
+	return(-1);
     }
 
     (void) grantpt(fd);
@@ -2448,7 +2453,6 @@ TRANS(LocalClose)(XtransConnInfo ciptr)
 
 {
     struct sockaddr_un      *sockname=(struct sockaddr_un *) ciptr->addr;
-    char    path[200]; /* > sizeof sun_path +1 */
     int	ret;
 
     PRMSG(2,"LocalClose(%x->%d)\n", ciptr, ciptr->fd ,0);
@@ -2460,10 +2464,8 @@ TRANS(LocalClose)(XtransConnInfo ciptr)
        && sockname->sun_family == AF_UNIX
        && sockname->sun_path[0] )
     {
-	strncpy(path,sockname->sun_path,
-		ciptr->addrlen-sizeof(sockname->sun_family));
 	if (!(ciptr->flags & TRANS_NOUNLINK))
-	    unlink(path);
+	    unlink(sockname->sun_path);
     }
 
     return ret;

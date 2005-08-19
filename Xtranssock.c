@@ -2228,7 +2228,6 @@ TRANS(SocketUNIXClose) (XtransConnInfo ciptr)
      */
 
     struct sockaddr_un	*sockname = (struct sockaddr_un *) ciptr->addr;
-    char	path[200]; /* > sizeof sun_path +1 */
     int ret;
 
     PRMSG (2,"SocketUNIXClose(%p,%d)\n", ciptr, ciptr->fd, 0);
@@ -2240,10 +2239,8 @@ TRANS(SocketUNIXClose) (XtransConnInfo ciptr)
        && sockname->sun_family == AF_UNIX
        && sockname->sun_path[0])
     {
-	strncpy (path, sockname->sun_path,
-		ciptr->addrlen - sizeof (sockname->sun_family));
 	if (!(ciptr->flags & TRANS_NOUNLINK))
-		unlink (path);
+		unlink (sockname->sun_path);
     }
 
     return ret;
