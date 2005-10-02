@@ -277,6 +277,10 @@ static int TRANS(SocketINETClose) (XtransConnInfo ciptr);
 
 #define PORTBUFSIZE	32
 
+#ifndef MAXHOSTNAMELEN
+#define MAXHOSTNAMELEN 255
+#endif
+
 /*
  * This provides compatibility for apps linked against system libraries
  * that don't have IPv6 support.
