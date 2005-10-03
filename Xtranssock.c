@@ -88,7 +88,7 @@ from the copyright holders.
 #endif 
 
 #ifndef NO_TCP_H
-#if defined(__osf__) || defined(linux) || defined(AIXV5)
+#if defined(__osf__) || defined(linux) || defined(__GLIBC__) || defined(AIXV5)
 #include <sys/param.h>
 #endif /* osf */
 #if defined(__NetBSD__) || defined(__OpenBSD__) || defined(__FreeBSD__) || defined(__DragonFly__)
