@@ -110,7 +110,7 @@ from The Open Group.
  * to avoid a race condition. JKJ (6/5/97)
  */
 
-# if (defined(_POSIX_SOURCE) && !defined(AIXV3) && !defined(__QNX__)) || defined(hpux) || defined(USG) || defined(SVR4) || defined(SCO)
+# if (defined(_POSIX_SOURCE) && !defined(AIXV3) && !defined(__QNX__)) || defined(hpux) || defined(USG) || defined(SVR4) || defined(__SCO__)
 #  ifndef NEED_UTSNAME
 #   define NEED_UTSNAME
 #  endif
@@ -383,7 +383,7 @@ typedef struct _Xtransport_table {
  * systems, so they may be emulated.
  */
 
-#if defined(CRAY) || (defined(SYSV) && defined(i386) && !defined(SCO325)) || defined(WIN32) || defined(__sxg__) || defined(__UNIXOS2__)
+#if defined(CRAY) || (defined(SYSV) && defined(i386) && !defined(__SCO__)) || defined(WIN32) || defined(__sxg__) || defined(__UNIXOS2__)
 
 #define READV(ciptr, iov, iovcnt)	TRANS(ReadV)(ciptr, iov, iovcnt)
 
@@ -400,7 +400,7 @@ static	int TRANS(ReadV)(
 #endif /* CRAY || (SYSV && i386) || WIN32 || __sxg__ || */
 
 
-#if defined(CRAY) || (defined(SYSV) && defined(i386) && !defined(SCO325)) || defined(WIN32) || defined(__sxg__) || defined(__UNIXOS2__)
+#if defined(CRAY) || (defined(SYSV) && defined(i386) && !defined(__SCO__)) || defined(WIN32) || defined(__sxg__) || defined(__UNIXOS2__)
 
 #define WRITEV(ciptr, iov, iovcnt)	TRANS(WriteV)(ciptr, iov, iovcnt)
 
