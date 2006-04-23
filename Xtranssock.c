@@ -1108,7 +1108,7 @@ TRANS(SocketUNIXCreateListener) (XtransConnInfo ciptr, char *port,
     sockname.sun_len = strlen(sockname.sun_path);
     namelen = SUN_LEN(&sockname);
 #else
-    namelen = strlen(sockname.sun_path) + sizeof(sockname.sun_family);
+    namelen = strlen(sockname.sun_path) + offsetof(struct sockaddr_un, sun_path);
 #endif
 
     unlink (sockname.sun_path);
@@ -1998,7 +1998,7 @@ TRANS(SocketUNIXConnect) (XtransConnInfo ciptr, char *host, char *port)
     sockname.sun_len = strlen (sockname.sun_path);
     namelen = SUN_LEN (&sockname);
 #else
-    namelen = strlen (sockname.sun_path) + sizeof (sockname.sun_family);
+    namelen = strlen (sockname.sun_path) + offsetof(struct sockaddr_un, sun_path);
 #endif
 
 
@@ -2012,7 +2012,7 @@ TRANS(SocketUNIXConnect) (XtransConnInfo ciptr, char *host, char *port)
 	return TRANS_CONNECT_FAILED;
     }
     old_namelen = strlen (old_sockname.sun_path) +
-	sizeof (old_sockname.sun_family);
+	offsetof(struct sockaddr_un, sun_path);
 #endif
 
 
