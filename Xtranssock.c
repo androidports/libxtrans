@@ -1,4 +1,4 @@
-/* $XdotOrg: xc/lib/xtrans/Xtranssock.c,v 1.6 2005/06/22 22:36:51 alanc Exp $ */
+/* $XdotOrg: lib/xtrans/Xtranssock.c,v 1.11 2005/11/08 06:33:26 jkj Exp $ */
 /* $Xorg: Xtranssock.c,v 1.11 2001/02/09 02:04:06 xorgcvs Exp $ */
 /*
 
@@ -1055,7 +1055,7 @@ TRANS(SocketINETCreateListener) (XtransConnInfo ciptr, char *port, unsigned int 
     return 0;
 }
 
-#endif /* SOCKCONN */
+#endif /* TCPCONN */
 
 
 #ifdef UNIXCONN

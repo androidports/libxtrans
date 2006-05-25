@@ -1,3 +1,9 @@
+2006-05-25  Jeremy C. Reed  <reed@reedmedia.net>
+
+	* Xtranssock.c:
+	No code change. Just fix comment that said SOCKCONN to become
+	TCPCONN.
+
 2005-12-14  Kevin E. Martin  <kem-at-freedesktop-dot-org>
 
 	* configure.ac:
