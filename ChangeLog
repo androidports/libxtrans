@@ -1,3 +1,7 @@
+2006-06-29  Donnie Berkholz  <spyderous@gentoo.org>
+
+	* configure.ac: Bump to 1.0.1.
+
 2006-06-20  Matthieu Herrb <matthieu.herrb@laas.fr>
 
 	* Xtranslcl.c
