@@ -1070,7 +1070,8 @@ TRANS(MakeAllCOTSServerListeners) (char *port, int *partial, int *count_ret,
 	if (trans->flags&TRANS_ALIAS || trans->flags&TRANS_NOLISTEN)
 	    continue;
 
-	sprintf(buffer,"%s/:%s", trans->TransName, port ? port : "");
+	snprintf(buffer, sizeof(buffer), "%s/:%s",
+		 trans->TransName, port ? port : "");
 
 	PRMSG (5,"MakeAllCOTSServerListeners: opening %s\n",
 	       buffer, 0, 0);
@@ -1182,7 +1183,8 @@ TRANS(MakeAllCLTSServerListeners) (char *port, int *partial, int *count_ret,
 	if (trans->flags&TRANS_ALIAS || trans->flags&TRANS_NOLISTEN)
 	    continue;
 
-	sprintf(buffer,"%s/:%s", trans->TransName, port ? port : "");
+	snprintf(buffer, sizeof(buffer), "%s/:%s",
+		 trans->TransName, port ? port : "");
 
 	PRMSG (5,"MakeAllCLTSServerListeners: opening %s\n",
 	    buffer, 0, 0);
@@ -1306,7 +1308,7 @@ static int TRANS(WriteV) (XtransConnInfo ciptr, struct iovec *iov, int iovcnt)
 
 #endif /* CRAY */
 
-#if (defined(SYSV) && defined(i386) && !defined(__SCO__)) || defined(WIN32) || defined(__sxg__) || defined(__UNIXOS2__)
+#if (defined(SYSV) && defined(i386) && !defined(__SCO__) && !defined(sun)) || defined(WIN32) || defined(__sxg__) || defined(__UNIXOS2__)
 
 /*
  * emulate readv
@@ -1338,7 +1340,7 @@ static int TRANS(ReadV) (XtransConnInfo ciptr, struct iovec *iov, int iovcnt)
 
 #endif /* SYSV && i386 || WIN32 || __sxg__ */
 
-#if (defined(SYSV) && defined(i386) && !defined(__SCO__)) || defined(WIN32) || defined(__sxg__) || defined(__UNIXOS2__)
+#if (defined(SYSV) && defined(i386) && !defined(__SCO__) && !defined(sun)) || defined(WIN32) || defined(__sxg__) || defined(__UNIXOS2__)
 
 /*
  * emulate writev
