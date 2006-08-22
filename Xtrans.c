@@ -80,6 +80,7 @@ from The Open Group.
 #define TRANS_LOCAL_ISC_INDEX		12
 #define TRANS_LOCAL_SCO_INDEX		13
 #define TRANS_SOCKET_INET6_INDEX	14
+#define TRANS_LOCAL_PIPE_INDEX		15
 
 
 static
@@ -116,7 +117,9 @@ Xtransport_table Xtransports[] = {
 #ifdef SVR4
     { &TRANS(NAMEDFuncs),	TRANS_LOCAL_NAMED_INDEX },
 #endif
-#ifndef sun
+#ifdef sun
+    { &TRANS(PIPEFuncs),	TRANS_LOCAL_PIPE_INDEX },
+#else /* !sun */
 #if !defined(__SCO__) && !defined(__UNIXWARE__)
     { &TRANS(ISCFuncs),		TRANS_LOCAL_ISC_INDEX },
 #endif
