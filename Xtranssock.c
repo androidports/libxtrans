@@ -1100,7 +1100,8 @@ TRANS(SocketUNIXCreateListener) (XtransConnInfo ciptr, char *port,
 	    return TRANS_CREATE_LISTENER_FAILED;
 	}
     } else {
-	sprintf (sockname.sun_path, "%s%ld", UNIX_PATH, (long)getpid());
+	snprintf (sockname.sun_path, sizeof(sockname.sun_path),
+		  "%s%ld", UNIX_PATH, (long)getpid());
     }
 
 #if (defined(BSD44SOCKETS) || defined(__UNIXWARE__)) && !defined(Lynx)
