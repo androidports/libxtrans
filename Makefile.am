@@ -18,3 +18,10 @@ pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = xtrans.pc
 
 EXTRA_DIST = xtrans.pc.in ${aclocal_DATA}
+
+.PHONY: ChangeLog
+
+ChangeLog:
+	GIT_DIR=${srcdir}/.git git-log > ChangeLog
+
+dist-hook: ChangeLog
