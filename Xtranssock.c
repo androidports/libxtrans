@@ -1106,6 +1106,9 @@ TRANS(SocketUNIXCreateListener) (XtransConnInfo ciptr, char *port,
 
 #if (defined(BSD44SOCKETS) || defined(__UNIXWARE__)) && !defined(Lynx)
     sockname.sun_len = strlen(sockname.sun_path);
+#endif
+
+#if defined(BSD44SOCKETS) || defined(SUN_LEN)
     namelen = SUN_LEN(&sockname);
 #else
     namelen = strlen(sockname.sun_path) + offsetof(struct sockaddr_un, sun_path);
@@ -1996,6 +1999,9 @@ TRANS(SocketUNIXConnect) (XtransConnInfo ciptr, char *host, char *port)
 
 #if (defined(BSD44SOCKETS) || defined(__UNIXWARE__)) && !defined(Lynx)
     sockname.sun_len = strlen (sockname.sun_path);
+#endif
+
+#if defined(BSD44SOCKETS) || defined(SUN_LEN)
     namelen = SUN_LEN (&sockname);
 #else
     namelen = strlen (sockname.sun_path) + offsetof(struct sockaddr_un, sun_path);
