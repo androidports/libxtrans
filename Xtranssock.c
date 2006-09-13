@@ -351,6 +351,8 @@ TRANS(SocketINETGetAddr) (XtransConnInfo ciptr)
 	socknamePtr = &socknamev4;
     }
 
+    bzero(socknamePtr, namelen);
+    
     if (getsockname (ciptr->fd,(struct sockaddr *) socknamePtr,
 		     (void *)&namelen) < 0)
     {
@@ -424,6 +426,8 @@ TRANS(SocketINETGetPeerAddr) (XtransConnInfo ciptr)
 	socknamePtr = &socknamev4;
     }
 
+    bzero(socknamePtr, namelen);
+    
     PRMSG (3,"SocketINETGetPeerAddr(%p)\n", ciptr, 0, 0);
 
     if (getpeername (ciptr->fd, (struct sockaddr *) socknamePtr,
