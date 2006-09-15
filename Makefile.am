@@ -22,6 +22,6 @@ EXTRA_DIST = xtrans.pc.in ${aclocal_DATA}
 .PHONY: ChangeLog
 
 ChangeLog:
-	GIT_DIR=${srcdir}/.git git-log > ChangeLog
+	git-log > ChangeLog
 
 dist-hook: ChangeLog
