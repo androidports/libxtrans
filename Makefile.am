@@ -19,6 +19,8 @@ pkgconfig_DATA = xtrans.pc
 
 EXTRA_DIST = xtrans.pc.in ${aclocal_DATA}
 
+CLEANFILES = ChangeLog
+
 .PHONY: ChangeLog
 
 ChangeLog:
