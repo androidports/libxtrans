@@ -529,18 +529,55 @@ TRANS(SocketReopen) (int i, int type, int fd, char *port)
 
 {
     XtransConnInfo	ciptr;
+    int portlen;
+    struct sockaddr *addr;
 
     PRMSG (3,"SocketReopen(%d,%d,%s)\n", type, fd, port);
+
+    if (port == NULL) {
+      PRMSG (1, "SocketReopen: port was null!\n", 0, 0, 0);
+      return NULL;
+    }
+
+    portlen = strlen(port);
+    if (portlen < 0 || portlen > (SOCK_MAXADDRLEN + 2)) {
+      PRMSG (1, "SocketReopen: invalid portlen %d\n", portlen, 0, 0);
+      return NULL;
+    }
+    
+    if (portlen < 14) portlen = 14;
 
     if ((ciptr = (XtransConnInfo) xcalloc (
 	1, sizeof(struct _XtransConnInfo))) == NULL)
     {
-	PRMSG (1, "SocketReopen: malloc failed\n", 0, 0, 0);
+	PRMSG (1, "SocketReopen: malloc(ciptr) failed\n", 0, 0, 0);
 	return NULL;
     }
 
     ciptr->fd = fd;
 
+    if ((addr = (struct sockaddr *) xcalloc (1, portlen + 2)) == NULL) {
+	PRMSG (1, "SocketReopen: malloc(addr) failed\n", 0, 0, 0);
+	return NULL;
+    }
+    ciptr->addr = addr;
+    ciptr->addrlen = portlen + 2;
+
+    if ((ciptr->peeraddr = (struct sockaddr *) xcalloc (1, portlen + 2)) == NULL) {
+	PRMSG (1, "SocketReopen: malloc(portaddr) failed\n", 0, 0, 0);
+	return NULL;
+    }
+    ciptr->peeraddrlen = portlen + 2;
+
+    /* Initialize ciptr structure as if it were a normally-opened unix socket */
+    ciptr->flags = TRANS_LOCAL;
+    addr->sa_len = portlen + 1;
+    addr->sa_family = AF_UNIX;
+    strlcpy(addr->sa_data, port, portlen);
+    ciptr->family = AF_UNIX;
+    memcpy(ciptr->peeraddr, ciptr->addr, sizeof(struct sockaddr));
+    ciptr->port = rindex(addr->sa_data, ':');
+    if (ciptr->port[0] == ':') ciptr->port++; /* port should now point to portnum or NULL */
     return ciptr;
 }
 
@@ -1345,6 +1382,7 @@ TRANS(SocketUNIXAccept) (XtransConnInfo ciptr, int *status)
 	return NULL;
     }
 
+	ciptr->addrlen = namelen;
     /*
      * Get the socket name and the peer name from the listener socket,
      * since this is unix domain.
@@ -1970,7 +2008,7 @@ TRANS(SocketUNIXConnect) (XtransConnInfo ciptr, char *host, char *port)
      * we know for sure it will fail.
      */
 
-    if (strcmp (host, "unix") != 0 && !UnixHostReallyLocal (host))
+    if (host && *host && host[0]!='/' && strcmp (host, "unix") != 0 && !UnixHostReallyLocal (host))
     {
 	PRMSG (1,
 	   "SocketUNIXConnect: Cannot connect to non-local host %s\n",

@@ -53,6 +53,9 @@ from The Open Group.
  */
 
 #include <ctype.h>
+#ifdef HAVE_LAUNCHD
+#include <launch.h>
+#endif
 
 /*
  * The transport table contains a definition for every transport (protocol)
@@ -358,6 +361,15 @@ TRANS(ParseAddress) (char *address, char **protocol, char **host, char **port)
      *
      * _catalogue = mybuf;
      */
+#endif
+
+#ifdef HAVE_LAUNCHD
+    /* launchd sockets will look like 'local//tmp/launch-XgkNns/:0' */
+    if(address != NULL && strlen(address)>8 && (!strncmp(address,"local//",7))) {
+      _protocol="local";
+      _host="";
+      _port=address+6;
+    }
 #endif
 
     /*
@@ -858,6 +870,10 @@ TRANS(Connect) (XtransConnInfo ciptr, char *address)
 	return -1;
     }
 
+#ifdef HAVE_LAUNCHD
+    if (!host || !*host) host=strdup("");
+#endif
+
     if (!port || !*port)
     {
 	PRMSG (1,"Connect: Missing port specification in %s\n",
@@ -1053,14 +1069,70 @@ TRANS(MakeAllCOTSServerListeners) (char *port, int *partial, int *count_ret,
     char		buffer[256]; /* ??? What size ?? */
     XtransConnInfo	ciptr, temp_ciptrs[NUMTRANS];
     int			status, i, j;
+#ifdef HAVE_LAUNCHD
+    int                 launchd_fd;
+    launch_data_t       sockets_dict, checkin_request, checkin_response;
+    launch_data_t       listening_fd_array, listening_fd;
+#endif
+
 #if defined(IPv6) && defined(AF_INET6)
     int		ipv6_succ = 0;
 #endif
-
     PRMSG (2,"MakeAllCOTSServerListeners(%s,%p)\n",
 	   port ? port : "NULL", ciptrs_ret, 0);
 
     *count_ret = 0;
+
+#ifdef HAVE_LAUNCHD
+    /* Get launchd fd */
+    if ((checkin_request = launch_data_new_string(LAUNCH_KEY_CHECKIN)) == NULL) {
+      fprintf(stderr,"launch_data_new_string(\"" LAUNCH_KEY_CHECKIN "\") Unable to create string.\n");
+	  goto not_launchd;
+	  }
+
+    if ((checkin_response = launch_msg(checkin_request)) == NULL) {
+       fprintf(stderr,"launch_msg(\"" LAUNCH_KEY_CHECKIN "\") IPC failure: %s\n",strerror(errno));
+	   goto not_launchd;
+	}
+
+    if (LAUNCH_DATA_ERRNO == launch_data_get_type(checkin_response)) {
+       fprintf(stderr,"Check-in failed: %s\n",strerror(launch_data_get_errno(checkin_response)));
+	   goto not_launchd;
+	} 
+
+	sockets_dict = launch_data_dict_lookup(checkin_response, LAUNCH_JOBKEY_SOCKETS);
+    if (NULL == sockets_dict) {
+       fprintf(stderr,"No sockets found to answer requests on!\n");
+	   goto not_launchd;
+	}
+
+    if (launch_data_dict_get_count(sockets_dict) > 1) {
+       fprintf(stderr,"Some sockets will be ignored!\n");
+	   goto not_launchd;
+	}
+
+    listening_fd_array = launch_data_dict_lookup(sockets_dict, ":0");
+    if (NULL == listening_fd_array) {
+       fprintf(stderr,"No known sockets found to answer requests on!\n");
+	   goto not_launchd;
+	}
+
+    if (launch_data_array_get_count(listening_fd_array)!=1) {
+       fprintf(stderr,"Expected 1 socket from launchd, got %d)\n",
+                       launch_data_array_get_count(listening_fd_array));
+	   goto not_launchd;
+	}
+
+    listening_fd=launch_data_array_get_index(listening_fd_array, 0);
+    launchd_fd=launch_data_get_fd(listening_fd);
+    fprintf(stderr,"Xquartz: run by launchd for fd %d\n",launchd_fd);
+    if((ciptr = TRANS(ReopenCOTSServer(TRANS_SOCKET_LOCAL_INDEX,
+                                       launchd_fd, getenv("DISPLAY"))))==NULL)
+        fprintf(stderr,"Got NULL while trying to Reopen launchd port\n");
+        else temp_ciptrs[(*count_ret)++] = ciptr;
+
+not_launchd:
+#endif
 
     for (i = 0; i < NUMTRANS; i++)
     {
