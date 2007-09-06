@@ -660,8 +660,10 @@ trans_mkdir(char *path, int mode)
 		    return -1;
 		}
 #endif
+#ifndef __APPLE_CC__
 	  	PRMSG(1, "mkdir: Owner of %s should be set to root\n",
 		      path, 0, 0);
+#endif
 	    }
 	    
 	    if (updateMode && !updatedMode) {
