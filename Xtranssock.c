@@ -172,6 +172,7 @@ static int IBMsockInit = 0;
 #ifndef BACKLOG
 #define BACKLOG MIN_BACKLOG
 #endif
+
 /*
  * This is the Socket implementation of the X Transport service layer
  *
@@ -540,12 +541,18 @@ TRANS(SocketReopen) (int i, int type, int fd, char *port)
     }
 
     portlen = strlen(port);
+#ifdef BSD44SOCKETS
     if (portlen < 0 || portlen > (SOCK_MAXADDRLEN + 2)) {
       PRMSG (1, "SocketReopen: invalid portlen %d\n", portlen, 0, 0);
       return NULL;
     }
-    
     if (portlen < 14) portlen = 14;
+#else
+    if (portlen < 0 || portlen > 14) {
+      PRMSG (1, "SocketReopen: invalid portlen %d\n", portlen, 0, 0);
+      return NULL;
+    }
+#endif /*BSD44SOCKETS*/
 
     if ((ciptr = (XtransConnInfo) xcalloc (
 	1, sizeof(struct _XtransConnInfo))) == NULL)
@@ -571,9 +578,15 @@ TRANS(SocketReopen) (int i, int type, int fd, char *port)
 
     /* Initialize ciptr structure as if it were a normally-opened unix socket */
     ciptr->flags = TRANS_LOCAL;
+#ifdef BSD44SOCKETS
     addr->sa_len = portlen + 1;
+#endif
     addr->sa_family = AF_UNIX;
+#ifdef HAVE_STRLCPY
     strlcpy(addr->sa_data, port, portlen);
+#else
+    strncpy(addr->sa_data, port, portlen);
+#endif
     ciptr->family = AF_UNIX;
     memcpy(ciptr->peeraddr, ciptr->addr, sizeof(struct sockaddr));
     ciptr->port = rindex(addr->sa_data, ':');
