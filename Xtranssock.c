@@ -582,7 +582,7 @@ TRANS(SocketReopen) (int i, int type, int fd, char *port)
     addr->sa_len = portlen + 1;
 #endif
     addr->sa_family = AF_UNIX;
-#ifdef HAVE_STRLCPY
+#ifdef HAS_STRLCPY
     strlcpy(addr->sa_data, port, portlen);
 #else
     strncpy(addr->sa_data, port, portlen);
