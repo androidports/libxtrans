@@ -1,5 +1,3 @@
-/* $XdotOrg: lib/xtrans/Xtranssock.c,v 1.11 2005/11/08 06:33:26 jkj Exp $ */
-/* $Xorg: Xtranssock.c,v 1.11 2001/02/09 02:04:06 xorgcvs Exp $ */
 /*
 
 Copyright 1993, 1994, 1998  The Open Group
@@ -27,10 +25,7 @@ not be used in advertising or otherwise to promote the sale, use or
 other dealings in this Software without prior written authorization
 from the copyright holders.
 
-*/
-/* $XFree86: xc/lib/xtrans/Xtranssock.c,v 3.68 2004/01/07 04:28:02 dawes Exp $ */
-
-/* Copyright 1993, 1994 NCR Corporation - Dayton, Ohio, USA
+ * Copyright 1993, 1994 NCR Corporation - Dayton, Ohio, USA
  *
  * All Rights Reserved
  *
