@@ -535,7 +535,7 @@ TRANS(SocketReopen) (int i, int type, int fd, char *port)
       return NULL;
     }
 
-    portlen = strlen(port);
+    portlen = strlen(port) + 1; // include space for trailing null
 #ifdef BSD44SOCKETS
     if (portlen < 0 || portlen > (SOCK_MAXADDRLEN + 2)) {
       PRMSG (1, "SocketReopen: invalid portlen %d\n", portlen, 0, 0);
@@ -572,7 +572,7 @@ TRANS(SocketReopen) (int i, int type, int fd, char *port)
     ciptr->peeraddrlen = portlen + 2;
 
     /* Initialize ciptr structure as if it were a normally-opened unix socket */
-    ciptr->flags = TRANS_LOCAL;
+    ciptr->flags = TRANS_LOCAL | TRANS_NOUNLINK;
 #ifdef BSD44SOCKETS
     addr->sa_len = portlen + 1;
 #endif
