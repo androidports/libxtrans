@@ -1091,29 +1091,31 @@ TRANS(MakeAllCOTSServerListeners) (char *port, int *partial, int *count_ret,
 	}
 
     if (LAUNCH_DATA_ERRNO == launch_data_get_type(checkin_response)) {
-       fprintf(stderr,"Check-in failed: %s\n",strerror(launch_data_get_errno(checkin_response)));
+      // ignore EACCES, which is common if we weren't started by launchd
+      if (launch_data_get_errno(checkin_response) != EACCES)
+       fprintf(stderr,"launchd check-in failed: %s\n",strerror(launch_data_get_errno(checkin_response)));
 	   goto not_launchd;
 	} 
 
 	sockets_dict = launch_data_dict_lookup(checkin_response, LAUNCH_JOBKEY_SOCKETS);
     if (NULL == sockets_dict) {
-       fprintf(stderr,"No sockets found to answer requests on!\n");
+       fprintf(stderr,"launchd check-in: no sockets found to answer requests on!\n");
 	   goto not_launchd;
 	}
 
     if (launch_data_dict_get_count(sockets_dict) > 1) {
-       fprintf(stderr,"Some sockets will be ignored!\n");
+       fprintf(stderr,"launchd check-in: some sockets will be ignored!\n");
 	   goto not_launchd;
 	}
 
     listening_fd_array = launch_data_dict_lookup(sockets_dict, ":0");
     if (NULL == listening_fd_array) {
-       fprintf(stderr,"No known sockets found to answer requests on!\n");
+       fprintf(stderr,"launchd check-in: No known sockets found to answer requests on!\n");
 	   goto not_launchd;
 	}
 
     if (launch_data_array_get_count(listening_fd_array)!=1) {
-       fprintf(stderr,"Expected 1 socket from launchd, got %d)\n",
+       fprintf(stderr,"launchd check-in: Expected 1 socket from launchd, got %d)\n",
                        launch_data_array_get_count(listening_fd_array));
 	   goto not_launchd;
 	}
