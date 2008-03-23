@@ -540,7 +540,7 @@ TRANS(SocketReopen) (int i, int type, int fd, char *port)
     }
 
     portlen = strlen(port) + 1; // include space for trailing null
-#ifdef BSD44SOCKETS
+#ifdef SOCK_MAXADDRLEN
     if (portlen < 0 || portlen > (SOCK_MAXADDRLEN + 2)) {
       PRMSG (1, "SocketReopen: invalid portlen %d\n", portlen, 0, 0);
       return NULL;
@@ -551,7 +551,7 @@ TRANS(SocketReopen) (int i, int type, int fd, char *port)
       PRMSG (1, "SocketReopen: invalid portlen %d\n", portlen, 0, 0);
       return NULL;
     }
-#endif /*BSD44SOCKETS*/
+#endif /*SOCK_MAXADDRLEN*/
 
     if ((ciptr = (XtransConnInfo) xcalloc (
 	1, sizeof(struct _XtransConnInfo))) == NULL)
