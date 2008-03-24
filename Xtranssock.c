@@ -2146,8 +2146,13 @@ TRANS(SocketUNIXConnect) (XtransConnInfo ciptr, char *host, char *port)
 	    errno = olderrno;
 	    
 	    /*
-	     * If the error was ENOENT, the server may be starting up
-	     * and we should try again.
+	     * If the error was ENOENT, the server may be starting up; we used
+	     * to suggest to try again in this case with
+	     * TRANS_TRY_CONNECT_AGAIN, but this introduced problems for
+	     * processes still referencing stale sockets in their environment.
+	     * Hence, we now return a hard error, TRANS_CONNECT_FAILED, and it
+	     * is suggested that higher level stacks handle retries on their
+	     * level when they face a slow starting server.
 	     *
 	     * If the error was EWOULDBLOCK or EINPROGRESS then the socket
 	     * was non-blocking and we should poll using select
@@ -2161,14 +2166,14 @@ TRANS(SocketUNIXConnect) (XtransConnInfo ciptr, char *host, char *port)
 	    else if (olderrno == EINTR)
 		return TRANS_TRY_CONNECT_AGAIN;
 	    else if (olderrno == ENOENT) {
-		/*
-		* If opening as abstract socket failed, try again "normally"
-		*/
-		if (abstract)
+		/* If opening as abstract socket failed, try again normally */
+		if (abstract) {
 		    ciptr->transptr->flags &= ~(TRANS_ABSTRACT);
-		return TRANS_TRY_CONNECT_AGAIN;
-	    }
-	    else {
+		    return TRANS_TRY_CONNECT_AGAIN;
+		} else {
+		    return TRANS_CONNECT_FAILED;
+		}
+	    } else {
 		PRMSG (2,"SocketUNIXConnect: Can't connect: errno = %d\n",
 		       EGET(),0, 0);
 
