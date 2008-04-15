@@ -52,6 +52,12 @@ AC_DEFUN([XTRANS_TCP_FLAGS],[
 #include <sys/socket.h>
 #include <netinet/in.h>
  ])
+
+ # POSIX.1g changed the type of pointer passed to getsockname/getpeername/etc.
+ AC_CHECK_TYPES([socklen_t], [], [], [
+AC_INCLUDES_DEFAULT
+#include <sys/socket.h>])
+ 
 ]) # XTRANS_TCP_FLAGS
 
 # XTRANS_CONNECTION_FLAGS()

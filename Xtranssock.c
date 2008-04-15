@@ -281,6 +281,14 @@ static int TRANS(SocketINETClose) (XtransConnInfo ciptr);
 #define MAXHOSTNAMELEN 255
 #endif
 
+#if defined HAVE_SOCKLEN_T || (defined(IPv6) && defined(AF_INET6))
+# define SOCKLEN_T socklen_t
+#elif defined(SVR4) || defined(__SCO__)
+# define SOCKLEN_T size_t 
+#else
+# define SOCKLEN_T int
+#endif
+
 /*
  * This provides compatibility for apps linked against system libraries
  * that don't have IPv6 support.
@@ -330,11 +338,7 @@ TRANS(SocketINETGetAddr) (XtransConnInfo ciptr)
 #endif
     struct sockaddr_in socknamev4;
     void *socknamePtr;
-#if defined(SVR4) || defined(__SCO__)
-    size_t namelen;
-#else
-    int namelen;
-#endif
+    SOCKLEN_T namelen;
 
     PRMSG (3,"SocketINETGetAddr(%p)\n", ciptr, 0, 0);
 
@@ -407,11 +411,7 @@ TRANS(SocketINETGetPeerAddr) (XtransConnInfo ciptr)
 #endif
     struct sockaddr_in 	socknamev4;
     void *socknamePtr;
-#if defined(SVR4) || defined(__SCO__)
-    size_t namelen;
-#else
-    int namelen;
-#endif
+    SOCKLEN_T namelen;
 
 #if defined(IPv6) && defined(AF_INET6)
     if (haveIPv6 && ciptr->family == AF_INET6)
@@ -918,7 +918,7 @@ TRANS(SocketCreateListener) (XtransConnInfo ciptr,
 			     int socknamelen, unsigned int flags)
 
 {
-    int	namelen = socknamelen;
+    SOCKLEN_T namelen = socknamelen;
     int	fd = ciptr->fd;
     int	retry;
 
@@ -998,7 +998,7 @@ TRANS(SocketINETCreateListener) (XtransConnInfo ciptr, char *port, unsigned int 
     struct sockaddr_in	    sockname;
 #endif
     unsigned short	    sport;
-    int		namelen = sizeof(sockname);
+    SOCKLEN_T	namelen = sizeof(sockname);
     int		status;
     long	tmpport;
 #ifdef XTHREADS_NEEDS_BYNAMEPARAMS
@@ -1315,7 +1315,7 @@ TRANS(SocketINETAccept) (XtransConnInfo ciptr, int *status)
 {
     XtransConnInfo	newciptr;
     struct sockaddr_in	sockname;
-    int			namelen = sizeof(sockname);
+    SOCKLEN_T		namelen = sizeof(sockname);
 
     PRMSG (2, "SocketINETAccept(%p,%d)\n", ciptr, ciptr->fd, 0);
 
@@ -1394,11 +1394,7 @@ TRANS(SocketUNIXAccept) (XtransConnInfo ciptr, int *status)
 {
     XtransConnInfo	newciptr;
     struct sockaddr_un	sockname;
-#if defined(SVR4) || defined(__SCO__)
-    size_t namelen = sizeof sockname;
-#else
-    int namelen = sizeof sockname;
-#endif
+    SOCKLEN_T 		namelen = sizeof sockname;
 
     PRMSG (2, "SocketUNIXAccept(%p,%d)\n", ciptr, ciptr->fd, 0);
 
@@ -2031,11 +2027,11 @@ TRANS(SocketUNIXConnect) (XtransConnInfo ciptr, char *host, char *port)
 
 {
     struct sockaddr_un	sockname;
-    int			namelen;
+    SOCKLEN_T		namelen;
 
 #if defined(hpux) && defined(X11_t)
     struct sockaddr_un	old_sockname;
-    int			old_namelen;
+    SOCKLEN_T		old_namelen;
 #endif
 
     int abstract = 0;
