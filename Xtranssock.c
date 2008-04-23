@@ -2221,7 +2221,7 @@ TRANS(SocketBytesReadable) (XtransConnInfo ciptr, BytesReadable_t *pend)
 #ifdef WIN32
     {
 	int ret = ioctlsocket ((SOCKET) ciptr->fd, FIONREAD, (u_long *) pend);
-	errno = WSAGetLastError();
+	if (ret == SOCKET_ERROR) errno = WSAGetLastError();
 	return ret;
     }
 #else
@@ -2248,7 +2248,7 @@ TRANS(SocketRead) (XtransConnInfo ciptr, char *buf, int size)
     {
 	int ret = recv ((SOCKET)ciptr->fd, buf, size, 0);
 #ifdef WIN32
-	errno = WSAGetLastError();
+	if (ret == SOCKET_ERROR) errno = WSAGetLastError();
 #endif
 	return ret;
     }
@@ -2268,7 +2268,7 @@ TRANS(SocketWrite) (XtransConnInfo ciptr, char *buf, int size)
     {
 	int ret = send ((SOCKET)ciptr->fd, buf, size, 0);
 #ifdef WIN32
-	errno = WSAGetLastError();
+	if (ret == SOCKET_ERROR) errno = WSAGetLastError();
 #endif
 	return ret;
     }
@@ -2307,7 +2307,7 @@ TRANS(SocketDisconnect) (XtransConnInfo ciptr)
 #ifdef WIN32
     { 
 	int ret = shutdown (ciptr->fd, 2);
-	errno = WSAGetLastError();
+	if (ret == SOCKET_ERROR) errno = WSAGetLastError();
 	return ret;
     }
 #else
@@ -2326,7 +2326,7 @@ TRANS(SocketINETClose) (XtransConnInfo ciptr)
 #ifdef WIN32
     {
 	int ret = close (ciptr->fd);
-	errno = WSAGetLastError();
+	if (ret == SOCKET_ERROR) errno = WSAGetLastError();
 	return ret;
     }
 #else
