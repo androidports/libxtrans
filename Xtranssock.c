@@ -1180,7 +1180,7 @@ TRANS(SocketUNIXCreateListener) (XtransConnInfo ciptr, char *port,
 
     if (abstract) {
 	sockname.sun_path[0] = '\0';
-	namelen = sizeof(sockname);
+	namelen = offsetof(struct sockaddr_un, sun_path) + 1 + strlen(&sockname.sun_path[1]);
     }
     else
 	unlink (sockname.sun_path);
