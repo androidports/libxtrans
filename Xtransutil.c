@@ -57,6 +57,10 @@ from The Open Group.
 #ifdef XTHREADS
 #include <X11/Xthreads.h>
 #endif
+#ifdef WIN32
+#include <X11/Xlibint.h>
+#include <X11/Xwinsock.h>
+#endif
 
 #ifdef X11_t
 
