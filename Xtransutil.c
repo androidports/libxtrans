@@ -479,7 +479,7 @@ TRANS(WSAStartup) (void)
 
     PRMSG (2,"WSAStartup()\n", 0, 0, 0);
 
-    if (!wsadata.wVersion && WSAStartup(0x0101, &wsadata))
+    if (!wsadata.wVersion && WSAStartup(MAKEWORD(2,2), &wsadata))
         return 1;
     return 0;
 }
