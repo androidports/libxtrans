@@ -2161,7 +2161,7 @@ TRANS(SocketUNIXConnect) (XtransConnInfo ciptr, char *host, char *port)
 		return TRANS_IN_PROGRESS;
 	    else if (olderrno == EINTR)
 		return TRANS_TRY_CONNECT_AGAIN;
-	    else if (olderrno == ENOENT) {
+	    else if (olderrno == ENOENT || olderrno == ECONNREFUSED) {
 		/* If opening as abstract socket failed, try again normally */
 		if (abstract) {
 		    ciptr->transptr->flags &= ~(TRANS_ABSTRACT);
