@@ -566,10 +566,10 @@ TRANS(SocketReopen) (int i, int type, int fd, char *port)
 	PRMSG (1, "SocketReopen: malloc(addr) failed\n", 0, 0, 0);
 	return NULL;
     }
-    ciptr->addr = addr;
+    ciptr->addr = (char *) addr;
     ciptr->addrlen = portlen + 2;
 
-    if ((ciptr->peeraddr = (struct sockaddr *) xcalloc (1, portlen + 2)) == NULL) {
+    if ((ciptr->peeraddr = (char *) xcalloc (1, portlen + 2)) == NULL) {
 	PRMSG (1, "SocketReopen: malloc(portaddr) failed\n", 0, 0, 0);
 	return NULL;
     }
