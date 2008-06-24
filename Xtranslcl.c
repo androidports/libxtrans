@@ -858,7 +858,7 @@ TRANS(NAMEDOpenServer)(XtransConnInfo ciptr, char *port)
     if (TRANS(FillAddrInfo) (ciptr, server_path, server_path) == 0)
     {
 	PRMSG(1,"NAMEDOpenServer: failed to fill in addr info\n", 0,0,0);
-	TRANS(LocalClose)(fd);
+	TRANS(LocalClose)(ciptr);
 	return -1;
     }
 
