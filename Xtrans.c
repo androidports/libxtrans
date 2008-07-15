@@ -1052,6 +1052,9 @@ complete_network_count (void)
 }
 
 
+#ifdef XQUARTZ_EXPORTS_LAUNCHD_FD
+extern int xquartz_launchd_fd;
+#endif
 
 int
 TRANS(MakeAllCOTSServerListeners) (char *port, int *partial, int *count_ret, 
@@ -1069,6 +1072,17 @@ TRANS(MakeAllCOTSServerListeners) (char *port, int *partial, int *count_ret,
 	   port ? port : "NULL", ciptrs_ret, 0);
 
     *count_ret = 0;
+
+#ifdef XQUARTZ_EXPORTS_LAUNCHD_FD
+    fprintf(stderr, "Launchd socket fd: %d\n", xquartz_launchd_fd);
+    if(xquartz_launchd_fd != -1) {
+        if((ciptr = TRANS(ReopenCOTSServer(TRANS_SOCKET_LOCAL_INDEX,
+                                           xquartz_launchd_fd, getenv("DISPLAY"))))==NULL)
+            fprintf(stderr,"Got NULL while trying to Reopen launchd port\n");
+        else 
+            temp_ciptrs[(*count_ret)++] = ciptr;
+    }
+#endif
 
     for (i = 0; i < NUMTRANS; i++)
     {
