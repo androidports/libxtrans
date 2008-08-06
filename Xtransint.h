@@ -370,6 +370,7 @@ typedef struct _Xtransport_table {
 #define TRANS_NOLISTEN  (1<<3)  /* Don't listen on this one */
 #define TRANS_NOUNLINK	(1<<4)	/* Dont unlink transport endpoints */
 #define TRANS_ABSTRACT	(1<<5)	/* Use abstract sockets if available */
+#define TRANS_NOXAUTH	(1<<6)	/* Don't verify authentication (because it's secure some other way at the OS layer) */
 
 /* Flags to preserve when setting others */
 #define TRANS_KEEPFLAGS	(TRANS_NOUNLINK|TRANS_ABSTRACT)
