@@ -99,6 +99,8 @@ from the copyright holders.
 #include <sys/stropts.h>
 #endif 
 
+#include <unistd.h>
+
 #else /* !WIN32 */
 
 #include <X11/Xwinsock.h>
@@ -424,7 +426,7 @@ TRANS(SocketOpen) (int i, int type)
 	Sockettrans2devtab[i].protocol)) < 0
 #ifndef WIN32
 #if (defined(X11_t) && !defined(USE_POLL)) || defined(FS_t) || defined(FONT_t)
-       || ciptr->fd >= TRANS_OPEN_MAX
+       || ciptr->fd >= sysconf(_SC_OPEN_MAX)
 #endif
 #endif
       ) {
