@@ -104,17 +104,8 @@ TRANS(ConvertAddress)(int *familyp, int *addrlenp, Xtransaddr **addrp)
 	 */
 
 	struct sockaddr_in saddr;
-#ifdef CRAY
-#ifdef OLDTCP
-	int len = sizeof(saddr.sin_addr);
-#else
-	int len = SIZEOF_in_addr;
-#endif /* OLDTCP */
-	char *cp = (char *) &saddr.sin_addr;
-#else /* else not CRAY */
 	int len = sizeof(saddr.sin_addr.s_addr);
 	char *cp = (char *) &saddr.sin_addr.s_addr;
-#endif /* CRAY */
 
 	memcpy (&saddr, *addrp, sizeof (struct sockaddr_in));
 
@@ -184,7 +175,7 @@ TRANS(ConvertAddress)(int *familyp, int *addrlenp, Xtransaddr **addrp)
     }
 #endif /* defined(DNETCONN) */
 
-#if defined(UNIXCONN) || defined(LOCALCONN) || defined(OS2PIPECONN)
+#if defined(UNIXCONN) || defined(LOCALCONN) 
     case AF_UNIX:
     {
 	*familyp=FamilyLocal;
@@ -267,7 +258,7 @@ TRANS(GetMyNetworkId) (XtransConnInfo ciptr)
 
     switch (family)
     {
-#if defined(UNIXCONN) || defined(STREAMSCONN) || defined(LOCALCONN) || defined(OS2PIPECONN)
+#if defined(UNIXCONN) || defined(STREAMSCONN) || defined(LOCALCONN) 
     case AF_UNIX:
     {
 	struct sockaddr_un *saddr = (struct sockaddr_un *) addr;
@@ -369,7 +360,7 @@ TRANS(GetPeerNetworkId) (XtransConnInfo ciptr)
     switch (family)
     {
     case AF_UNSPEC:
-#if defined(UNIXCONN) || defined(STREAMSCONN) || defined(LOCALCONN) || defined(OS2PIPECONN)
+#if defined(UNIXCONN) || defined(STREAMSCONN) || defined(LOCALCONN) 
     case AF_UNIX:
     {
 	if (gethostname (addrbuf, sizeof (addrbuf)) == 0)

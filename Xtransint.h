@@ -69,11 +69,7 @@ from The Open Group.
  */
 
 #ifndef XTRANSDEBUG
-# ifndef __UNIXOS2__
 #  define XTRANSDEBUG 1
-# else
-#  define XTRANSDEBUG 1
-# endif
 #endif
 
 #ifdef WIN32
@@ -89,23 +85,16 @@ from The Open Group.
 #include <errno.h>
 
 #ifndef WIN32
-# ifndef Lynx
 #  include <sys/socket.h>
-# else
-#  include <socket.h>
-# endif
 # include <netinet/in.h>
 # include <arpa/inet.h>
-# ifdef __UNIXOS2__
-#  include <sys/ioctl.h>
-# endif
 
 /*
  * Moved the setting of NEED_UTSNAME to this header file from Xtrans.c,
  * to avoid a race condition. JKJ (6/5/97)
  */
 
-# if (defined(_POSIX_SOURCE) && !defined(AIXV3) && !defined(__QNX__)) || defined(hpux) || defined(USG) || defined(SVR4) || defined(__SCO__)
+# if defined(_POSIX_SOURCE) || defined(USG) || defined(SVR4) || defined(__SCO__)
 #  ifndef NEED_UTSNAME
 #   define NEED_UTSNAME
 #  endif
@@ -128,7 +117,7 @@ from The Open Group.
 #   endif
 #  endif
 #  ifndef OPEN_MAX
-#   if defined(_SC_OPEN_MAX) && !defined(__UNIXOS2__)
+#   if defined(_SC_OPEN_MAX) 
 #    define OPEN_MAX (sysconf(_SC_OPEN_MAX))
 #   else
 #    ifdef SVR4
@@ -142,11 +131,7 @@ from The Open Group.
 #       ifdef NOFILE
 #        define OPEN_MAX NOFILE
 #       else
-#        if !defined(__UNIXOS2__) && !defined(__QNX__)
 #         define OPEN_MAX NOFILES_MAX
-#        else
-#         define OPEN_MAX 256
-#        endif
 #       endif
 #      endif
 #     endif
@@ -165,11 +150,7 @@ from The Open Group.
 
 # endif /* TRANS_OPEN_MAX */
 
-# ifdef __UNIXOS2__
-#  define ESET(val)
-# else
 #  define ESET(val) errno = val
-# endif
 # define EGET() errno
 
 #else /* WIN32 */
@@ -380,7 +361,7 @@ typedef struct _Xtransport_table {
  * systems, so they may be emulated.
  */
 
-#if defined(CRAY) || (defined(SYSV) && defined(__i386__) && !defined(__SCO__) && !defined(sun)) || defined(WIN32) || defined(__sxg__) || defined(__UNIXOS2__)
+#if defined(SYSV) && defined(__i386__) && !defined(__SCO__) && !defined(sun) || defined(WIN32) 
 
 #define READV(ciptr, iov, iovcnt)	TRANS(ReadV)(ciptr, iov, iovcnt)
 
@@ -397,7 +378,7 @@ static	int TRANS(ReadV)(
 #endif /* CRAY || (SYSV && __i386__) || WIN32 || __sxg__ || */
 
 
-#if defined(CRAY) || (defined(SYSV) && defined(__i386__) && !defined(__SCO__) && !defined(sun)) || defined(WIN32) || defined(__sxg__) || defined(__UNIXOS2__)
+#if defined(SYSV) && defined(__i386__) && !defined(__SCO__) && !defined(sun) || defined(WIN32) 
 
 #define WRITEV(ciptr, iov, iovcnt)	TRANS(WriteV)(ciptr, iov, iovcnt)
 
