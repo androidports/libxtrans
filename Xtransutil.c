@@ -167,7 +167,7 @@ TRANS(ConvertAddress)(int *familyp, int *addrlenp, Xtransaddr **addrp)
 	*familyp=FamilyLocal;
 	break;
     }
-#endif /* defined(UNIXCONN) || defined(LOCALCONN) || defined(OS2PIPECONN)*/
+#endif /* defined(UNIXCONN) || defined(LOCALCONN) */
 
 #if (defined(__SCO__) || defined(__UNIXWARE__)) && defined(LOCALCONN)
     case 0:
@@ -254,7 +254,7 @@ TRANS(GetMyNetworkId) (XtransConnInfo ciptr)
 	    hostnamebuf, saddr->sun_path);
 	break;
     }
-#endif /* defined(UNIXCONN) || defined(STREAMSCONN) || defined(LOCALCONN) || defined(OS2PIPECONN) */
+#endif /* defined(UNIXCONN) || defined(STREAMSCONN) || defined(LOCALCONN) */
 
 #if defined(TCPCONN) || defined(STREAMSCONN)
     case AF_INET:
@@ -341,7 +341,7 @@ TRANS(GetPeerNetworkId) (XtransConnInfo ciptr)
 	    addr = addrbuf;
 	break;
     }
-#endif /* defined(UNIXCONN) || defined(STREAMSCONN) || defined(LOCALCONN) || defined(OS2PIPECONN) */
+#endif /* defined(UNIXCONN) || defined(STREAMSCONN) || defined(LOCALCONN) */
 
 #if defined(TCPCONN) || defined(STREAMSCONN)
     case AF_INET:

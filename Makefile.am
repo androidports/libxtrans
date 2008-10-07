@@ -4,7 +4,6 @@ Xtransinclude_HEADERS = \
 	Xtrans.c \
 	Xtransint.h \
 	Xtranslcl.c \
-	Xtransos2.c \
 	Xtranssock.c \
 	Xtranstli.c \
 	Xtransutil.c \
