@@ -60,9 +60,6 @@ from The Open Group.
 
 #include "Xtransint.h"
 
-#ifdef DNETCONN
-#include "Xtransdnet.c"
-#endif
 #ifdef LOCALCONN
 #include "Xtranslcl.c"
 #endif

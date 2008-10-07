@@ -471,7 +471,7 @@ TRANS(GetHostname) (
     int 	/* maxlen */
 );
 
-#if defined(WIN32) && (defined(TCPCONN) || defined(DNETCONN))
+#if defined(WIN32) && defined(TCPCONN) 
 int TRANS(WSAStartup)();
 #endif
 

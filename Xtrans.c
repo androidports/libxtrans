@@ -92,9 +92,6 @@ Xtransport_table Xtransports[] = {
 #endif /* IPv6 */
     { &TRANS(SocketINETFuncs),	TRANS_SOCKET_INET_INDEX },
 #endif /* TCPCONN */
-#if defined(DNETCONN)
-    { &TRANS(DNETFuncs),	TRANS_DNET_INDEX },
-#endif /* DNETCONN */
 #if defined(UNIXCONN)
 #if !defined(LOCALCONN)
     { &TRANS(SocketLocalFuncs),	TRANS_SOCKET_LOCAL_INDEX },
@@ -427,7 +424,7 @@ TRANS(Open) (int type, char *address)
 
     PRMSG (2,"Open(%d,%s)\n", type, address, 0);
 
-#if defined(WIN32) && (defined(TCPCONN) || defined(DNETCONN))
+#if defined(WIN32) && defined(TCPCONN) 
     if (TRANS(WSAStartup)())
     {
 	PRMSG (1,"Open: WSAStartup failed\n", 0, 0, 0);

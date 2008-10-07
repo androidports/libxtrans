@@ -160,20 +160,6 @@ TRANS(ConvertAddress)(int *familyp, int *addrlenp, Xtransaddr **addrp)
 #endif /* IPv6 */
 #endif /* defined(TCPCONN) || defined(STREAMSCONN) */
 
-#if defined(DNETCONN)
-    case AF_DECnet:
-    {
-	struct sockaddr_dn saddr;
-
-	memcpy (&saddr, *addrp, sizeof (struct sockaddr_dn));
-
-	*familyp=FamilyDECnet;
-	*addrlenp=sizeof(struct dn_naddr);
-	memcpy(*addrp,&saddr.sdn_add,*addrlenp);
-
-	break;
-    }
-#endif /* defined(DNETCONN) */
 
 #if defined(UNIXCONN) || defined(LOCALCONN) 
     case AF_UNIX:
@@ -299,18 +285,6 @@ TRANS(GetMyNetworkId) (XtransConnInfo ciptr)
     }
 #endif /* defined(TCPCONN) || defined(STREAMSCONN) */
 
-#if defined(DNETCONN)
-    case AF_DECnet:
-    {
-	struct sockaddr_dn *saddr = (struct sockaddr_dn *) addr;
-
-	networkId = (char *) xalloc (
-	    13 + strlen (hostnamebuf) + saddr->sdn_objnamel);
-	sprintf (networkId, "dnet/%s::%s",
-	    hostnamebuf, saddr->sdn_objname);
-	break;
-    }
-#endif /* defined(DNETCONN) */
 
     default:
 	break;
@@ -431,22 +405,6 @@ TRANS(GetPeerNetworkId) (XtransConnInfo ciptr)
 
 #endif /* defined(TCPCONN) || defined(STREAMSCONN) */
 
-#if defined(DNETCONN)
-    case AF_DECnet:
-    {
-	struct sockaddr_dn *saddr = (struct sockaddr_dn *) peer_addr;
-	struct nodeent *np;
-
-	if (np = getnodebyaddr(saddr->sdn_add.a_addr,
-	    saddr->sdn_add.a_len, AF_DECnet)) {
-	    sprintf(addrbuf, "%s:", np->n_name);
-	} else {
-	    sprintf(addrbuf, "%s:", dnet_htoa(&saddr->sdn_add));
-	}
-	addr = addrbuf;
-	break;
-    }
-#endif /* defined(DNETCONN) */
 
     default:
 	return (NULL);
@@ -466,7 +424,7 @@ TRANS(GetPeerNetworkId) (XtransConnInfo ciptr)
 #endif /* ICE_t */
 
 
-#if defined(WIN32) && (defined(TCPCONN) || defined(DNETCONN))
+#if defined(WIN32) && defined(TCPCONN) 
 int
 TRANS(WSAStartup) (void)
 {
