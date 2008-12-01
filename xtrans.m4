@@ -36,7 +36,7 @@ AC_DEFUN([XTRANS_TCP_FLAGS],[
 
  # Needs to come after above checks for libsocket & libnsl for SVR4 systems
  AC_ARG_ENABLE(ipv6, 
-	AC_HELP_STRING([--enable-IPv6],[Enable IPv6 support]),
+	AC_HELP_STRING([--enable-ipv6],[Enable IPv6 support]),
 	[IPV6CONN=$enableval], 
 	[AC_CHECK_FUNC(getaddrinfo,[IPV6CONN=yes],[IPV6CONN=no])])
  AC_MSG_CHECKING([if IPv6 support should be built])
