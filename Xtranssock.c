@@ -555,8 +555,12 @@ TRANS(SocketOpenCOTSClientBase) (char *transname, char *protocol,
 
     while ((i = TRANS(SocketSelectFamily) (i, transname)) >= 0) {
 	if ((ciptr = TRANS(SocketOpen) (
-		 i, Sockettrans2devtab[i].devcotsname)) != NULL)
+		i, Sockettrans2devtab[i].devcotsname)) != NULL) {
+	    /* Save the index for later use */
+
+	    ciptr->index = i;
 	    break;
+	}
     }
     if (i < 0) {
 	if (i == -1)
@@ -567,10 +571,6 @@ TRANS(SocketOpenCOTSClientBase) (char *transname, char *protocol,
 		   transname, 0, 0);
 	return NULL;
     }
-
-    /* Save the index for later use */
-
-    ciptr->index = i;
 
     return ciptr;
 }

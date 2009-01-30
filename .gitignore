@@ -12,3 +12,6 @@ missing
 mkinstalldirs
 xtrans.pc
 *~
+xtrans-*.tar.*
+ChangeLog
+tags
