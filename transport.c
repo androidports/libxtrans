@@ -59,6 +59,7 @@ from The Open Group.
 #endif
 
 #include "Xtransint.h"
+#include "Xtransutil.c"
 
 #ifdef LOCALCONN
 #include "Xtranslcl.c"
@@ -70,4 +71,3 @@ from The Open Group.
 #include "Xtranstli.c"
 #endif
 #include "Xtrans.c"
-#include "Xtransutil.c"
