@@ -448,8 +448,7 @@ TRANS(WSAStartup) (void)
 #include <ctype.h>
 
 static int
-is_numeric (char *str)
-
+is_numeric (const char *str)
 {
     int i;
 
