@@ -225,6 +225,13 @@ TRANS(ConvertAddress)(int *familyp, int *addrlenp, Xtransaddr **addrp)
 
 #ifdef ICE_t
 
+/* Needed for _XGethostbyaddr usage in TRANS(GetPeerNetworkId) */
+# if defined(TCPCONN) || defined(UNIXCONN)
+#  define X_INCLUDE_NETDB_H
+#  define XOS_USE_NO_LOCKING
+#  include <X11/Xos_r.h>
+# endif
+
 #include <signal.h>
 
 char *
@@ -438,6 +445,7 @@ TRANS(WSAStartup) (void)
 }
 #endif
 
+#include <ctype.h>
 
 static int
 is_numeric (char *str)
