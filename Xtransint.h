@@ -347,7 +347,7 @@ static int TRANS(WriteV)(
 
 
 static int is_numeric (
-    char *		/* str */
+    const char *	/* str */
 );
 
 #ifdef TRANS_SERVER
