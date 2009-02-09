@@ -345,6 +345,18 @@ static int TRANS(WriteV)(
 
 #endif /* CRAY || WIN32 || __sxg__ */
 
+
+static int is_numeric (
+    char *		/* str */
+);
+
+#ifdef TRANS_SERVER
+static int trans_mkdir (
+    char *,		/* path */
+    int			/* mode */
+);
+#endif
+
 /*
  * Some XTRANSDEBUG stuff
  */
