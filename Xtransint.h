@@ -352,7 +352,7 @@ static int is_numeric (
 
 #ifdef TRANS_SERVER
 static int trans_mkdir (
-    char *,		/* path */
+    const char *,	/* path */
     int			/* mode */
 );
 #endif

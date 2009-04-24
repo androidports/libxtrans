@@ -479,7 +479,7 @@ is_numeric (const char *str)
  * bit cannot be set and fail.
  */
 static int 
-trans_mkdir(char *path, int mode)
+trans_mkdir(const char *path, int mode)
 {
     struct stat buf;
 
