@@ -528,7 +528,14 @@ TRANS(SocketReopen) (int i, int type, int fd, char *port)
     ciptr->family = AF_UNIX;
     memcpy(ciptr->peeraddr, ciptr->addr, sizeof(struct sockaddr));
     ciptr->port = rindex(addr->sa_data, ':');
-    if (ciptr->port[0] == ':') ciptr->port++; /* port should now point to portnum or NULL */
+    if (ciptr->port == NULL) {
+	if (is_numeric(addr->sa_data)) {
+	    ciptr->port = addr->sa_data;
+	}
+    } else if (ciptr->port[0] == ':') {
+	ciptr->port++;
+    }
+    /* port should now point to portnum or NULL */
     return ciptr;
 }
 
