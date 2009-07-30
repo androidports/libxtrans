@@ -87,7 +87,7 @@ from the copyright holders.
 #endif /* !NO_TCP_H */
 
 #include <sys/ioctl.h>
-#if defined(SVR4) 
+#if defined(SVR4) || defined(__SVR4)
 #include <sys/filio.h>
 #endif
 
@@ -222,7 +222,7 @@ static int TRANS(SocketINETClose) (XtransConnInfo ciptr);
 
 #if defined HAVE_SOCKLEN_T || (defined(IPv6) && defined(AF_INET6))
 # define SOCKLEN_T socklen_t
-#elif defined(SVR4) || defined(__SCO__)
+#elif defined(SVR4) || defined(__SVR4) || defined(__SCO__)
 # define SOCKLEN_T size_t 
 #else
 # define SOCKLEN_T int
@@ -1194,7 +1194,7 @@ TRANS(SocketUNIXResetListener) (XtransConnInfo ciptr)
     if (!abstract && (
 	stat (unsock->sun_path, &statb) == -1 ||
         ((statb.st_mode & S_IFMT) !=
-#if (defined (sun) && defined(SVR4)) || defined(NCR) || defined(SCO325) || !defined(S_IFSOCK)
+#if defined(NCR) || defined(SCO325) || !defined(S_IFSOCK)
 	  		S_IFIFO
 #else
 			S_IFSOCK
