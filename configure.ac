@@ -49,5 +49,21 @@ sticky_bit_define="-DHAS_STICKY_DIR_BIT"
 
 AC_SUBST(sticky_bit_define)
 
+# Documentation is currently provided in troff format, built on request
+AC_PATH_PROGS([GROFF], [groff], [none], [$PATH:/usr/gnu/bin])
+AC_PATH_PROGS([PS2PDF], [ps2pdf], [none], [$PATH:/usr/gnu/bin])
+
+AC_MSG_CHECKING([whether to build documentation])
+AC_ARG_ENABLE(docs, AC_HELP_STRING([--enable-docs],
+                                   [Enable building of documentation]),
+              [build_docs="${enableval}"], [build_docs="no"])
+AC_MSG_RESULT([${build_docs}])
+if test "x${build_docs}" = xyes && test "x${GROFF}" = xnone ; then
+    AC_MSG_ERROR([can't build documentation without groff])
+fi
+
+AM_CONDITIONAL(BUILD_DOCS, [test x$build_docs = xyes])
+AM_CONDITIONAL(HAVE_PS2PDF, [test x$PS2PDF != xnone])
+
 AC_OUTPUT([Makefile
            xtrans.pc])
