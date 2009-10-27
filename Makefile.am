@@ -15,9 +15,8 @@ aclocal_DATA = xtrans.m4
 pkgconfigdir = $(datadir)/pkgconfig
 pkgconfig_DATA = xtrans.pc
 
-EXTRA_DIST = xtrans.pc.in ${aclocal_DATA} ChangeLog Xtrans.mm
+EXTRA_DIST = xtrans.pc.in ${aclocal_DATA}  Xtrans.mm
 
-MAINTAINERCLEANFILES = ChangeLog
 
 .PHONY: ChangeLog
 
