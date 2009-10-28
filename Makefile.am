@@ -18,12 +18,15 @@ pkgconfig_DATA = xtrans.pc
 EXTRA_DIST = xtrans.pc.in ${aclocal_DATA}  Xtrans.mm
 
 
-.PHONY: ChangeLog
+.PHONY: ChangeLog INSTALL
+
+INSTALL:
+	$(INSTALL_CMD)
 
 ChangeLog:
 	$(CHANGELOG_CMD)
 
-dist-hook: ChangeLog
+dist-hook: ChangeLog INSTALL
 
 # Rules to convert documentation from troff to other formats
 doc_sources = Xtrans.mm
