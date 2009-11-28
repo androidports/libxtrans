@@ -15,6 +15,7 @@ aclocal_DATA = xtrans.m4
 pkgconfigdir = $(datadir)/pkgconfig
 pkgconfig_DATA = xtrans.pc
 
+MAINTAINERCLEANFILES = ChangeLog INSTALL
 EXTRA_DIST = xtrans.pc.in ${aclocal_DATA}  Xtrans.mm
 
 
