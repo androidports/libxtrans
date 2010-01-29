@@ -25,11 +25,14 @@ AC_INIT(xtrans, [1.2.5], [https://bugs.freedesktop.org/enter_bug.cgi?product=xor
 AM_INIT_AUTOMAKE([foreign dist-bzip2])
 AM_MAINTAINER_MODE
 
-# Require xorg-macros 1.3 or later: XORG_DEFAULT_OPTIONS
+# Require xorg-macrosr: XORG_DEFAULT_OPTIONS
 m4_ifndef([XORG_MACROS_VERSION],
-	  [m4_fatal([must install xorg-macros 1.3 or later before running autoconf/autogen])])
-XORG_MACROS_VERSION(1.3)
+	  [m4_fatal([must install xorg-macros 1.6 or later before running autoconf/autogen])])
+XORG_MACROS_VERSION(1.6)
 XORG_DEFAULT_OPTIONS
+XORG_ENABLE_DOCS
+XORG_WITH_GROFF
+XORG_WITH_PS2PDF
 
 # Because xtrans is included into other modules rather than being linked
 # with, these defines have to be added to the cflags line
@@ -48,22 +51,6 @@ AC_SUBST(fchown_define)
 sticky_bit_define="-DHAS_STICKY_DIR_BIT"
 
 AC_SUBST(sticky_bit_define)
-
-# Documentation is currently provided in troff format, built on request
-AC_PATH_PROGS([GROFF], [groff], [none], [$PATH:/usr/gnu/bin])
-AC_PATH_PROGS([PS2PDF], [ps2pdf], [none], [$PATH:/usr/gnu/bin])
-
-AC_MSG_CHECKING([whether to build documentation])
-AC_ARG_ENABLE(docs, AC_HELP_STRING([--enable-docs],
-                                   [Enable building of documentation]),
-              [build_docs="${enableval}"], [build_docs="no"])
-AC_MSG_RESULT([${build_docs}])
-if test "x${build_docs}" = xyes && test "x${GROFF}" = xnone ; then
-    AC_MSG_ERROR([can't build documentation without groff])
-fi
-
-AM_CONDITIONAL(BUILD_DOCS, [test x$build_docs = xyes])
-AM_CONDITIONAL(HAVE_PS2PDF, [test x$PS2PDF != xnone])
 
 AC_OUTPUT([Makefile
            xtrans.pc])

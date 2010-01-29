@@ -32,13 +32,15 @@ dist-hook: ChangeLog INSTALL
 # Rules to convert documentation from troff to other formats
 doc_sources = Xtrans.mm
 
+if ENABLE_DOCS
+if HAVE_GROFF
+
 if HAVE_PS2PDF
 printable_format = .pdf
 else
 printable_format = .ps
 endif
 
-if BUILD_DOCS
 doc_DATA =	$(doc_sources:.mm=.txt) \
 		$(doc_sources:.mm=$(printable_format)) \
 		$(doc_sources:.mm=.html)
@@ -69,4 +71,5 @@ SUFFIXES = .mm .ps .txt .html .pdf
 .ps.pdf:
 	$(AM_V_GEN) $(PS2PDF) $< $@
 
-endif BUILD_DOCS
+endif HAVE_GROFF
+endif ENABLE_DOCS

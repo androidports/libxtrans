@@ -71,8 +71,14 @@ core
 *.tar.bz2
 *.tar.gz
 #
-#		Add & Override patterns for libxtrans 
+#		Add & Override patterns for libxtrans
 #
 #		Edit the following section as needed
 # For example, !report.pc overrides *.pc. See 'man gitignore'
 # 
+Xtrans.html
+Xtrans.pdf
+Xtrans.txt
+index.Xtrans.html.raw
+index.Xtrans.ps.raw
+index.Xtrans.txt.raw
