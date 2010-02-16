@@ -33,7 +33,7 @@ dist-hook: ChangeLog INSTALL
 doc_sources = Xtrans.mm
 
 if ENABLE_DOCS
-if HAVE_GROFF
+if HAVE_GROFF_MM
 
 if HAVE_PS2PDF
 printable_format = .pdf
@@ -71,5 +71,5 @@ SUFFIXES = .mm .ps .txt .html .pdf
 .ps.pdf:
 	$(AM_V_GEN) $(PS2PDF) $< $@
 
-endif HAVE_GROFF
+endif HAVE_GROFF_MM
 endif ENABLE_DOCS
