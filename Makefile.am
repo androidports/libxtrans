@@ -42,8 +42,11 @@ printable_format = .ps
 endif
 
 doc_DATA =	$(doc_sources:.mm=.txt) \
-		$(doc_sources:.mm=$(printable_format)) \
-		$(doc_sources:.mm=.html)
+		$(doc_sources:.mm=$(printable_format))
+
+if HAVE_GROFF_HTML
+doc_DATA +=	$(doc_sources:.mm=.html)
+endif
 
 CLEANFILES = $(doc_DATA)
 MOSTLYCLEANFILES = index.*

@@ -25,10 +25,10 @@ AC_INIT(xtrans, [1.2.5], [https://bugs.freedesktop.org/enter_bug.cgi?product=xor
 AM_INIT_AUTOMAKE([foreign dist-bzip2])
 AM_MAINTAINER_MODE
 
-# Require xorg-macrosr: XORG_DEFAULT_OPTIONS
+# Require xorg-macros: XORG_WITH_GROFF for HAVE_GROFF_HTML
 m4_ifndef([XORG_MACROS_VERSION],
-	  [m4_fatal([must install xorg-macros 1.6 or later before running autoconf/autogen])])
-XORG_MACROS_VERSION(1.6)
+	  [m4_fatal([must install xorg-macros 1.9 or later before running autoconf/autogen])])
+XORG_MACROS_VERSION(1.9)
 XORG_DEFAULT_OPTIONS
 XORG_ENABLE_DOCS
 XORG_WITH_GROFF
