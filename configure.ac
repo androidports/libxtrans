@@ -25,14 +25,15 @@ AC_INIT(xtrans, [1.2.5], [https://bugs.freedesktop.org/enter_bug.cgi?product=xor
 AM_INIT_AUTOMAKE([foreign dist-bzip2])
 AM_MAINTAINER_MODE
 
-# Require xorg-macros: XORG_WITH_GROFF for HAVE_GROFF_HTML
+# Require xorg-macros minimum of 1.10 for DocBook XML documentation
 m4_ifndef([XORG_MACROS_VERSION],
-	  [m4_fatal([must install xorg-macros 1.9 or later before running autoconf/autogen])])
-XORG_MACROS_VERSION(1.9)
+          [m4_fatal([must install xorg-macros 1.10 or later before running autoconf/autogen])])
+XORG_MACROS_VERSION(1.10)
 XORG_DEFAULT_OPTIONS
 XORG_ENABLE_DOCS
-XORG_WITH_GROFF
-XORG_WITH_PS2PDF
+XORG_WITH_XMLTO(0.0.20)
+XORG_WITH_FOP
+XORG_CHECK_SGML_DOCTOOLS(1.5)
 
 # Because xtrans is included into other modules rather than being linked
 # with, these defines have to be added to the cflags line
@@ -53,4 +54,5 @@ sticky_bit_define="-DHAS_STICKY_DIR_BIT"
 AC_SUBST(sticky_bit_define)
 
 AC_OUTPUT([Makefile
+           doc/Makefile
            xtrans.pc])
