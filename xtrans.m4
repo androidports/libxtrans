@@ -1,6 +1,5 @@
-dnl $XdotOrg: lib/xtrans/xtrans.m4,v 1.6 2005/07/26 18:59:11 alanc Exp $
 dnl
-dnl Copyright 2005 Sun Microsystems, Inc.  All rights reserved.
+dnl Copyright (c) 2005, Oracle and/or its affiliates. All rights reserved.
 dnl
 dnl Permission is hereby granted, free of charge, to any person obtaining a
 dnl copy of this software and associated documentation files (the "Software"),
@@ -20,7 +19,7 @@ dnl THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 dnl LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 dnl FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 dnl DEALINGS IN THE SOFTWARE.
-dnl 
+dnl
 
 # XTRANS_TCP_FLAGS()
 # ------------------
