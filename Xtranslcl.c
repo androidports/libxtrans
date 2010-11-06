@@ -102,7 +102,6 @@ from The Open Group.
 /* Types of local connections supported:
  *  - PTS
  *  - named pipes
- *  - ISC
  *  - SCO
  */
 #if !defined(sun)
@@ -249,11 +248,6 @@ static void _dummy(int sig)
 #define NAMEDNODENAME "/tmp/.X11-pipe/X"
 #else
 #define NAMEDNODENAME "/dev/X/Nserver."
-
-/*
- * ISC is only defined for X11 since they are there for
- * backwards binary compatability only.
- */
 
 #define SCORNODENAME	"/dev/X%1sR"
 #define SCOSNODENAME	"/dev/X%1sS"
@@ -936,7 +930,7 @@ TRANS(NAMEDAccept)(XtransConnInfo ciptr, XtransConnInfo newciptr, int *status)
 #if defined(LOCAL_TRANS_SCO)
 
 /*
- * connect_spipe is used by the SCO and ISC connection types.
+ * connect_spipe is used by the SCO connection type.
  */
 static int
 connect_spipe(int fd1, int fd2)
@@ -961,7 +955,7 @@ connect_spipe(int fd1, int fd2)
 }
 
 /*
- * named_spipe is used by the SCO and ISC connection types.
+ * named_spipe is used by the SCO connection type.
  */
 
 static int
@@ -1675,7 +1669,7 @@ static	char	*freeXLOCAL=NULL;
 #elif defined(sun)
 #define DEF_XLOCAL "UNIX:NAMED"
 #else
-#define DEF_XLOCAL "UNIX:PTS:NAMED:ISC:SCO"
+#define DEF_XLOCAL "UNIX:PTS:NAMED:SCO"
 #endif
 
 static void
