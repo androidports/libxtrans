@@ -8,17 +8,18 @@
 <bookinfo>
    <title>X Transport Interface</title>
    <subtitle>X Consortium Standard</subtitle>
-   <releaseinfo>X Version 11, Release 6.X</releaseinfo>
+   <releaseinfo>X Version 11, Release 7.X</releaseinfo>
    <authorgroup>
       <author>
          <firstname>Stuart</firstname><surname>Anderson</surname>
       </author>
    </authorgroup>
    <othercredit><firstname>Ralph</firstname><surname>Mor</surname></othercredit>
+   <othercredit><firstname>Alan</firstname><surname>Coopersmith</surname></othercredit>
    <corpname>NCR Corporation</corpname>
-   <releaseinfo>Version 0.6</releaseinfo>
+   <releaseinfo>Version 0.7</releaseinfo>
    <affiliation><orgname>The Open Group</orgname></affiliation>
-   <productnumber>X Version 11, Release 6.x</productnumber>
+   <productnumber>X Version 11, Release 7.x</productnumber>
 
 <legalnotice>
 <para>
@@ -304,6 +305,38 @@ not be used to create a listener.
     <term><symbol>TRANS_LOCAL</symbol></term>
     <listitem><para>
 indicates that this is a <symbol>LOCALCONN</symbol> transport.
+    </para></listitem>
+  </varlistentry>
+  <varlistentry>
+    <term><symbol>TRANS_ABSTRACT</symbol></term>
+    <listitem><para>
+indicates that a local connection transport uses the abstract socket namespace.
+    </para></listitem>
+  </varlistentry>
+</variablelist>
+</para>
+
+<para>
+Some additional flags may be set in the <structfield>flags</structfield>
+field by the library while it is running:
+<variablelist>
+  <varlistentry>
+    <term><symbol>TRANS_DISABLED</symbol></term>
+    <listitem><para>
+indicates that this transport has been disabled.
+    </para></listitem>
+  </varlistentry>
+  <varlistentry>
+    <term><symbol>TRANS_NOLISTEN</symbol></term>
+    <listitem><para>
+indicates that servers should not open new listeners using this transport.
+    </para></listitem>
+  </varlistentry>
+  <varlistentry>
+    <term><symbol>TRANS_NOUNLINK</symbol></term>
+    <listitem><para>
+set by a transport backend to indicate that the endpoints for its connection
+should not be unlinked.
     </para></listitem>
   </varlistentry>
 </variablelist>
@@ -919,47 +952,67 @@ that existing connection types such as <symbol>TCPCONN</symbol>,
 possible transport type.
 </para>
 <para>
-Below are the flags that can be set in <symbol>ConnectionFlags</symbol>
-in the <filename>vendor.cf</filename> or
+In X11R6, the below flags to enable transport types were set in
+<symbol>ConnectionFlags</symbol> in the <filename>vendor.cf</filename> or
 <filename>site.def</filename> config files.
+</para>
+<para>
+In X11R7 modular releases, these flags are set when running
+<filename>configure</filename> scripts which include the
+<function>XTRANS_CONNECTION_FLAGS</function> macro from
+<filename>xtrans.m4</filename>.
 </para>
 <informaltable pgwide='0' frame='none'>
   <tgroup cols='4' align='left'>
-    <colspec colname='c1' align='center'/>
-    <colspec colname='c2'/>
+    <colspec colname='define' align='center'/>
+    <colspec colname='enable'/>
+    <colspec colname='desc'/>
+    <thead>
+      <row>
+	<entry><code>#define</code></entry>
+	<entry>configure flag</entry>
+	<entry>Description</entry>
+      </row>
+    </thead>
     <tbody>
       <row>
 	<entry><symbol>TCPCONN</symbol></entry>
+	<entry><option>--enable-tcp-transport</option></entry>
 	<entry>
 	Enables the INET (IPv4) Domain Socket based transport
 	</entry>
       </row>
       <row>
 	<entry><symbol>IPv6</symbol></entry>
+	<entry><option>--enable-ipv6</option></entry>
 	<entry>
 	Extends <symbol>TCPCONN</symbol> to enable IPv6 Socket based transport
 	</entry>
       </row>
       <row>
 	<entry><symbol>UNIXCONN</symbol></entry>
+	<entry><option>--enable-unix-transport</option></entry>
 	<entry>
 	Enables the UNIX Domain Socket based transport
 	</entry>
       </row>
       <row>
 	<entry><symbol>STREAMSCONN</symbol></entry>
+	<entry><emphasis>Not available in X11R7</emphasis></entry>
 	<entry>
 	Enables the TLI based transports
 	</entry>
       </row>
       <row>
 	<entry><symbol>LOCALCONN</symbol></entry>
+	<entry><option>--enable-local-transport</option></entry>
 	<entry>
 	Enables the SYSV Local connection transports
 	</entry>
       </row>
       <row>
 	<entry><symbol>DNETCONN</symbol></entry>
+	<entry><emphasis>Not available in X11R7</emphasis></entry>
 	<entry>
 	Enables the DECnet transports
 	</entry>
@@ -1036,8 +1089,15 @@ concurrently with this document. This prototype has been able to flush out many
 details and problems as the specification was being developed.
 </para>
 <para>
-All of the source code for this interface is located in
+In X11R6, all of the source code for this interface was located in
 <filename>xc/lib/xtrans</filename>.
+</para>
+<para>
+In X11R7, all of the source code for this interface is delivered via
+the <systemitem>lib/libxtrans</systemitem> modular package from X.Org,
+and is installed under
+<filename><replaceable>${prefix}</replaceable>/X11/Xtrans</filename>
+so that other modules may find it when they build.
 </para>
 <para>
 All functions names in the source are of the format
@@ -1062,27 +1122,20 @@ that is implemented by the library or server, such as X11, FS, and ICE.
 
 <para>
 All libraries and servers that use the X Transport Interface should have a new
-file called <filename>transport.c</filename>. This file will include the
-transports based on the configuration flags ConnectionFlags. Below is an
-example <filename>transport.c</filename>.
+file called <filename><replaceable>TRANSPORT</replaceable>trans.c</filename>.
+This file will include the transports based on the configuration flags
+provided by the <filename>configure</filename> script. Below is an
+example <filename>xfstrans.c</filename> for the font server.
 </para>
 
 <programlisting language="C">
-#include "Xtransint.h"
-#ifdef DNETCONN
-#include "Xtransdnet.c"
-#endif
-#ifdef LOCALCONN
-#include "Xtranslocal.c"
-#endif
-#ifdef TCPCONN
-#include "Xtranssock.c"
-#endif
-#ifdef STREAMSCONN
-#include "Xtranstli.c"
-#endif
-#include "Xtrans.c"
-#include "Xtransutil.c"
+#include "config.h"
+
+#define FONT_t 1
+#define TRANS_REOPEN 1
+#define TRANS_SERVER 1
+
+#include &lt;X11/Xtrans/transport.c&gt;
 </programlisting>
 <para>
 The source files for this interface are listed below.
