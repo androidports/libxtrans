@@ -16,31 +16,97 @@
    </authorgroup>
    <othercredit><firstname>Ralph</firstname><surname>Mor</surname></othercredit>
    <corpname>NCR Corporation</corpname>
-   <copyright><year>1993</year><holder>The Open Group</holder></copyright>
-   <copyright><year>1994</year><holder>The Open Group</holder></copyright>
-   <copyright><year>2002</year><holder>The Open Group</holder></copyright>
    <releaseinfo>Version 0.6</releaseinfo>
    <affiliation><orgname>The Open Group</orgname></affiliation>
    <productnumber>X Version 11, Release 6.x</productnumber>
 
 <legalnotice>
-<para>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the &ldquo;Software&rdquo;), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:</para>
+<para>
+Copyright &copy; 1993, 1994 NCR Corporation - Dayton, Ohio, USA
+</para>
 
-<para>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the &ldquo;Software&rdquo;), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:</para>
+<para>
+All Rights Reserved
+</para>
 
-<para>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.</para>
+<para>
+Permission to use, copy, modify, and distribute this software and its
+documentation for any purpose and without fee is hereby granted, provided
+that the above copyright notice appear in all copies and that both that
+copyright notice and this permission notice appear in supporting
+documentation, and that the name NCR not be used in advertising
+or publicity pertaining to distribution of the software without specific,
+written prior permission.  NCR makes no representations about the
+suitability of this software for any purpose.  It is provided "as is"
+without express or implied warranty.
+</para>
 
-<para>THE SOFTWARE IS PROVIDED &ldquo;AS IS&rdquo;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE X CONSORTIUM BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</para>
+<para>
+NCR DISCLAIM ALL WARRANTIES WITH REGARD TO THIS SOFTWARE,
+INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN
+NO EVENT SHALL NCR BE LIABLE FOR ANY SPECIAL, INDIRECT OR
+CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS
+OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT,
+NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
+CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+</para>
 
-<para>Except as contained in this notice, the name of the X Consortium shall not be used in advertising or otherwise to promote the sale, use or other dealings in this Software without prior written authorization from the X Consortium.</para>
+</legalnotice>
 
-<para>X Window System is a trademark of The Open Group.</para>
-<note><para>
-This documentation does not completely match the implementation in R6 (as a result of some late changes made in the code). Specifically, support was added for font server cloning, and conditional compliation was introduced for client vs. server code.
-</para></note>
+<legalnotice>
+<para>
+Copyright &copy; 1993, 1994, 2002 The Open Group
+</para>
+
+<para>
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the &ldquo;Software&rdquo;), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+</para>
+
+<para>
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+</para>
+
+<para>
+THE SOFTWARE IS PROVIDED &ldquo;AS IS&rdquo;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+OPEN GROUP BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN
+AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+</para>
+
+<para>
+Except as contained in this notice, the name of The Open Group shall not be
+used in advertising or otherwise to promote the sale, use or other dealings
+in this Software without prior written authorization from The Open Group.
+</para>
+
+<para>
+X Window System is a trademark of The Open Group, Inc.
+</para>
+
 </legalnotice>
 
 </bookinfo>
+
+<preface><title>The X Transport Interface</title>
+<para>
+Designed by Stuart Anderson (NCR) with help from Ralph Mor (X Consortium)
+</para>
+
+<note><para>
+This documentation does not completely match the implementation in R6
+(as a result of some late changes made in the code). Specifically, support
+was added for font server cloning, and conditional compliation was introduced
+for client vs. server code.
+</para></note>
+</preface>
 
 <chapter id='purposes_and_goals'>
 <title>Purposes and Goals</title>
