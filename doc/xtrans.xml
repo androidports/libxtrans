@@ -963,7 +963,7 @@ In X11R7 modular releases, these flags are set when running
 <filename>xtrans.m4</filename>.
 </para>
 <informaltable pgwide='0' frame='none'>
-  <tgroup cols='4' align='left'>
+  <tgroup cols='3' align='left'>
     <colspec colname='define' align='center'/>
     <colspec colname='enable'/>
     <colspec colname='desc'/>
