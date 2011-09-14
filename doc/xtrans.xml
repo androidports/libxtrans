@@ -15,13 +15,16 @@
    <authorgroup>
       <author>
          <firstname>Stuart</firstname><surname>Anderson</surname>
+         <affiliation><orgname>NCR Corporation</orgname></affiliation>
       </author>
    </authorgroup>
-   <othercredit><firstname>Ralph</firstname><surname>Mor</surname></othercredit>
-   <othercredit><firstname>Alan</firstname><surname>Coopersmith</surname></othercredit>
-   <corpname>NCR Corporation</corpname>
+   <othercredit><firstname>Ralph</firstname><surname>Mor</surname>
+   <affiliation><orgname>X Consortium</orgname></affiliation>
+   </othercredit>
+   <othercredit><firstname>Alan</firstname><surname>Coopersmith</surname>
+   <affiliation><orgname>Oracle Corp.</orgname></affiliation>
+   </othercredit>
    <releaseinfo>Version 0.7</releaseinfo>
-   <affiliation><orgname>The Open Group</orgname></affiliation>
 
 <legalnotice>
 <para>
