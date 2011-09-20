@@ -11,22 +11,22 @@
 <bookinfo>
    <title>X Transport Interface</title>
    <subtitle>X Consortium Standard</subtitle>
-   <releaseinfo>X Version 11, Release &fullrelvers;</releaseinfo>
    <authorgroup>
-      <author>
-         <firstname>Stuart</firstname><surname>Anderson</surname>
-         <affiliation><orgname>NCR Corporation</orgname></affiliation>
-      </author>
+     <author>
+       <firstname>Stuart</firstname><surname>Anderson</surname>
+       <affiliation><orgname>NCR Corporation</orgname></affiliation>
+     </author>
+     <othercredit><firstname>Ralph</firstname><surname>Mor</surname>
+       <affiliation><orgname>X Consortium</orgname></affiliation>
+     </othercredit>
+     <othercredit><firstname>Alan</firstname><surname>Coopersmith</surname>
+       <affiliation><orgname>Oracle Corp.</orgname></affiliation>
+     </othercredit>
    </authorgroup>
-   <othercredit><firstname>Ralph</firstname><surname>Mor</surname>
-   <affiliation><orgname>X Consortium</orgname></affiliation>
-   </othercredit>
-   <othercredit><firstname>Alan</firstname><surname>Coopersmith</surname>
-   <affiliation><orgname>Oracle Corp.</orgname></affiliation>
-   </othercredit>
+   <releaseinfo>X Version 11, Release &fullrelvers;</releaseinfo>
    <releaseinfo>Version 0.7</releaseinfo>
    <copyright><year>1993</year><year>1994</year>
-      <holder>NCR Corporation - Dayton, Ohio, USA</holder>
+     <holder>NCR Corporation - Dayton, Ohio, USA</holder>
    </copyright>
 
 <legalnotice>
