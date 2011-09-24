@@ -857,7 +857,7 @@ TRANS(SocketCreateListener) (XtransConnInfo ciptr,
     int	fd = ciptr->fd;
     int	retry;
 
-    prmsg (3, "SocketCreateListener(%x,%p)\n", ciptr, fd);
+    prmsg (3, "SocketCreateListener(%p,%d)\n", ciptr, fd);
 
     if (Sockettrans2devtab[ciptr->index].family == AF_INET
 #if defined(IPv6) && defined(AF_INET6)

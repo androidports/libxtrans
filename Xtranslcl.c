@@ -871,7 +871,7 @@ TRANS(NAMEDAccept)(XtransConnInfo ciptr, XtransConnInfo newciptr, int *status)
 {
     struct strrecvfd str;
 
-    prmsg(2,"NAMEDAccept(%x->%d)\n", ciptr, ciptr->fd);
+    prmsg(2,"NAMEDAccept(%p->%d)\n", ciptr, ciptr->fd);
 
     if( ioctl(ciptr->fd, I_RECVFD, &str ) < 0 ) {
 	prmsg(1, "NAMEDAccept: ioctl(I_RECVFD) failed, errno=%d\n", errno);
@@ -1812,7 +1812,7 @@ TRANS(LocalOpenClient)(int type, char *protocol, char *host, char *port)
 
     if( (ciptr=(XtransConnInfo)xcalloc(1,sizeof(struct _XtransConnInfo))) == NULL )
     {
-	prmsg(1,"LocalOpenClient: calloc(1,%d) failed\n",
+	prmsg(1,"LocalOpenClient: calloc(1,%lu) failed\n",
 	      sizeof(struct _XtransConnInfo));
 	return NULL;
     }
@@ -1886,7 +1886,7 @@ TRANS(LocalOpenServer)(int type, char *protocol, char *host, char *port)
 
     if( (ciptr=(XtransConnInfo)xcalloc(1,sizeof(struct _XtransConnInfo))) == NULL )
     {
-	prmsg(1,"LocalOpenServer: calloc(1,%d) failed\n",
+	prmsg(1,"LocalOpenServer: calloc(1,%lu) failed\n",
 	      sizeof(struct _XtransConnInfo));
 	return NULL;
     }
@@ -1940,7 +1940,7 @@ TRANS(LocalReopenServer)(int type, int index, int fd, char *port)
 
     if( (ciptr=(XtransConnInfo)xcalloc(1,sizeof(struct _XtransConnInfo))) == NULL )
     {
-	prmsg(1,"LocalReopenServer: calloc(1,%d) failed\n",
+	prmsg(1,"LocalReopenServer: calloc(1,%lu) failed\n",
 	      sizeof(struct _XtransConnInfo));
 	return NULL;
     }
@@ -2138,7 +2138,7 @@ static int
 TRANS(LocalCreateListener)(XtransConnInfo ciptr, char *port, unsigned int flags)
 
 {
-    prmsg(2,"LocalCreateListener(%x->%d,%s)\n",ciptr,ciptr->fd,port);
+    prmsg(2,"LocalCreateListener(%p->%d,%s)\n",ciptr,ciptr->fd,port);
 
     return 0;
 }
@@ -2149,7 +2149,7 @@ TRANS(LocalResetListener)(XtransConnInfo ciptr)
 {
     LOCALtrans2dev	*transptr;
 
-    prmsg(2,"LocalResetListener(%x)\n",ciptr);
+    prmsg(2,"LocalResetListener(%p)\n",ciptr);
 
     transptr=(LOCALtrans2dev *)ciptr->priv;
     if (transptr->devreset != NULL) {
@@ -2166,13 +2166,13 @@ TRANS(LocalAccept)(XtransConnInfo ciptr, int *status)
     XtransConnInfo	newciptr;
     LOCALtrans2dev	*transptr;
 
-    prmsg(2,"LocalAccept(%x->%d)\n", ciptr, ciptr->fd);
+    prmsg(2,"LocalAccept(%p->%d)\n", ciptr, ciptr->fd);
 
     transptr=(LOCALtrans2dev *)ciptr->priv;
 
     if( (newciptr=(XtransConnInfo)xcalloc(1,sizeof(struct _XtransConnInfo)))==NULL )
     {
-	prmsg(1,"LocalAccept: calloc(1,%d) failed\n",
+	prmsg(1,"LocalAccept: calloc(1,%lu) failed\n",
 	      sizeof(struct _XtransConnInfo));
 	*status = TRANS_ACCEPT_BAD_MALLOC;
 	return NULL;
@@ -2203,7 +2203,7 @@ static int
 TRANS(LocalConnect)(XtransConnInfo ciptr, char *host, char *port)
 
 {
-    prmsg(2,"LocalConnect(%x->%d,%s)\n", ciptr, ciptr->fd, port);
+    prmsg(2,"LocalConnect(%p->%d,%s)\n", ciptr, ciptr->fd, port);
 
     return 0;
 }
@@ -2215,7 +2215,7 @@ static int
 TRANS(LocalBytesReadable)(XtransConnInfo ciptr, BytesReadable_t *pend )
 
 {
-    prmsg(2,"LocalBytesReadable(%x->%d,%x)\n", ciptr, ciptr->fd, pend);
+    prmsg(2,"LocalBytesReadable(%p->%d,%p)\n", ciptr, ciptr->fd, pend);
 
 #if defined(SCO325)
     return ioctl(ciptr->fd, I_NREAD, (char *)pend);
@@ -2228,7 +2228,7 @@ static int
 TRANS(LocalRead)(XtransConnInfo ciptr, char *buf, int size)
 
 {
-    prmsg(2,"LocalRead(%d,%x,%d)\n", ciptr->fd, buf, size );
+    prmsg(2,"LocalRead(%d,%p,%d)\n", ciptr->fd, buf, size );
 
     return read(ciptr->fd,buf,size);
 }
@@ -2237,7 +2237,7 @@ static int
 TRANS(LocalWrite)(XtransConnInfo ciptr, char *buf, int size)
 
 {
-    prmsg(2,"LocalWrite(%d,%x,%d)\n", ciptr->fd, buf, size );
+    prmsg(2,"LocalWrite(%d,%p,%d)\n", ciptr->fd, buf, size );
 
     return write(ciptr->fd,buf,size);
 }
@@ -2246,7 +2246,7 @@ static int
 TRANS(LocalReadv)(XtransConnInfo ciptr, struct iovec *buf, int size)
 
 {
-    prmsg(2,"LocalReadv(%d,%x,%d)\n", ciptr->fd, buf, size );
+    prmsg(2,"LocalReadv(%d,%p,%d)\n", ciptr->fd, buf, size );
 
     return READV(ciptr,buf,size);
 }
@@ -2255,7 +2255,7 @@ static int
 TRANS(LocalWritev)(XtransConnInfo ciptr, struct iovec *buf, int size)
 
 {
-    prmsg(2,"LocalWritev(%d,%x,%d)\n", ciptr->fd, buf, size );
+    prmsg(2,"LocalWritev(%d,%p,%d)\n", ciptr->fd, buf, size );
 
     return WRITEV(ciptr,buf,size);
 }
@@ -2264,7 +2264,7 @@ static int
 TRANS(LocalDisconnect)(XtransConnInfo ciptr)
 
 {
-    prmsg(2,"LocalDisconnect(%x->%d)\n", ciptr, ciptr->fd);
+    prmsg(2,"LocalDisconnect(%p->%d)\n", ciptr, ciptr->fd);
 
     return 0;
 }
@@ -2276,7 +2276,7 @@ TRANS(LocalClose)(XtransConnInfo ciptr)
     struct sockaddr_un      *sockname=(struct sockaddr_un *) ciptr->addr;
     int	ret;
 
-    prmsg(2,"LocalClose(%x->%d)\n", ciptr, ciptr->fd );
+    prmsg(2,"LocalClose(%p->%d)\n", ciptr, ciptr->fd );
 
     ret=close(ciptr->fd);
 
@@ -2298,7 +2298,7 @@ TRANS(LocalCloseForCloning)(XtransConnInfo ciptr)
 {
     int ret;
 
-    prmsg(2,"LocalCloseForCloning(%x->%d)\n", ciptr, ciptr->fd );
+    prmsg(2,"LocalCloseForCloning(%p->%d)\n", ciptr, ciptr->fd );
 
     /* Don't unlink path */
 
