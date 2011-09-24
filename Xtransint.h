@@ -68,7 +68,7 @@ from The Open Group.
  * message.
  */
 
-#ifndef XTRANSDEBUG
+#if !defined(XTRANSDEBUG) && defined(XTRANS_TRANSPORT_C)
 #  define XTRANSDEBUG 1
 #endif
 
@@ -307,6 +307,9 @@ typedef struct _Xtransport_table {
 /* Flags to preserve when setting others */
 #define TRANS_KEEPFLAGS	(TRANS_NOUNLINK|TRANS_ABSTRACT)
 
+#ifdef XTRANS_TRANSPORT_C /* only provide static function prototypes when
+			     building the transport.c file that has them in */
+
 #ifdef __clang__
 /* Not all clients make use of all provided statics */
 #pragma clang diagnostic push
@@ -420,5 +423,7 @@ static int trans_mkdir (
 #else
 #define PRMSG(lvl,x,a,b,c)	((void)0)
 #endif /* XTRANSDEBUG */
+
+#endif /* XTRANS_TRANSPORT_C */
 
 #endif /* _XTRANSINT_H_ */
