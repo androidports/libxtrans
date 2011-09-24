@@ -1419,15 +1419,16 @@ TRANS(SocketINETConnect) (XtransConnInfo ciptr, char *host, char *port)
     struct addrinfo 	hints;
     char		ntopbuf[INET6_ADDRSTRLEN];
     int			resetonce = 0;
-#endif
+#else
     struct sockaddr_in	sockname;
+    struct hostent	*hostp;
+    struct servent	*servp;
+    unsigned long 	tmpaddr;
+#endif
 #ifdef XTHREADS_NEEDS_BYNAMEPARAMS
     _Xgethostbynameparams hparams;
     _Xgetservbynameparams sparams;
 #endif
-    struct hostent	*hostp;
-    struct servent	*servp;
-    unsigned long 	tmpaddr;
 #ifdef X11_t
     char	portbuf[PORTBUFSIZE];
 #endif

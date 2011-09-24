@@ -840,7 +840,6 @@ static int
 TRANS(NAMEDResetListener) (XtransConnInfo ciptr)
 
 {
-  int status = TRANS_RESET_NOOP;
   struct sockaddr_un      *sockname=(struct sockaddr_un *) ciptr->addr;
   struct stat     statb;
 
