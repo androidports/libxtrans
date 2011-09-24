@@ -732,11 +732,11 @@ TRANS(NAMEDOpenClient)(XtransConnInfo ciptr, char *port)
 static int
 TRANS(NAMEDOpenPipe)(const char *server_path)
 {
-    prmsg(2,"NAMEDOpenPipe(%s)\n", server_path);
-
     int			fd, pipefd[2];
     struct stat		sbuf;
     int			mode;
+
+    prmsg(2,"NAMEDOpenPipe(%s)\n", server_path);
 
 #ifdef HAS_STICKY_DIR_BIT
     mode = 01777;
