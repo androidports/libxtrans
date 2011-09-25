@@ -453,7 +453,7 @@ TRANS(SocketOpen) (int i, int type)
 #ifdef TRANS_REOPEN
 
 static XtransConnInfo
-TRANS(SocketReopen) (int i, int type, int fd, char *port)
+TRANS(SocketReopen) (int i _X_UNUSED, int type, int fd, char *port)
 
 {
     XtransConnInfo	ciptr;

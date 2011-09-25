@@ -316,7 +316,7 @@ int
 void
 #endif
 #endif
-nameserver_lost(int sig)
+nameserver_lost(int sig _X_UNUSED)
 {
   nameserver_timedout = 1;
   longjmp (env, -1);

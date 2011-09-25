@@ -123,7 +123,7 @@ static int TRANS(LocalClose)(XtransConnInfo ciptr);
 /* Type Not Supported */
 
 static int
-TRANS(OpenFail)(XtransConnInfo ciptr, char *port)
+TRANS(OpenFail)(XtransConnInfo ciptr _X_UNUSED, char *port _X_UNUSED)
 
 {
     return -1;
@@ -132,7 +132,7 @@ TRANS(OpenFail)(XtransConnInfo ciptr, char *port)
 #ifdef TRANS_REOPEN
 
 static int
-TRANS(ReopenFail)(XtransConnInfo ciptr, int fd, char *port)
+TRANS(ReopenFail)(XtransConnInfo ciptr _X_UNUSED, int fd _X_UNUSED, char *port _X_UNUSED)
 
 {
     return 0;
@@ -221,7 +221,7 @@ extern char *ptsname(
     int
 );
 
-static void _dummy(int sig)
+static void _dummy(int sig _X_UNUSED)
 
 {
 }
@@ -1299,7 +1299,7 @@ TRANS(PTSReopenServer)(XtransConnInfo ciptr, int fd, char *port)
 #ifdef LOCAL_TRANS_NAMED
 
 static int
-TRANS(NAMEDReopenServer)(XtransConnInfo ciptr, int fd, char *port)
+TRANS(NAMEDReopenServer)(XtransConnInfo ciptr, int fd _X_UNUSED, char *port)
 
 {
 #ifdef NAMEDNODENAME
@@ -1866,7 +1866,7 @@ TRANS(LocalOpenClient)(int type, char *protocol, char *host, char *port)
 #ifdef TRANS_SERVER
 
 static XtransConnInfo
-TRANS(LocalOpenServer)(int type, char *protocol, char *host, char *port)
+TRANS(LocalOpenServer)(int type, char *protocol, char *host _X_UNUSED, char *port)
 
 {
     int	i;
@@ -1981,7 +1981,7 @@ TRANS(LocalReopenServer)(int type, int index, int fd, char *port)
 #ifdef TRANS_CLIENT
 
 static XtransConnInfo
-TRANS(LocalOpenCOTSClient)(Xtransport *thistrans, char *protocol,
+TRANS(LocalOpenCOTSClient)(Xtransport *thistrans _X_UNUSED, char *protocol,
 			   char *host, char *port)
 
 {
@@ -2040,7 +2040,7 @@ TRANS(LocalOpenCOTSServer)(Xtransport *thistrans, char *protocol,
 #ifdef TRANS_CLIENT
 
 static XtransConnInfo
-TRANS(LocalOpenCLTSClient)(Xtransport *thistrans, char *protocol,
+TRANS(LocalOpenCLTSClient)(Xtransport *thistrans _X_UNUSED, char *protocol,
 			   char *host, char *port)
 
 {
@@ -2055,7 +2055,7 @@ TRANS(LocalOpenCLTSClient)(Xtransport *thistrans, char *protocol,
 #ifdef TRANS_SERVER
 
 static XtransConnInfo
-TRANS(LocalOpenCLTSServer)(Xtransport *thistrans, char *protocol,
+TRANS(LocalOpenCLTSServer)(Xtransport *thistrans _X_UNUSED, char *protocol,
 			   char *host, char *port)
 
 {
@@ -2134,7 +2134,7 @@ TRANS(LocalSetOption)(XtransConnInfo ciptr, int option, int arg)
 #ifdef TRANS_SERVER
 
 static int
-TRANS(LocalCreateListener)(XtransConnInfo ciptr, char *port, unsigned int flags)
+TRANS(LocalCreateListener)(XtransConnInfo ciptr, char *port, unsigned int flags _X_UNUSED)
 
 {
     prmsg(2,"LocalCreateListener(%p->%d,%s)\n",ciptr,ciptr->fd,port);
@@ -2199,7 +2199,7 @@ TRANS(LocalAccept)(XtransConnInfo ciptr, int *status)
 #ifdef TRANS_CLIENT
 
 static int
-TRANS(LocalConnect)(XtransConnInfo ciptr, char *host, char *port)
+TRANS(LocalConnect)(XtransConnInfo ciptr, char *host _X_UNUSED, char *port)
 
 {
     prmsg(2,"LocalConnect(%p->%d,%s)\n", ciptr, ciptr->fd, port);

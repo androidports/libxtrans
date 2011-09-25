@@ -78,6 +78,10 @@ from The Open Group.
 
 #include "Xtrans.h"
 
+#ifndef _X_UNUSED  /* Defined in Xfuncproto.h in xproto >= 7.0.22 */
+# define _X_UNUSED  /* */
+#endif
+
 #ifdef XTRANSDEBUG
 # include <stdio.h>
 #endif /* XTRANSDEBUG */
