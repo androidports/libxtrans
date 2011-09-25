@@ -1433,7 +1433,6 @@ TRANS(SocketINETConnect) (XtransConnInfo ciptr, char *host, char *port)
     char	portbuf[PORTBUFSIZE];
 #endif
 
-    long		tmpport;
     char 		hostnamebuf[256];		/* tmp space */
 
     prmsg (2,"SocketINETConnect(%d,%s,%s)\n", ciptr->fd, host, port);
@@ -1457,7 +1456,7 @@ TRANS(SocketINETConnect) (XtransConnInfo ciptr, char *host, char *port)
 
     if (is_numeric (port))
     {
-	tmpport = X_TCP_PORT + strtol (port, (char**)NULL, 10);
+	long tmpport = X_TCP_PORT + strtol (port, (char**)NULL, 10);
 	sprintf (portbuf, "%lu", tmpport);
 	port = portbuf;
     }
@@ -1667,7 +1666,7 @@ TRANS(SocketINETConnect) (XtransConnInfo ciptr, char *host, char *port)
 	    }
 	    sockname.sin_port = htons (servp->s_port);
 	} else {
-	    tmpport = strtol (port, (char**)NULL, 10);
+	    long tmpport = strtol (port, (char**)NULL, 10);
 	    if (tmpport < 1024 || tmpport > USHRT_MAX)
 		return TRANS_CONNECT_FAILED;
 	    sockname.sin_port = htons (((unsigned short) tmpport));
