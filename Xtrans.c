@@ -150,7 +150,7 @@ TRANS(FreeConnInfo) (XtransConnInfo ciptr)
 #define PROTOBUFSIZE	20
 
 static Xtransport *
-TRANS(SelectTransport) (char *protocol)
+TRANS(SelectTransport) (const char *protocol)
 
 {
     char 	protobuf[PROTOBUFSIZE];
@@ -203,7 +203,8 @@ TRANS(ParseAddress) (char *address, char **protocol, char **host, char **port)
      */
 
     char	*mybuf, *tmpptr;
-    char	*_protocol, *_host, *_port;
+    const char	*_protocol;
+    char	*_host, *_port;
     char	hostnamebuf[256];
     int		_host_len;
 
@@ -759,7 +760,7 @@ TRANS(CreateListener) (XtransConnInfo ciptr, char *port, unsigned int flags)
 }
 
 int
-TRANS(NoListen) (char * protocol)
+TRANS(NoListen) (const char * protocol)
 
 {
    Xtransport *trans;

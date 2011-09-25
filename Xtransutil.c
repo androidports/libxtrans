@@ -242,7 +242,7 @@ TRANS(GetMyNetworkId) (XtransConnInfo ciptr)
     char 	*addr = ciptr->addr;
     char	hostnamebuf[256];
     char 	*networkId = NULL;
-    char	*transName = ciptr->transptr->TransName;
+    const char	*transName = ciptr->transptr->TransName;
 
     if (gethostname (hostnamebuf, sizeof (hostnamebuf)) < 0)
     {

@@ -304,7 +304,7 @@ int TRANS(CreateListener)(
 );
 
 int TRANS(NoListen) (
-    char*               /* protocol*/
+    const char*         /* protocol*/
 );
 
 int TRANS(ResetListener)(

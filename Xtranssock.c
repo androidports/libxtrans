@@ -172,7 +172,7 @@ from the copyright holders.
  */
 
 typedef struct _Sockettrans2dev {
-    char	*transname;
+    const char	*transname;
     int		family;
     int		devcotsname;
     int		devcltsname;
@@ -254,7 +254,7 @@ static int TRANS(SocketINETClose) (XtransConnInfo ciptr);
  */
 
 static int
-TRANS(SocketSelectFamily) (int first, char *family)
+TRANS(SocketSelectFamily) (int first, const char *family)
 
 {
     int     i;
@@ -538,8 +538,8 @@ TRANS(SocketReopen) (int i _X_UNUSED, int type, int fd, char *port)
 #ifdef TRANS_CLIENT
 
 static XtransConnInfo
-TRANS(SocketOpenCOTSClientBase) (char *transname, char *protocol,
-				char *host, char *port, int previndex)
+TRANS(SocketOpenCOTSClientBase) (const char *transname, const char *protocol,
+			   const char *host, const char *port, int previndex)
 {
     XtransConnInfo	ciptr;
     int			i = previndex;
@@ -2248,7 +2248,7 @@ TRANS(SocketUNIXCloseForCloning) (XtransConnInfo ciptr)
 
 #ifdef TCPCONN
 # ifdef TRANS_SERVER
-static char* tcp_nolisten[] = {
+static const char* tcp_nolisten[] = {
 	"inet",
 #if defined(IPv6) && defined(AF_INET6)
 	"inet6",

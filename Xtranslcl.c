@@ -1382,7 +1382,7 @@ TRANS(SCOReopenServer)(XtransConnInfo ciptr, int fd, char *port)
  */
 
 typedef struct _LOCALtrans2dev {
-    char	*transname;
+    const char	*transname;
 
 #ifdef TRANS_CLIENT
 
@@ -1643,7 +1643,7 @@ static LOCALtrans2dev LOCALtrans2devtab[] = {
 
 #define NUMTRANSPORTS	(sizeof(LOCALtrans2devtab)/sizeof(LOCALtrans2dev))
 
-static	char	*XLOCAL=NULL;
+static const char	*XLOCAL=NULL;
 static	char	*workingXLOCAL=NULL;
 static	char	*freeXLOCAL=NULL;
 
@@ -1658,7 +1658,7 @@ static	char	*freeXLOCAL=NULL;
 #endif
 
 static void
-TRANS(LocalInitTransports)(char *protocol)
+TRANS(LocalInitTransports)(const char *protocol)
 
 {
     prmsg(3,"LocalInitTransports(%s)\n", protocol);
@@ -2318,7 +2318,7 @@ TRANS(LocalCloseForCloning)(XtransConnInfo ciptr)
  */
 
 #ifdef TRANS_SERVER
-static char * local_aliases[] = {
+static const char * local_aliases[] = {
 # ifdef LOCAL_TRANS_PTS
                                   "pts",
 # endif
