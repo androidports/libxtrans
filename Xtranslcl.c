@@ -322,12 +322,14 @@ TRANS(PTSOpenClient)(XtransConnInfo ciptr, char *port)
 #else
     if (port && *port ) {
 	if( *port == '/' ) { /* A full pathname */
-		(void) sprintf(server_path, "%s", port);
-	    } else {
-		(void) sprintf(server_path, "%s%s", PTSNODENAME, port);
-	    }
+	    snprintf(server_path, sizeof(server_path), "%s", port);
+	} else {
+	    snprintf(server_path, sizeof(server_path), "%s%s",
+		     PTSNODENAME, port);
+	}
     } else {
-	(void) sprintf(server_path, "%s%d", PTSNODENAME, getpid());
+	snprintf(server_path, sizeof(server_path), "%s%d",
+		 PTSNODENAME, getpid());
     }
 
 
@@ -1275,12 +1277,14 @@ TRANS(PTSReopenServer)(XtransConnInfo ciptr, int fd, char *port)
 #else
     if (port && *port ) {
 	if( *port == '/' ) { /* A full pathname */
-		(void) sprintf(server_path, "%s", port);
-	    } else {
-		(void) sprintf(server_path, "%s%s", PTSNODENAME, port);
-	    }
+	    snprintf(server_path, sizeof(server_path), "%s", port);
+	} else {
+	    snprintf(server_path, sizeof(server_path), "%s%s",
+		     PTSNODENAME, port);
+	}
     } else {
-	(void) sprintf(server_path, "%s%ld", PTSNODENAME, (long)getpid());
+	snprintf(server_path, sizeof(server_path), "%s%ld",
+		PTSNODENAME, (long)getpid());
     }
 
     if (TRANS(FillAddrInfo) (ciptr, server_path, server_path) == 0)
@@ -1314,12 +1318,14 @@ TRANS(NAMEDReopenServer)(XtransConnInfo ciptr, int fd _X_UNUSED, char *port)
 #else
     if ( port && *port ) {
 	if( *port == '/' ) { /* A full pathname */
-	    (void) sprintf(server_path, "%s", port);
+	    snprintf(server_path, sizeof(server_path),"%s", port);
 	} else {
-	    (void) sprintf(server_path, "%s%s", NAMEDNODENAME, port);
+	    snprintf(server_path, sizeof(server_path), "%s%s",
+		     NAMEDNODENAME, port);
 	}
     } else {
-	(void) sprintf(server_path, "%s%ld", NAMEDNODENAME, (long)getpid());
+	snprintf(server_path, sizeof(server_path), "%s%ld",
+		NAMEDNODENAME, (long)getpid());
     }
 
     if (TRANS(FillAddrInfo) (ciptr, server_path, server_path) == 0)

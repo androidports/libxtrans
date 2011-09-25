@@ -840,7 +840,7 @@ set_sun_path(const char *port, const char *upath, char *path, int abstract)
 
     if (strlen(port) + strlen(upath) > maxlen)
 	return -1;
-    sprintf(path, "%s%s%s", at, upath, port);
+    snprintf(path, sizeof(s.sun_path), "%s%s%s", at, upath, port);
     return 0;
 }
 #endif
@@ -960,7 +960,7 @@ TRANS(SocketINETCreateListener) (XtransConnInfo ciptr, char *port, unsigned int 
     {
 	/* fixup the server port address */
 	tmpport = X_TCP_PORT + strtol (port, (char**)NULL, 10);
-	sprintf (portbuf,"%lu", tmpport);
+	snprintf (portbuf, sizeof(portbuf), "%lu", tmpport);
 	port = portbuf;
     }
 #endif
@@ -1457,7 +1457,7 @@ TRANS(SocketINETConnect) (XtransConnInfo ciptr, char *host, char *port)
     if (is_numeric (port))
     {
 	long tmpport = X_TCP_PORT + strtol (port, (char**)NULL, 10);
-	sprintf (portbuf, "%lu", tmpport);
+	snprintf (portbuf, sizeof(portbuf), "%lu", tmpport);
 	port = portbuf;
     }
 #endif
