@@ -212,8 +212,7 @@ TRANS(ParseAddress) (char *address, char **protocol, char **host, char **port)
 
     /* Copy the string so it can be changed */
 
-    tmpptr = mybuf = (char *) malloc (strlen (address) + 1);
-    strcpy (mybuf, address);
+    tmpptr = mybuf = strdup (address);
 
     /* Parse the string to get each component */
 
@@ -346,7 +345,7 @@ TRANS(ParseAddress) (char *address, char **protocol, char **host, char **port)
      * string space for them.
      */
 
-    if ((*protocol = (char *) malloc(strlen (_protocol) + 1)) == NULL)
+    if ((*protocol = strdup (_protocol)) == NULL)
     {
 	/* Malloc failed */
 	*port = NULL;
@@ -355,10 +354,8 @@ TRANS(ParseAddress) (char *address, char **protocol, char **host, char **port)
 	free (tmpptr);
 	return 0;
     }
-    else
-        strcpy (*protocol, _protocol);
 
-    if ((*host = (char *) malloc (strlen (_host) + 1)) == NULL)
+    if ((*host = strdup (_host)) == NULL)
     {
 	/* Malloc failed */
 	*port = NULL;
@@ -367,11 +364,9 @@ TRANS(ParseAddress) (char *address, char **protocol, char **host, char **port)
 	*protocol = NULL;
 	free (tmpptr);
 	return 0;
-	}
-    else
-        strcpy (*host, _host);
+    }
 
-    if ((*port = (char *) malloc (strlen (_port) + 1)) == NULL)
+    if ((*port = strdup (_port)) == NULL)
     {
 	/* Malloc failed */
 	*port = NULL;
@@ -382,8 +377,6 @@ TRANS(ParseAddress) (char *address, char **protocol, char **host, char **port)
 	free (tmpptr);
 	return 0;
     }
-    else
-        strcpy (*port, _port);
 
     free (tmpptr);
 
@@ -523,14 +516,12 @@ TRANS(Reopen) (int type, int trans_id, int fd, char *port)
 	return NULL;
     }
 
-    if ((save_port = (char *) malloc (strlen (port) + 1)) == NULL)
+    if ((save_port = strdup (port)) == NULL)
     {
 	prmsg (1,"Reopen: Unable to malloc port string\n");
 
 	return NULL;
     }
-
-    strcpy (save_port, port);
 
     /* Get a new XtransConnInfo object */
 
@@ -653,13 +644,10 @@ TRANS(GetReopenInfo) (XtransConnInfo ciptr,
 	    *trans_id = Xtransports[i].transport_id;
 	    *fd = ciptr->fd;
 
-	    if ((*port = (char *) malloc (strlen (ciptr->port) + 1)) == NULL)
+	    if ((*port = strdup (ciptr->port)) == NULL)
 		return 0;
 	    else
-	    {
-		strcpy (*port, ciptr->port);
 		return 1;
-	    }
 	}
 
     return 0;

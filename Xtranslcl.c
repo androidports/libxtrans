@@ -1671,17 +1671,13 @@ TRANS(LocalInitTransports)(const char *protocol)
 
     if( strcmp(protocol,"local") && strcmp(protocol,"LOCAL") )
     {
-	workingXLOCAL=freeXLOCAL=(char *)malloc (strlen (protocol) + 1);
-	if (workingXLOCAL)
-	    strcpy (workingXLOCAL, protocol);
+	workingXLOCAL = freeXLOCAL = strdup (protocol);
     }
     else {
 	XLOCAL=(char *)getenv("XLOCAL");
 	if(XLOCAL==NULL)
 	    XLOCAL=DEF_XLOCAL;
-	workingXLOCAL=freeXLOCAL=(char *)malloc (strlen (XLOCAL) + 1);
-	if (workingXLOCAL)
-	    strcpy (workingXLOCAL, XLOCAL);
+	workingXLOCAL = freeXLOCAL = strdup (XLOCAL);
     }
 }
 
