@@ -135,15 +135,15 @@ TRANS(FreeConnInfo) (XtransConnInfo ciptr)
     prmsg (3,"FreeConnInfo(%p)\n", ciptr);
 
     if (ciptr->addr)
-	xfree (ciptr->addr);
+	free (ciptr->addr);
 
     if (ciptr->peeraddr)
-	xfree (ciptr->peeraddr);
+	free (ciptr->peeraddr);
 
     if (ciptr->port)
-	xfree (ciptr->port);
+	free (ciptr->port);
 
-    xfree ((char *) ciptr);
+    free ((char *) ciptr);
 }
 
 
@@ -212,7 +212,7 @@ TRANS(ParseAddress) (char *address, char **protocol, char **host, char **port)
 
     /* Copy the string so it can be changed */
 
-    tmpptr = mybuf = (char *) xalloc (strlen (address) + 1);
+    tmpptr = mybuf = (char *) malloc (strlen (address) + 1);
     strcpy (mybuf, address);
 
     /* Parse the string to get each component */
@@ -229,7 +229,7 @@ TRANS(ParseAddress) (char *address, char **protocol, char **host, char **port)
 	*protocol = NULL;
 	*host = NULL;
 	*port = NULL;
-	xfree (tmpptr);
+	free (tmpptr);
 	return 0;
     }
 
@@ -279,7 +279,7 @@ TRANS(ParseAddress) (char *address, char **protocol, char **host, char **port)
 	*protocol = NULL;
 	*host = NULL;
 	*port = NULL;
-	xfree (tmpptr);
+	free (tmpptr);
 	return 0;
     }
 
@@ -346,46 +346,46 @@ TRANS(ParseAddress) (char *address, char **protocol, char **host, char **port)
      * string space for them.
      */
 
-    if ((*protocol = (char *) xalloc(strlen (_protocol) + 1)) == NULL)
+    if ((*protocol = (char *) malloc(strlen (_protocol) + 1)) == NULL)
     {
 	/* Malloc failed */
 	*port = NULL;
 	*host = NULL;
 	*protocol = NULL;
-	xfree (tmpptr);
+	free (tmpptr);
 	return 0;
     }
     else
         strcpy (*protocol, _protocol);
 
-    if ((*host = (char *) xalloc (strlen (_host) + 1)) == NULL)
+    if ((*host = (char *) malloc (strlen (_host) + 1)) == NULL)
     {
 	/* Malloc failed */
 	*port = NULL;
 	*host = NULL;
-	xfree (*protocol);
+	free (*protocol);
 	*protocol = NULL;
-	xfree (tmpptr);
+	free (tmpptr);
 	return 0;
 	}
     else
         strcpy (*host, _host);
 
-    if ((*port = (char *) xalloc (strlen (_port) + 1)) == NULL)
+    if ((*port = (char *) malloc (strlen (_port) + 1)) == NULL)
     {
 	/* Malloc failed */
 	*port = NULL;
-	xfree (*host);
+	free (*host);
 	*host = NULL;
-	xfree (*protocol);
+	free (*protocol);
 	*protocol = NULL;
-	xfree (tmpptr);
+	free (tmpptr);
 	return 0;
     }
     else
         strcpy (*port, _port);
 
-    xfree (tmpptr);
+    free (tmpptr);
 
     return 1;
 }
@@ -430,9 +430,9 @@ TRANS(Open) (int type, char *address)
 	prmsg (1,"Open: Unable to find transport for %s\n",
 	       protocol);
 
-	xfree (protocol);
-	xfree (host);
-	xfree (port);
+	free (protocol);
+	free (host);
+	free (port);
 	return NULL;
     }
 
@@ -471,17 +471,17 @@ TRANS(Open) (int type, char *address)
 	    prmsg (1,"Open: transport open failed for %s/%s:%s\n",
 	           protocol, host, port);
 	}
-	xfree (protocol);
-	xfree (host);
-	xfree (port);
+	free (protocol);
+	free (host);
+	free (port);
 	return NULL;
     }
 
     ciptr->transptr = thistrans;
     ciptr->port = port;			/* We need this for TRANS(Reopen) */
 
-    xfree (protocol);
-    xfree (host);
+    free (protocol);
+    free (host);
 
     return ciptr;
 }
@@ -523,7 +523,7 @@ TRANS(Reopen) (int type, int trans_id, int fd, char *port)
 	return NULL;
     }
 
-    if ((save_port = (char *) xalloc (strlen (port) + 1)) == NULL)
+    if ((save_port = (char *) malloc (strlen (port) + 1)) == NULL)
     {
 	prmsg (1,"Reopen: Unable to malloc port string\n");
 
@@ -549,7 +549,7 @@ TRANS(Reopen) (int type, int trans_id, int fd, char *port)
     if (ciptr == NULL)
     {
 	prmsg (1,"Reopen: transport open failed\n");
-	xfree(save_port);
+	free (save_port);
 	return NULL;
     }
 
@@ -653,7 +653,7 @@ TRANS(GetReopenInfo) (XtransConnInfo ciptr,
 	    *trans_id = Xtransports[i].transport_id;
 	    *fd = ciptr->fd;
 
-	    if ((*port = (char *) xalloc (strlen (ciptr->port) + 1)) == NULL)
+	    if ((*port = (char *) malloc (strlen (ciptr->port) + 1)) == NULL)
 		return 0;
 	    else
 	    {
@@ -844,16 +844,16 @@ TRANS(Connect) (XtransConnInfo ciptr, char *address)
     {
 	prmsg (1,"Connect: Missing port specification in %s\n",
 	      address);
-	if (protocol) xfree (protocol);
-	if (host) xfree (host);
+	if (protocol) free (protocol);
+	if (host) free (host);
 	return -1;
     }
 
     ret = ciptr->transptr->Connect (ciptr, host, port);
 
-    if (protocol) xfree (protocol);
-    if (host) xfree (host);
-    if (port) xfree (port);
+    if (protocol) free (protocol);
+    if (host) free (host);
+    if (port) free (port);
 
     return ret;
 }
@@ -951,7 +951,7 @@ TRANS(GetMyAddr) (XtransConnInfo ciptr, int *familyp, int *addrlenp,
     *familyp = ciptr->family;
     *addrlenp = ciptr->addrlen;
 
-    if ((*addrp = (Xtransaddr *) xalloc (ciptr->addrlen)) == NULL)
+    if ((*addrp = (Xtransaddr *) malloc (ciptr->addrlen)) == NULL)
     {
 	prmsg (1,"GetMyAddr: malloc failed\n");
 	return -1;
@@ -971,7 +971,7 @@ TRANS(GetPeerAddr) (XtransConnInfo ciptr, int *familyp, int *addrlenp,
     *familyp = ciptr->family;
     *addrlenp = ciptr->peeraddrlen;
 
-    if ((*addrp = (Xtransaddr *) xalloc (ciptr->peeraddrlen)) == NULL)
+    if ((*addrp = (Xtransaddr *) malloc (ciptr->peeraddrlen)) == NULL)
     {
 	prmsg (1,"GetPeerAddr: malloc failed\n");
 	return -1;
@@ -1140,7 +1140,7 @@ TRANS(MakeAllCOTSServerListeners) (char *port, int *partial, int *count_ret,
 
     if (*count_ret > 0)
     {
-	if ((*ciptrs_ret = (XtransConnInfo *) xalloc (
+	if ((*ciptrs_ret = (XtransConnInfo *) malloc (
 	    *count_ret * sizeof (XtransConnInfo))) == NULL)
 	{
 	    return -1;
@@ -1238,7 +1238,7 @@ TRANS(MakeAllCLTSServerListeners) (char *port, int *partial, int *count_ret,
 
     if (*count_ret > 0)
     {
-	if ((*ciptrs_ret = (XtransConnInfo *) xalloc (
+	if ((*ciptrs_ret = (XtransConnInfo *) malloc (
 	    *count_ret * sizeof (XtransConnInfo))) == NULL)
 	{
 	    return -1;

@@ -315,7 +315,7 @@ TRANS(SocketINETGetAddr) (XtransConnInfo ciptr)
      * Everything looks good: fill in the XtransConnInfo structure.
      */
 
-    if ((ciptr->addr = (char *) xalloc (namelen)) == NULL)
+    if ((ciptr->addr = (char *) malloc (namelen)) == NULL)
     {
         prmsg (1,
 	    "SocketINETGetAddr: Can't allocate space for the addr\n");
@@ -382,7 +382,7 @@ TRANS(SocketINETGetPeerAddr) (XtransConnInfo ciptr)
      * Everything looks good: fill in the XtransConnInfo structure.
      */
 
-    if ((ciptr->peeraddr = (char *) xalloc (namelen)) == NULL)
+    if ((ciptr->peeraddr = (char *) malloc (namelen)) == NULL)
     {
         prmsg (1,
 	   "SocketINETGetPeerAddr: Can't allocate space for the addr\n");
@@ -404,7 +404,7 @@ TRANS(SocketOpen) (int i, int type)
 
     prmsg (3,"SocketOpen(%d,%d)\n", i, type);
 
-    if ((ciptr = (XtransConnInfo) xcalloc (
+    if ((ciptr = (XtransConnInfo) calloc (
 	1, sizeof(struct _XtransConnInfo))) == NULL)
     {
 	prmsg (1, "SocketOpen: malloc failed\n");
@@ -425,7 +425,7 @@ TRANS(SocketOpen) (int i, int type)
 	prmsg (2, "SocketOpen: socket() failed for %s\n",
 	    Sockettrans2devtab[i].transname);
 
-	xfree ((char *) ciptr);
+	free ((char *) ciptr);
 	return NULL;
     }
 
@@ -481,7 +481,7 @@ TRANS(SocketReopen) (int i _X_UNUSED, int type, int fd, char *port)
     }
 #endif /*SOCK_MAXADDRLEN*/
 
-    if ((ciptr = (XtransConnInfo) xcalloc (
+    if ((ciptr = (XtransConnInfo) calloc (
 	1, sizeof(struct _XtransConnInfo))) == NULL)
     {
 	prmsg (1, "SocketReopen: malloc(ciptr) failed\n");
@@ -490,18 +490,18 @@ TRANS(SocketReopen) (int i _X_UNUSED, int type, int fd, char *port)
 
     ciptr->fd = fd;
 
-    if ((addr = (struct sockaddr *) xcalloc (1, portlen + 2)) == NULL) {
+    if ((addr = (struct sockaddr *) calloc (1, portlen + 2)) == NULL) {
 	prmsg (1, "SocketReopen: malloc(addr) failed\n");
-	xfree (ciptr);
+	free (ciptr);
 	return NULL;
     }
     ciptr->addr = (char *) addr;
     ciptr->addrlen = portlen + 2;
 
-    if ((ciptr->peeraddr = (char *) xcalloc (1, portlen + 2)) == NULL) {
+    if ((ciptr->peeraddr = (char *) calloc (1, portlen + 2)) == NULL) {
 	prmsg (1, "SocketReopen: malloc(portaddr) failed\n");
-	xfree (addr);
-	xfree (ciptr);
+	free (addr);
+	free (ciptr);
 	return NULL;
     }
     ciptr->peeraddrlen = portlen + 2;
@@ -1138,7 +1138,7 @@ TRANS(SocketUNIXCreateListener) (XtransConnInfo ciptr, char *port,
 
     namelen = sizeof (sockname); /* this will always make it the same size */
 
-    if ((ciptr->addr = (char *) xalloc (namelen)) == NULL)
+    if ((ciptr->addr = (char *) malloc (namelen)) == NULL)
     {
         prmsg (1,
         "SocketUNIXCreateListener: Can't allocate space for the addr\n");
@@ -1252,7 +1252,7 @@ TRANS(SocketINETAccept) (XtransConnInfo ciptr, int *status)
 
     prmsg (2, "SocketINETAccept(%p,%d)\n", ciptr, ciptr->fd);
 
-    if ((newciptr = (XtransConnInfo) xcalloc (
+    if ((newciptr = (XtransConnInfo) calloc (
 	1, sizeof(struct _XtransConnInfo))) == NULL)
     {
 	prmsg (1, "SocketINETAccept: malloc failed\n");
@@ -1267,7 +1267,7 @@ TRANS(SocketINETAccept) (XtransConnInfo ciptr, int *status)
 	errno = WSAGetLastError();
 #endif
 	prmsg (1, "SocketINETAccept: accept() failed\n");
-	xfree (newciptr);
+	free (newciptr);
 	*status = TRANS_ACCEPT_FAILED;
 	return NULL;
     }
@@ -1294,7 +1294,7 @@ TRANS(SocketINETAccept) (XtransConnInfo ciptr, int *status)
 	prmsg (1,
 	    "SocketINETAccept: ...SocketINETGetAddr() failed:\n");
 	close (newciptr->fd);
-	xfree (newciptr);
+	free (newciptr);
 	*status = TRANS_ACCEPT_MISC_ERROR;
         return NULL;
     }
@@ -1304,8 +1304,8 @@ TRANS(SocketINETAccept) (XtransConnInfo ciptr, int *status)
 	prmsg (1,
 	  "SocketINETAccept: ...SocketINETGetPeerAddr() failed:\n");
 	close (newciptr->fd);
-	if (newciptr->addr) xfree (newciptr->addr);
-	xfree (newciptr);
+	if (newciptr->addr) free (newciptr->addr);
+	free (newciptr);
 	*status = TRANS_ACCEPT_MISC_ERROR;
         return NULL;
     }
@@ -1329,7 +1329,7 @@ TRANS(SocketUNIXAccept) (XtransConnInfo ciptr, int *status)
 
     prmsg (2, "SocketUNIXAccept(%p,%d)\n", ciptr, ciptr->fd);
 
-    if ((newciptr = (XtransConnInfo) xcalloc (
+    if ((newciptr = (XtransConnInfo) calloc (
 	1, sizeof(struct _XtransConnInfo))) == NULL)
     {
 	prmsg (1, "SocketUNIXAccept: malloc() failed\n");
@@ -1341,7 +1341,7 @@ TRANS(SocketUNIXAccept) (XtransConnInfo ciptr, int *status)
 	(struct sockaddr *) &sockname, (void *)&namelen)) < 0)
     {
 	prmsg (1, "SocketUNIXAccept: accept() failed\n");
-	xfree (newciptr);
+	free (newciptr);
 	*status = TRANS_ACCEPT_FAILED;
 	return NULL;
     }
@@ -1352,12 +1352,12 @@ TRANS(SocketUNIXAccept) (XtransConnInfo ciptr, int *status)
      * since this is unix domain.
      */
 
-    if ((newciptr->addr = (char *) xalloc (ciptr->addrlen)) == NULL)
+    if ((newciptr->addr = (char *) malloc (ciptr->addrlen)) == NULL)
     {
         prmsg (1,
         "SocketUNIXAccept: Can't allocate space for the addr\n");
 	close (newciptr->fd);
-	xfree (newciptr);
+	free (newciptr);
 	*status = TRANS_ACCEPT_BAD_MALLOC;
         return NULL;
     }
@@ -1370,13 +1370,13 @@ TRANS(SocketUNIXAccept) (XtransConnInfo ciptr, int *status)
     newciptr->addrlen = ciptr->addrlen;
     memcpy (newciptr->addr, ciptr->addr, newciptr->addrlen);
 
-    if ((newciptr->peeraddr = (char *) xalloc (ciptr->addrlen)) == NULL)
+    if ((newciptr->peeraddr = (char *) malloc (ciptr->addrlen)) == NULL)
     {
         prmsg (1,
 	      "SocketUNIXAccept: Can't allocate space for the addr\n");
 	close (newciptr->fd);
-	if (newciptr->addr) xfree (newciptr->addr);
-	xfree (newciptr);
+	if (newciptr->addr) free (newciptr->addr);
+	free (newciptr);
 	*status = TRANS_ACCEPT_BAD_MALLOC;
         return NULL;
     }
@@ -1554,7 +1554,7 @@ TRANS(SocketINETConnect) (XtransConnInfo ciptr, char *host, char *port)
 					" socketfor IPv4 address\n");
 			}
 			if (newciptr)
-			    xfree(newciptr);
+			    free(newciptr);
 		    } else {
 			socketaddr = NULL;
 			prmsg (4,"SocketINETConnect Skipping IPv4 address\n");
@@ -1590,7 +1590,7 @@ TRANS(SocketINETConnect) (XtransConnInfo ciptr, char *host, char *port)
 				   "socket for IPv6 address\n");
 			}
 			if (newciptr)
-			    xfree(newciptr);
+			    free(newciptr);
 		    }
 		    else
 		    {
@@ -2053,8 +2053,8 @@ TRANS(SocketUNIXConnect) (XtransConnInfo ciptr, char *host, char *port)
      * since this is unix domain.
      */
 
-    if ((ciptr->addr = (char *) xalloc(namelen)) == NULL ||
-       (ciptr->peeraddr = (char *) xalloc(namelen)) == NULL)
+    if ((ciptr->addr = (char *) malloc(namelen)) == NULL ||
+       (ciptr->peeraddr = (char *) malloc(namelen)) == NULL)
     {
         prmsg (1,
 	"SocketUNIXCreateListener: Can't allocate space for the addr\n");
