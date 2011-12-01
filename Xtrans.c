@@ -143,7 +143,7 @@ TRANS(FreeConnInfo) (XtransConnInfo ciptr)
     if (ciptr->port)
 	free (ciptr->port);
 
-    free ((char *) ciptr);
+    free (ciptr);
 }
 
 
@@ -939,7 +939,7 @@ TRANS(GetMyAddr) (XtransConnInfo ciptr, int *familyp, int *addrlenp,
     *familyp = ciptr->family;
     *addrlenp = ciptr->addrlen;
 
-    if ((*addrp = (Xtransaddr *) malloc (ciptr->addrlen)) == NULL)
+    if ((*addrp = malloc (ciptr->addrlen)) == NULL)
     {
 	prmsg (1,"GetMyAddr: malloc failed\n");
 	return -1;
@@ -959,7 +959,7 @@ TRANS(GetPeerAddr) (XtransConnInfo ciptr, int *familyp, int *addrlenp,
     *familyp = ciptr->family;
     *addrlenp = ciptr->peeraddrlen;
 
-    if ((*addrp = (Xtransaddr *) malloc (ciptr->peeraddrlen)) == NULL)
+    if ((*addrp = malloc (ciptr->peeraddrlen)) == NULL)
     {
 	prmsg (1,"GetPeerAddr: malloc failed\n");
 	return -1;
@@ -1128,7 +1128,7 @@ TRANS(MakeAllCOTSServerListeners) (char *port, int *partial, int *count_ret,
 
     if (*count_ret > 0)
     {
-	if ((*ciptrs_ret = (XtransConnInfo *) malloc (
+	if ((*ciptrs_ret = malloc (
 	    *count_ret * sizeof (XtransConnInfo))) == NULL)
 	{
 	    return -1;
@@ -1226,7 +1226,7 @@ TRANS(MakeAllCLTSServerListeners) (char *port, int *partial, int *count_ret,
 
     if (*count_ret > 0)
     {
-	if ((*ciptrs_ret = (XtransConnInfo *) malloc (
+	if ((*ciptrs_ret = malloc (
 	    *count_ret * sizeof (XtransConnInfo))) == NULL)
 	{
 	    return -1;

@@ -169,7 +169,7 @@ TRANS(TLIGetAddr)(XtransConnInfo ciptr)
     if( ciptr->addr )
 	free(ciptr->addr);
 
-    if( (ciptr->addr=(char *)malloc(netbuf.len)) == NULL )
+    if( (ciptr->addr = malloc(netbuf.len)) == NULL )
     {
 	prmsg(1, "TLIGetAddr: Can't allocate space for the addr\n");
 	return -1;
@@ -218,7 +218,7 @@ TRANS(TLIGetPeerAddr)(XtransConnInfo ciptr)
     if( ciptr->peeraddr )
 	free(ciptr->peeraddr);
 
-    if( (ciptr->peeraddr=(char *)malloc(netbuf.len)) == NULL )
+    if( (ciptr->peeraddr = malloc(netbuf.len)) == NULL )
     {
 	prmsg(1,
 	      "TLIGetPeerAddr: Can't allocate space for the addr\n");
@@ -312,7 +312,7 @@ TRANS(TLIOpen)(char *device)
 
     prmsg(3,"TLIOpen(%s)\n", device);
 
-    if( (ciptr=(XtransConnInfo)calloc(1,sizeof(struct _XtransConnInfo))) == NULL )
+    if( (ciptr = calloc(1,sizeof(struct _XtransConnInfo))) == NULL )
     {
 	prmsg(1, "TLIOpen: calloc failed\n");
 	return NULL;
@@ -345,7 +345,7 @@ TRANS(TLIReopen)(char *device, int fd, char *port)
 	return NULL;
     }
 
-    if( (ciptr=(XtransConnInfo)calloc(1,sizeof(struct _XtransConnInfo))) == NULL )
+    if( (ciptr = calloc(1,sizeof(struct _XtransConnInfo))) == NULL )
     {
 	prmsg(1, "TLIReopen: calloc failed\n");
 	return NULL;
@@ -720,7 +720,7 @@ TRANS(TLICreateListener)(XtransConnInfo ciptr, struct t_bind *req)
      * Everything looks good: fill in the XtransConnInfo structure.
      */
 
-    if( (ciptr->addr=(char *)malloc(ret->addr.len)) == NULL )
+    if( (ciptr->addr = malloc(ret->addr.len)) == NULL )
     {
 	prmsg(1,
 	      "TLICreateListener: Unable to allocate space for the address\n");
