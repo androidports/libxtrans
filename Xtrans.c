@@ -549,6 +549,7 @@ TRANS(Reopen) (int type, int trans_id, int fd, char *port)
     if (ciptr == NULL)
     {
 	prmsg (1,"Reopen: transport open failed\n");
+	xfree(save_port);
 	return NULL;
     }
 

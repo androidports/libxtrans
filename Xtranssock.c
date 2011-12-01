@@ -492,6 +492,7 @@ TRANS(SocketReopen) (int i _X_UNUSED, int type, int fd, char *port)
 
     if ((addr = (struct sockaddr *) xcalloc (1, portlen + 2)) == NULL) {
 	prmsg (1, "SocketReopen: malloc(addr) failed\n");
+	xfree (ciptr);
 	return NULL;
     }
     ciptr->addr = (char *) addr;
@@ -499,6 +500,8 @@ TRANS(SocketReopen) (int i _X_UNUSED, int type, int fd, char *port)
 
     if ((ciptr->peeraddr = (char *) xcalloc (1, portlen + 2)) == NULL) {
 	prmsg (1, "SocketReopen: malloc(portaddr) failed\n");
+	xfree (addr);
+	xfree (ciptr);
 	return NULL;
     }
     ciptr->peeraddrlen = portlen + 2;
