@@ -873,6 +873,18 @@ TRANS(Writev) (XtransConnInfo ciptr, struct iovec *buf, int size)
 }
 
 int
+TRANS(SendFd) (XtransConnInfo ciptr, int fd, int do_close)
+{
+    return ciptr->transptr->SendFd(ciptr, fd, do_close);
+}
+
+int
+TRANS(RecvFd) (XtransConnInfo ciptr)
+{
+    return ciptr->transptr->RecvFd(ciptr);
+}
+
+int
 TRANS(Disconnect) (XtransConnInfo ciptr)
 
 {

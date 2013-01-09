@@ -350,6 +350,10 @@ int TRANS(Writev)(
     int			/* size */
 );
 
+int TRANS(SendFd) (XtransConnInfo ciptr, int fd, int do_close);
+
+int TRANS(RecvFd) (XtransConnInfo ciptr);
+
 int TRANS(Disconnect)(
     XtransConnInfo	/* ciptr */
 );
