@@ -866,13 +866,6 @@ TRANS(Write) (XtransConnInfo ciptr, char *buf, int size)
 }
 
 int
-TRANS(Readv) (XtransConnInfo ciptr, struct iovec *buf, int size)
-
-{
-    return ciptr->transptr->Readv (ciptr, buf, size);
-}
-
-int
 TRANS(Writev) (XtransConnInfo ciptr, struct iovec *buf, int size)
 
 {
