@@ -1259,11 +1259,7 @@ All functions names in the source are of the format
 <function>TRANS()</function>
 macro is defined as
 <programlisting language="C">
-#if (__STDC__ &amp;&amp; !defined(UNIXCPP)) || defined(ANSICPP)
 #define TRANS(func) _PROTOCOLTrans##func
-#else
-#define TRANS(func) _PROTOCOLTrans/**/func
-#endif
 </programlisting>
 </para>
 
