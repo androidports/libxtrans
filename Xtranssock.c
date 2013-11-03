@@ -2273,7 +2273,31 @@ TRANS(SocketReadv) (XtransConnInfo ciptr, struct iovec *buf, int size)
 {
     prmsg (2,"SocketReadv(%d,%p,%d)\n", ciptr->fd, buf, size);
 
+#if XTRANS_SEND_FDS
+    {
+        struct msghdr   msg;
+        struct fd_pass  pass;
+
+        init_msg_recv(&msg, buf, size, &pass, MAX_FDS);
+        size = recvmsg(ciptr->fd, &msg, 0);
+        if (size >= 0 && msg.msg_controllen > sizeof (struct cmsghdr)) {
+            if (pass.cmsghdr.cmsg_level == SOL_SOCKET &&
+                pass.cmsghdr.cmsg_type == SCM_RIGHTS &&
+                !((msg.msg_flags & MSG_TRUNC) ||
+                  (msg.msg_flags & MSG_CTRUNC)))
+            {
+                int nfd = (msg.msg_controllen - sizeof (struct cmsghdr)) / sizeof (int);
+                int *fd = (int *) CMSG_DATA(&pass.cmsghdr);
+                int i;
+                for (i = 0; i < nfd; i++)
+                    appendFd(&ciptr->recv_fds, fd[i], 0);
+            }
+        }
+        return size;
+    }
+#else
     return READV (ciptr, buf, size);
+#endif
 }
 
 
