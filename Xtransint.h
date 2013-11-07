@@ -291,6 +291,7 @@ typedef struct _Xtransport {
 	int			/* size */
     );
 
+#if XTRANS_SEND_FDS
     int (*SendFd)(
 	XtransConnInfo,		/* connection */
         int,                    /* fd */
@@ -300,6 +301,7 @@ typedef struct _Xtransport {
     int (*RecvFd)(
 	XtransConnInfo		/* connection */
     );
+#endif
 
     int	(*Disconnect)(
 	XtransConnInfo		/* connection */
