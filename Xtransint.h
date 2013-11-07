@@ -72,7 +72,9 @@ from The Open Group.
 #  define XTRANSDEBUG 1
 #endif
 
-#define XTRANS_SEND_FDS       1
+#if XTRANS_SEND_FDS && !defined(linux)
+#error "FD passing support only on Linux"
+#endif
 
 #ifdef WIN32
 # define _WILLWINSOCK_
