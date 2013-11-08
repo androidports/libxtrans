@@ -2237,26 +2237,33 @@ TRANS(SocketRead) (XtransConnInfo ciptr, char *buf, int size)
 #else
 #if XTRANS_SEND_FDS
     {
-        struct msghdr   msg;
-        struct iovec    iov;
-        struct fd_pass  pass;
+        struct iovec    iov = {
+            .iov_base = buf,
+            .iov_len = size
+        };
+        char            cmsgbuf[CMSG_SPACE(sizeof(int) * MAX_FDS)];
+        struct msghdr   msg = {
+            .msg_name = NULL,
+            .msg_namelen = 0,
+            .msg_iov = &iov,
+            .msg_iovlen = 1,
+            .msg_control = cmsgbuf,
+            .msg_controllen = CMSG_LEN(MAX_FDS * sizeof(int))
+        };
 
-        iov.iov_base = buf;
-        iov.iov_len = size;
-
-        init_msg_recv(&msg, &iov, 1, &pass, MAX_FDS);
         size = recvmsg(ciptr->fd, &msg, 0);
-        if (size >= 0 && msg.msg_controllen > sizeof (struct cmsghdr)) {
-            if (pass.cmsghdr.cmsg_level == SOL_SOCKET &&
-                pass.cmsghdr.cmsg_type == SCM_RIGHTS &&
-                !((msg.msg_flags & MSG_TRUNC) ||
-                  (msg.msg_flags & MSG_CTRUNC)))
-            {
-                int nfd = (msg.msg_controllen - sizeof (struct cmsghdr)) / sizeof (int);
-                int *fd = (int *) CMSG_DATA(&pass.cmsghdr);
-                int i;
-                for (i = 0; i < nfd; i++)
-                    appendFd(&ciptr->recv_fds, fd[i], 0);
+        if (size >= 0) {
+            struct cmsghdr *hdr;
+
+            for (hdr = CMSG_FIRSTHDR(&msg); hdr; hdr = CMSG_NXTHDR(&msg, hdr)) {
+                if (hdr->cmsg_level == SOL_SOCKET && hdr->cmsg_type == SCM_RIGHTS) {
+                    int nfd = (hdr->cmsg_len - CMSG_LEN(0)) / sizeof (int);
+                    int i;
+                    int *fd = (int *) CMSG_DATA(hdr);
+
+                    for (i = 0; i < nfd; i++)
+                        appendFd(&ciptr->recv_fds, fd[i], 0);
+                }
             }
         }
         return size;
@@ -2275,22 +2282,29 @@ TRANS(SocketReadv) (XtransConnInfo ciptr, struct iovec *buf, int size)
 
 #if XTRANS_SEND_FDS
     {
-        struct msghdr   msg;
-        struct fd_pass  pass;
+        char            cmsgbuf[CMSG_SPACE(sizeof(int) * MAX_FDS)];
+        struct msghdr   msg = {
+            .msg_name = NULL,
+            .msg_namelen = 0,
+            .msg_iov = buf,
+            .msg_iovlen = size,
+            .msg_control = cmsgbuf,
+            .msg_controllen = CMSG_LEN(MAX_FDS * sizeof(int))
+        };
 
-        init_msg_recv(&msg, buf, size, &pass, MAX_FDS);
         size = recvmsg(ciptr->fd, &msg, 0);
-        if (size >= 0 && msg.msg_controllen > sizeof (struct cmsghdr)) {
-            if (pass.cmsghdr.cmsg_level == SOL_SOCKET &&
-                pass.cmsghdr.cmsg_type == SCM_RIGHTS &&
-                !((msg.msg_flags & MSG_TRUNC) ||
-                  (msg.msg_flags & MSG_CTRUNC)))
-            {
-                int nfd = (msg.msg_controllen - sizeof (struct cmsghdr)) / sizeof (int);
-                int *fd = (int *) CMSG_DATA(&pass.cmsghdr);
-                int i;
-                for (i = 0; i < nfd; i++)
-                    appendFd(&ciptr->recv_fds, fd[i], 0);
+        if (size >= 0) {
+            struct cmsghdr *hdr;
+
+            for (hdr = CMSG_FIRSTHDR(&msg); hdr; hdr = CMSG_NXTHDR(&msg, hdr)) {
+                if (hdr->cmsg_level == SOL_SOCKET && hdr->cmsg_type == SCM_RIGHTS) {
+                    int nfd = (hdr->cmsg_len - CMSG_LEN(0)) / sizeof (int);
+                    int i;
+                    int *fd = (int *) CMSG_DATA(hdr);
+
+                    for (i = 0; i < nfd; i++)
+                        appendFd(&ciptr->recv_fds, fd[i], 0);
+                }
             }
         }
         return size;
@@ -2310,22 +2324,32 @@ TRANS(SocketWritev) (XtransConnInfo ciptr, struct iovec *buf, int size)
 #if XTRANS_SEND_FDS
     if (ciptr->send_fds)
     {
-        struct msghdr           msg;
-        struct fd_pass          pass;
-        int                     nfd;
-        struct _XtransConnFd    *cf;
+        char                    cmsgbuf[CMSG_SPACE(sizeof(int) * MAX_FDS)];
+        int                     nfd = nFd(&ciptr->send_fds);
+        struct _XtransConnFd    *cf = ciptr->send_fds;
+        struct msghdr           msg = {
+            .msg_name = NULL,
+            .msg_namelen = 0,
+            .msg_iov = buf,
+            .msg_iovlen = size,
+            .msg_control = cmsgbuf,
+            .msg_controllen = CMSG_LEN(nfd * sizeof(int))
+        };
+        struct cmsghdr          *hdr = CMSG_FIRSTHDR(&msg);
         int                     i;
+        int                     *fds;
 
-        nfd = nFd(&ciptr->send_fds);
-        cf = ciptr->send_fds;
+        hdr->cmsg_len = msg.msg_controllen;
+        hdr->cmsg_level = SOL_SOCKET;
+        hdr->cmsg_type = SCM_RIGHTS;
 
+        fds = (int *) CMSG_DATA(hdr);
         /* Set up fds */
         for (i = 0; i < nfd; i++) {
-            pass.fd[i] = cf->fd;
+            fds[i] = cf->fd;
             cf = cf->next;
         }
 
-        init_msg_send(&msg, buf, size, &pass, nfd);
         i = sendmsg(ciptr->fd, &msg, 0);
         if (i > 0)
             discardFd(&ciptr->send_fds, cf, 0);
