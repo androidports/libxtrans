@@ -72,8 +72,8 @@ from The Open Group.
 #  define XTRANSDEBUG 1
 #endif
 
-#if XTRANS_SEND_FDS && !defined(linux)
-#error "FD passing support only on Linux"
+#if XTRANS_SEND_FDS && !(defined(linux) || defined(__sun))
+#error "FD passing support only on Linux & Solaris"
 #endif
 
 #ifdef WIN32
