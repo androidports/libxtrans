@@ -2202,22 +2202,6 @@ struct fd_pass {
 	int		fd[MAX_FDS];
 };
 
-static inline void init_msg_recv(struct msghdr *msg, struct iovec *iov, int niov, struct fd_pass *pass, int nfd) {
-    msg->msg_name = NULL;
-    msg->msg_namelen = 0;
-    msg->msg_iov = iov;
-    msg->msg_iovlen = niov;
-    msg->msg_control = pass;
-    msg->msg_controllen = sizeof (struct cmsghdr) + nfd * sizeof (int);
-}
-
-static inline void init_msg_send(struct msghdr *msg, struct iovec *iov, int niov, struct fd_pass *pass, int nfd) {
-    init_msg_recv(msg, iov, niov, pass, nfd);
-    pass->cmsghdr.cmsg_len = msg->msg_controllen;
-    pass->cmsghdr.cmsg_level = SOL_SOCKET;
-    pass->cmsghdr.cmsg_type = SCM_RIGHTS;
-}
-
 #endif /* XTRANS_SEND_FDS */
 
 static int
