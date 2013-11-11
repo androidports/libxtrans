@@ -2197,9 +2197,9 @@ TRANS(SocketSendFdInvalid)(XtransConnInfo ciptr, int fd, int do_close)
 
 #define MAX_FDS		128
 
-struct fd_pass {
+union fd_pass {
 	struct cmsghdr	cmsghdr;
-	int		fd[MAX_FDS];
+	char		buf[CMSG_SPACE(MAX_FDS * sizeof(int))];
 };
 
 #endif /* XTRANS_SEND_FDS */
@@ -2225,13 +2225,13 @@ TRANS(SocketRead) (XtransConnInfo ciptr, char *buf, int size)
             .iov_base = buf,
             .iov_len = size
         };
-        char            cmsgbuf[CMSG_SPACE(sizeof(int) * MAX_FDS)];
+        union fd_pass   cmsgbuf;
         struct msghdr   msg = {
             .msg_name = NULL,
             .msg_namelen = 0,
             .msg_iov = &iov,
             .msg_iovlen = 1,
-            .msg_control = cmsgbuf,
+            .msg_control = cmsgbuf.buf,
             .msg_controllen = CMSG_LEN(MAX_FDS * sizeof(int))
         };
 
@@ -2266,13 +2266,13 @@ TRANS(SocketReadv) (XtransConnInfo ciptr, struct iovec *buf, int size)
 
 #if XTRANS_SEND_FDS
     {
-        char            cmsgbuf[CMSG_SPACE(sizeof(int) * MAX_FDS)];
+        union fd_pass   cmsgbuf;
         struct msghdr   msg = {
             .msg_name = NULL,
             .msg_namelen = 0,
             .msg_iov = buf,
             .msg_iovlen = size,
-            .msg_control = cmsgbuf,
+            .msg_control = cmsgbuf.buf,
             .msg_controllen = CMSG_LEN(MAX_FDS * sizeof(int))
         };
 
@@ -2308,7 +2308,7 @@ TRANS(SocketWritev) (XtransConnInfo ciptr, struct iovec *buf, int size)
 #if XTRANS_SEND_FDS
     if (ciptr->send_fds)
     {
-        char                    cmsgbuf[CMSG_SPACE(sizeof(int) * MAX_FDS)];
+        union fd_pass           cmsgbuf;
         int                     nfd = nFd(&ciptr->send_fds);
         struct _XtransConnFd    *cf = ciptr->send_fds;
         struct msghdr           msg = {
@@ -2316,7 +2316,7 @@ TRANS(SocketWritev) (XtransConnInfo ciptr, struct iovec *buf, int size)
             .msg_namelen = 0,
             .msg_iov = buf,
             .msg_iovlen = size,
-            .msg_control = cmsgbuf,
+            .msg_control = cmsgbuf.buf,
             .msg_controllen = CMSG_LEN(nfd * sizeof(int))
         };
         struct cmsghdr          *hdr = CMSG_FIRSTHDR(&msg);
