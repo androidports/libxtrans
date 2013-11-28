@@ -744,6 +744,34 @@ TRANS(CreateListener) (XtransConnInfo ciptr, char *port, unsigned int flags)
 }
 
 int
+TRANS(Received) (const char * protocol)
+
+{
+   Xtransport *trans;
+   int i = 0, ret = 0;
+
+   prmsg (5, "Received(%s)\n", protocol);
+
+   if ((trans = TRANS(SelectTransport)(protocol)) == NULL)
+   {
+	prmsg (1,"Received: unable to find transport: %s\n",
+	       protocol);
+
+	return -1;
+   }
+   if (trans->flags & TRANS_ALIAS) {
+       if (trans->nolisten)
+	   while (trans->nolisten[i]) {
+	       ret |= TRANS(Received)(trans->nolisten[i]);
+	       i++;
+       }
+   }
+
+   trans->flags |= TRANS_RECEIVED;
+   return ret;
+}
+
+int
 TRANS(NoListen) (const char * protocol)
 
 {
