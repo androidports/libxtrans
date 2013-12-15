@@ -29,7 +29,7 @@ AC_DEFUN([XTRANS_TCP_FLAGS],[
  AC_SEARCH_LIBS(socket, [socket])
  AC_SEARCH_LIBS(gethostbyname, [nsl])
  if test "$ac_cv_search_socket$ac_cv_search_gethostbyname" = "nono"; then
-   AC_HAVE_LIBRARY([ws2_32])
+   AC_CHECK_LIB([ws2_32],[main])
  fi
 
  # Needs to come after above checks for libsocket & libnsl for SVR4 systems
