@@ -100,7 +100,6 @@ AC_INCLUDES_DEFAULT
 # that use Xtrans functions
 AC_DEFUN([XTRANS_CONNECTION_FLAGS],[
  AC_REQUIRE([AC_CANONICAL_HOST])
- AC_REQUIRE([AC_TYPE_SIGNAL])
  [case $host_os in
 	mingw*)	unixdef="no"   ;;
 	*)	unixdef="yes"  ;;
