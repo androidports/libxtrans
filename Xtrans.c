@@ -48,8 +48,9 @@ from The Open Group.
  */
 
 #include <ctype.h>
-#ifdef HAVE_SYSTEMD_DAEMON
+#include <stdlib.h>
 #include <string.h>
+#ifdef HAVE_SYSTEMD_DAEMON
 #include <systemd/sd-daemon.h>
 #endif
 
