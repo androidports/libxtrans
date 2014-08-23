@@ -233,7 +233,7 @@ typedef struct _Xtransport {
 
     int	(*CreateListener)(
 	XtransConnInfo,		/* connection */
-	char *,			/* port */
+	const char *,		/* port */
 	unsigned int		/* flags */
     );
 

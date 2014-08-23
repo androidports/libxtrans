@@ -2151,7 +2151,8 @@ TRANS(LocalSetOption)(XtransConnInfo ciptr, int option, int arg)
 #ifdef TRANS_SERVER
 
 static int
-TRANS(LocalCreateListener)(XtransConnInfo ciptr, char *port, unsigned int flags _X_UNUSED)
+TRANS(LocalCreateListener)(XtransConnInfo ciptr, const char *port,
+                           unsigned int flags _X_UNUSED)
 
 {
     prmsg(2,"LocalCreateListener(%p->%d,%s)\n",ciptr,ciptr->fd,port);

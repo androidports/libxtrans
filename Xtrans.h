@@ -299,7 +299,7 @@ int TRANS(SetOption)(
 
 int TRANS(CreateListener)(
     XtransConnInfo,	/* ciptr */
-    char *,		/* port */
+    const char *,	/* port */
     unsigned int	/* flags */
 );
 

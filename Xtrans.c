@@ -743,7 +743,7 @@ TRANS(SetOption) (XtransConnInfo ciptr, int option, int arg)
 #ifdef TRANS_SERVER
 
 int
-TRANS(CreateListener) (XtransConnInfo ciptr, char *port, unsigned int flags)
+TRANS(CreateListener) (XtransConnInfo ciptr, const char *port, unsigned int flags)
 
 {
     return ciptr->transptr->CreateListener (ciptr, port, flags);

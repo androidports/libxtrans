@@ -226,8 +226,8 @@ typedef struct _Xtransport {
 
     int     (*CreateListener)(
      XtransConnInfo,          /* connection */
-     char *,               /* port */
-     int               /* flags */
+     const char *,            /* port */
+     int                      /* flags */
     );
 
     int     (*ResetListener)(
@@ -480,7 +480,7 @@ Based on current usage, the complimentary function
       <funcprototype>
         <funcdef>int <function>TRANS(CreateListener)</function></funcdef>
         <paramdef>XtransConnInfo <parameter>connection</parameter></paramdef>
-        <paramdef>char *<parameter>port</parameter></paramdef>
+        <paramdef>const char *<parameter>port</parameter></paramdef>
         <paramdef>int <parameter>flags</parameter></paramdef>
       </funcprototype>
     </funcsynopsis>
@@ -935,7 +935,7 @@ different transport type is added, or a transport dependent option is defined.
       <funcprototype>
         <funcdef>int <function>CreateListener</function></funcdef>
         <paramdef>struct _Xtransport *<parameter>thistrans</parameter></paramdef>
-        <paramdef>char <parameter>*port</parameter></paramdef>
+        <paramdef>const char <parameter>*port</parameter></paramdef>
         <paramdef>int <parameter>flags</parameter></paramdef>
       </funcprototype>
     </funcsynopsis>

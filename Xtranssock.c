@@ -947,7 +947,8 @@ TRANS(SocketCreateListener) (XtransConnInfo ciptr,
 
 #ifdef TCPCONN
 static int
-TRANS(SocketINETCreateListener) (XtransConnInfo ciptr, char *port, unsigned int flags)
+TRANS(SocketINETCreateListener) (XtransConnInfo ciptr, const char *port,
+                                 unsigned int flags)
 
 {
 #if defined(IPv6) && defined(AF_INET6)
@@ -1075,7 +1076,7 @@ TRANS(SocketINETCreateListener) (XtransConnInfo ciptr, char *port, unsigned int 
 #ifdef UNIXCONN
 
 static int
-TRANS(SocketUNIXCreateListener) (XtransConnInfo ciptr, char *port,
+TRANS(SocketUNIXCreateListener) (XtransConnInfo ciptr, const char *port,
 				 unsigned int flags)
 
 {
