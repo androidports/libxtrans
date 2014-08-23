@@ -187,7 +187,7 @@ points for a single transport. This record is defined as:
 <synopsis>
 typedef struct _Xtransport {
 
-    char *TransName;
+    const char *TransName;
     int  flags;
 
     XtransConnInfo (*OpenCOTSClient)(
