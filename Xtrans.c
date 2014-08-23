@@ -490,7 +490,7 @@ TRANS(Open) (int type, const char *address)
  */
 
 static XtransConnInfo
-TRANS(Reopen) (int type, int trans_id, int fd, char *port)
+TRANS(Reopen) (int type, int trans_id, int fd, const char *port)
 
 {
     XtransConnInfo	ciptr = NULL;
@@ -616,7 +616,7 @@ TRANS(OpenCLTSServer) (const char *address)
 #ifdef TRANS_REOPEN
 
 XtransConnInfo
-TRANS(ReopenCOTSServer) (int trans_id, int fd, char *port)
+TRANS(ReopenCOTSServer) (int trans_id, int fd, const char *port)
 
 {
     prmsg (2,"ReopenCOTSServer(%d, %d, %s)\n", trans_id, fd, port);
@@ -624,7 +624,7 @@ TRANS(ReopenCOTSServer) (int trans_id, int fd, char *port)
 }
 
 XtransConnInfo
-TRANS(ReopenCLTSServer) (int trans_id, int fd, char *port)
+TRANS(ReopenCLTSServer) (int trans_id, int fd, const char *port)
 
 {
     prmsg (2,"ReopenCLTSServer(%d, %d, %s)\n", trans_id, fd, port);

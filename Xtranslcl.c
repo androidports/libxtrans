@@ -132,7 +132,8 @@ TRANS(OpenFail)(XtransConnInfo ciptr _X_UNUSED, char *port _X_UNUSED)
 #ifdef TRANS_REOPEN
 
 static int
-TRANS(ReopenFail)(XtransConnInfo ciptr _X_UNUSED, int fd _X_UNUSED, char *port _X_UNUSED)
+TRANS(ReopenFail)(XtransConnInfo ciptr _X_UNUSED, int fd _X_UNUSED,
+                  const char *port _X_UNUSED)
 
 {
     return 0;
@@ -1276,7 +1277,7 @@ TRANS(SCOAccept)(XtransConnInfo ciptr, XtransConnInfo newciptr, int *status)
 #ifdef LOCAL_TRANS_PTS
 
 static int
-TRANS(PTSReopenServer)(XtransConnInfo ciptr, int fd, char *port)
+TRANS(PTSReopenServer)(XtransConnInfo ciptr, int fd, const char *port)
 
 {
 #ifdef PTSNODENAME
@@ -1317,7 +1318,7 @@ TRANS(PTSReopenServer)(XtransConnInfo ciptr, int fd, char *port)
 #ifdef LOCAL_TRANS_NAMED
 
 static int
-TRANS(NAMEDReopenServer)(XtransConnInfo ciptr, int fd _X_UNUSED, char *port)
+TRANS(NAMEDReopenServer)(XtransConnInfo ciptr, int fd _X_UNUSED, const char *port)
 
 {
 #ifdef NAMEDNODENAME
@@ -1358,7 +1359,7 @@ TRANS(NAMEDReopenServer)(XtransConnInfo ciptr, int fd _X_UNUSED, char *port)
 
 #ifdef LOCAL_TRANS_SCO
 static int
-TRANS(SCOReopenServer)(XtransConnInfo ciptr, int fd, char *port)
+TRANS(SCOReopenServer)(XtransConnInfo ciptr, int fd, const char *port)
 
 {
 #ifdef SCORNODENAME
@@ -1441,13 +1442,13 @@ typedef struct _LOCALtrans2dev {
     int	(*devcotsreopenserver)(
 	XtransConnInfo,
 	int, 	/* fd */
-	char * 	/* port */
+	const char * 	/* port */
 );
 
     int	(*devcltsreopenserver)(
 	XtransConnInfo,
 	int, 	/* fd */
-	char *	/* port */
+	const char *	/* port */
 );
 
 #endif /* TRANS_REOPEN */
@@ -1945,7 +1946,7 @@ TRANS(LocalOpenServer)(int type, char *protocol, char *host _X_UNUSED, char *por
 #ifdef TRANS_REOPEN
 
 static XtransConnInfo
-TRANS(LocalReopenServer)(int type, int index, int fd, char *port)
+TRANS(LocalReopenServer)(int type, int index, int fd, const char *port)
 
 {
     XtransConnInfo ciptr;
@@ -2086,7 +2087,7 @@ TRANS(LocalOpenCLTSServer)(Xtransport *thistrans _X_UNUSED, char *protocol,
 #ifdef TRANS_REOPEN
 
 static XtransConnInfo
-TRANS(LocalReopenCOTSServer)(Xtransport *thistrans, int fd, char *port)
+TRANS(LocalReopenCOTSServer)(Xtransport *thistrans, int fd, const char *port)
 
 {
     int index;
@@ -2110,7 +2111,7 @@ TRANS(LocalReopenCOTSServer)(Xtransport *thistrans, int fd, char *port)
 }
 
 static XtransConnInfo
-TRANS(LocalReopenCLTSServer)(Xtransport *thistrans, int fd, char *port)
+TRANS(LocalReopenCLTSServer)(Xtransport *thistrans, int fd, const char *port)
 
 {
     int index;

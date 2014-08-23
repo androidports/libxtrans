@@ -473,7 +473,7 @@ TRANS(SocketOpen) (int i, int type)
 #ifdef TRANS_REOPEN
 
 static XtransConnInfo
-TRANS(SocketReopen) (int i _X_UNUSED, int type, int fd, char *port)
+TRANS(SocketReopen) (int i _X_UNUSED, int type, int fd, const char *port)
 
 {
     XtransConnInfo	ciptr;
@@ -762,7 +762,7 @@ TRANS(SocketOpenCLTSServer) (Xtransport *thistrans, char *protocol,
 #ifdef TRANS_REOPEN
 
 static XtransConnInfo
-TRANS(SocketReopenCOTSServer) (Xtransport *thistrans, int fd, char *port)
+TRANS(SocketReopenCOTSServer) (Xtransport *thistrans, int fd, const char *port)
 
 {
     XtransConnInfo	ciptr;
@@ -796,7 +796,7 @@ TRANS(SocketReopenCOTSServer) (Xtransport *thistrans, int fd, char *port)
 }
 
 static XtransConnInfo
-TRANS(SocketReopenCLTSServer) (Xtransport *thistrans, int fd, char *port)
+TRANS(SocketReopenCLTSServer) (Xtransport *thistrans, int fd, const char *port)
 
 {
     XtransConnInfo	ciptr;

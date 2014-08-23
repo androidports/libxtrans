@@ -209,13 +209,13 @@ typedef struct _Xtransport {
     XtransConnInfo (*ReopenCOTSServer)(
 	struct _Xtransport *,	/* transport */
         int,			/* fd */
-        char *			/* port */
+        const char *		/* port */
     );
 
     XtransConnInfo (*ReopenCLTSServer)(
 	struct _Xtransport *,	/* transport */
         int,			/* fd */
-        char *			/* port */
+        const char *		/* port */
     );
 
 #endif /* TRANS_REOPEN */

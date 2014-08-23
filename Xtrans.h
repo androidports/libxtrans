@@ -270,13 +270,13 @@ XtransConnInfo TRANS(OpenCLTSServer)(
 XtransConnInfo TRANS(ReopenCOTSServer)(
     int,		/* trans_id */
     int,		/* fd */
-    char *		/* port */
+    const char *	/* port */
 );
 
 XtransConnInfo TRANS(ReopenCLTSServer)(
     int,		/* trans_id */
     int,		/* fd */
-    char *		/* port */
+    const char *	/* port */
 );
 
 int TRANS(GetReopenInfo)(
