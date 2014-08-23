@@ -185,7 +185,8 @@ TRANS(SelectTransport) (const char *protocol)
 static
 #endif /* TEST_t */
 int
-TRANS(ParseAddress) (char *address, char **protocol, char **host, char **port)
+TRANS(ParseAddress) (const char *address,
+                     char **protocol, char **host, char **port)
 
 {
     /*
@@ -391,7 +392,7 @@ TRANS(ParseAddress) (char *address, char **protocol, char **host, char **port)
  */
 
 static XtransConnInfo
-TRANS(Open) (int type, char *address)
+TRANS(Open) (int type, const char *address)
 
 {
     char 		*protocol = NULL, *host = NULL, *port = NULL;
@@ -563,7 +564,7 @@ TRANS(Reopen) (int type, int trans_id, int fd, char *port)
 #ifdef TRANS_CLIENT
 
 XtransConnInfo
-TRANS(OpenCOTSClient) (char *address)
+TRANS(OpenCOTSClient) (const char *address)
 
 {
     prmsg (2,"OpenCOTSClient(%s)\n", address);
@@ -576,7 +577,7 @@ TRANS(OpenCOTSClient) (char *address)
 #ifdef TRANS_SERVER
 
 XtransConnInfo
-TRANS(OpenCOTSServer) (char *address)
+TRANS(OpenCOTSServer) (const char *address)
 
 {
     prmsg (2,"OpenCOTSServer(%s)\n", address);
@@ -589,7 +590,7 @@ TRANS(OpenCOTSServer) (char *address)
 #ifdef TRANS_CLIENT
 
 XtransConnInfo
-TRANS(OpenCLTSClient) (char *address)
+TRANS(OpenCLTSClient) (const char *address)
 
 {
     prmsg (2,"OpenCLTSClient(%s)\n", address);
@@ -602,7 +603,7 @@ TRANS(OpenCLTSClient) (char *address)
 #ifdef TRANS_SERVER
 
 XtransConnInfo
-TRANS(OpenCLTSServer) (char *address)
+TRANS(OpenCLTSServer) (const char *address)
 
 {
     prmsg (2,"OpenCLTSServer(%s)\n", address);

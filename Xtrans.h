@@ -236,7 +236,7 @@ void TRANS(FreeConnInfo) (
 #ifdef TRANS_CLIENT
 
 XtransConnInfo TRANS(OpenCOTSClient)(
-    char *		/* address */
+    const char *	/* address */
 );
 
 #endif /* TRANS_CLIENT */
@@ -244,7 +244,7 @@ XtransConnInfo TRANS(OpenCOTSClient)(
 #ifdef TRANS_SERVER
 
 XtransConnInfo TRANS(OpenCOTSServer)(
-    char *		/* address */
+    const char *	/* address */
 );
 
 #endif /* TRANS_SERVER */
@@ -252,7 +252,7 @@ XtransConnInfo TRANS(OpenCOTSServer)(
 #ifdef TRANS_CLIENT
 
 XtransConnInfo TRANS(OpenCLTSClient)(
-    char *		/* address */
+    const char *	/* address */
 );
 
 #endif /* TRANS_CLIENT */
@@ -260,7 +260,7 @@ XtransConnInfo TRANS(OpenCLTSClient)(
 #ifdef TRANS_SERVER
 
 XtransConnInfo TRANS(OpenCLTSServer)(
-    char *		/* address */
+    const char *	/* address */
 );
 
 #endif /* TRANS_SERVER */

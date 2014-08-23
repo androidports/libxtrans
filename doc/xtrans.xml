@@ -393,7 +393,7 @@ errno will be available for debugging purposes.
     <funcsynopsis id='TRANSOpenCOTSClient'>
       <funcprototype>
         <funcdef>XtransConnInfo <function>TRANS(OpenCOTSClient)</function></funcdef>
-        <paramdef>char *<parameter>address</parameter></paramdef>
+        <paramdef>const char *<parameter>address</parameter></paramdef>
       </funcprototype>
     </funcsynopsis>
     <para>
@@ -408,7 +408,7 @@ success, or <constant>NULL</constant> on failure.
     <funcsynopsis id='TRANSOpenCOTSServer'>
       <funcprototype>
         <funcdef>XtransConnInfo <function>TRANS(OpenCOTSServer)</function></funcdef>
-        <paramdef>char *<parameter>address</parameter></paramdef>
+        <paramdef>const char *<parameter>address</parameter></paramdef>
       </funcprototype>
     </funcsynopsis>
     <para>
@@ -423,7 +423,7 @@ on failure.
     <funcsynopsis id='TRANSOpenCLTSClient'>
       <funcprototype>
         <funcdef>XtransConnInfo <function>TRANS(OpenCLTSClient)</function></funcdef>
-        <paramdef>char *<parameter>address</parameter></paramdef>
+        <paramdef>const char *<parameter>address</parameter></paramdef>
       </funcprototype>
     </funcsynopsis>
     <para>
@@ -438,7 +438,7 @@ function returns an opaque transport connection object on success, or
     <funcsynopsis id='TRANSOpenCLTSServer'>
       <funcprototype>
         <funcdef>XtransConnInfo <function>TRANS(OpenCLTSServer)</function></funcdef>
-        <paramdef>char *<parameter>address</parameter></paramdef>
+        <paramdef>const char *<parameter>address</parameter></paramdef>
       </funcprototype>
     </funcsynopsis>
     <para>
