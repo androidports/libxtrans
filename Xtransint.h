@@ -252,8 +252,8 @@ typedef struct _Xtransport {
 
     int	(*Connect)(
 	XtransConnInfo,		/* connection */
-	char *,			/* host */
-	char *			/* port */
+	const char *,		/* host */
+	const char *		/* port */
     );
 
 #endif /* TRANS_CLIENT */

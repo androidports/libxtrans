@@ -330,7 +330,7 @@ XtransConnInfo TRANS(Accept)(
 
 int TRANS(Connect)(
     XtransConnInfo,	/* ciptr */
-    char *		/* address */
+    const char *	/* address */
 );
 
 #endif /* TRANS_CLIENT */

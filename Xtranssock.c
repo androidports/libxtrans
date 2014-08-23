@@ -1432,7 +1432,8 @@ static struct addrlist  *addrlist = NULL;
 
 
 static int
-TRANS(SocketINETConnect) (XtransConnInfo ciptr, char *host, char *port)
+TRANS(SocketINETConnect) (XtransConnInfo ciptr,
+                          const char *host, const char *port)
 
 {
     struct sockaddr *	socketaddr = NULL;
@@ -1814,7 +1815,7 @@ TRANS(SocketINETConnect) (XtransConnInfo ciptr, char *host, char *port)
  */
 
 static int
-UnixHostReallyLocal (char *host)
+UnixHostReallyLocal (const char *host)
 
 {
     char hostnamebuf[256];
@@ -1945,7 +1946,8 @@ UnixHostReallyLocal (char *host)
 }
 
 static int
-TRANS(SocketUNIXConnect) (XtransConnInfo ciptr, char *host, char *port)
+TRANS(SocketUNIXConnect) (XtransConnInfo ciptr,
+                          const char *host, const char *port)
 
 {
     struct sockaddr_un	sockname;

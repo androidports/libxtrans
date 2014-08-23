@@ -852,7 +852,7 @@ TRANS(Accept) (XtransConnInfo ciptr, int *status)
 #ifdef TRANS_CLIENT
 
 int
-TRANS(Connect) (XtransConnInfo ciptr, char *address)
+TRANS(Connect) (XtransConnInfo ciptr, const char *address)
 
 {
     char	*protocol;

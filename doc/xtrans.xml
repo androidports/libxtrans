@@ -240,8 +240,8 @@ typedef struct _Xtransport {
 
     int     (*Connect)(
      XtransConnInfo,          /* connection */
-     char *,               /* host */
-     char *               /* port */
+     const char *,            /* host */
+     const char *             /* port */
     );
 
     int     (*BytesReadable)(
@@ -542,7 +542,7 @@ new opaque transport connection object upon success,
       <funcprototype>
         <funcdef>int <function>TRANS(Connect)</function></funcdef>
         <paramdef>XtransConnInfo <parameter>connection</parameter></paramdef>
-        <paramdef>char *<parameter>address</parameter></paramdef>
+        <paramdef>const char *<parameter>address</parameter></paramdef>
       </funcprototype>
     </funcsynopsis>
     <para>
@@ -987,8 +987,8 @@ structure describing the new endpoint is returned from this function
       <funcprototype>
         <funcdef>int <function>Connect</function></funcdef>
         <paramdef>struct _Xtransport *<parameter>thistrans</parameter></paramdef>
-        <paramdef>char *<parameter>host</parameter></paramdef>
-        <paramdef>char *<parameter>port</parameter></paramdef>
+        <paramdef>const char *<parameter>host</parameter></paramdef>
+        <paramdef>const char *<parameter>port</parameter></paramdef>
       </funcprototype>
     </funcsynopsis>
     <para>

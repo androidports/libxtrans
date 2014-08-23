@@ -2217,7 +2217,8 @@ TRANS(LocalAccept)(XtransConnInfo ciptr, int *status)
 #ifdef TRANS_CLIENT
 
 static int
-TRANS(LocalConnect)(XtransConnInfo ciptr, char *host _X_UNUSED, char *port)
+TRANS(LocalConnect)(XtransConnInfo ciptr,
+                    const char *host _X_UNUSED, const char *port)
 
 {
     prmsg(2,"LocalConnect(%p->%d,%s)\n", ciptr, ciptr->fd, port);
