@@ -712,7 +712,7 @@ Returns the file descriptor associated with this transport.
     <funcsynopsis id='TRANSMakeAllCOTSServerListeners'>
       <funcprototype>
         <funcdef>int <function>TRANS(MakeAllCOTSServerListeners)</function></funcdef>
-        <paramdef>char *<parameter>port</parameter></paramdef>
+        <paramdef>const char *<parameter>port</parameter></paramdef>
         <paramdef>int *<parameter>partial_ret</parameter></paramdef>
         <paramdef>int *<parameter>count_ret</parameter></paramdef>
         <paramdef>XtransConnInfo **<parameter>connections_ret</parameter></paramdef>
@@ -731,7 +731,7 @@ is the list of transports.
     <funcsynopsis id='TRANSMakeAllCLTSServerListeners'>
       <funcprototype>
         <funcdef>int <function>TRANS(MakeAllCLTSServerListeners)</function></funcdef>
-        <paramdef>char *<parameter>port</parameter></paramdef>
+        <paramdef>const char *<parameter>port</parameter></paramdef>
         <paramdef>int *<parameter>partial_ret</parameter></paramdef>
         <paramdef>int *<parameter>count_ret</parameter></paramdef>
         <paramdef>XtransConnInfo **<parameter>connections_ret</parameter></paramdef>

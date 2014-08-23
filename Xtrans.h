@@ -405,14 +405,14 @@ int TRANS(GetConnectionNumber)(
 #ifdef TRANS_SERVER
 
 int TRANS(MakeAllCOTSServerListeners)(
-    char *,		/* port */
+    const char *,	/* port */
     int *,		/* partial */
     int *,		/* count_ret */
     XtransConnInfo **	/* ciptrs_ret */
 );
 
 int TRANS(MakeAllCLTSServerListeners)(
-    char *,		/* port */
+    const char *,	/* port */
     int *,		/* partial */
     int *,		/* count_ret */
     XtransConnInfo **	/* ciptrs_ret */
