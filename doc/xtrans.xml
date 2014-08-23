@@ -191,31 +191,31 @@ typedef struct _Xtransport {
     int  flags;
 
     XtransConnInfo (*OpenCOTSClient)(
-    struct _Xtransport *,     /* transport */
-    char     *,     /* protocol */
-    char     *,     /* host */
-    char     *      /* port */
+     struct _Xtransport *,    /* transport */
+     const char *,            /* protocol */
+     const char *,            /* host */
+     const char *             /* port */
     );
 
     XtransConnInfo (*OpenCOTSServer)(
-    struct _Xtransport *,     /* transport */
-    char *,     /* protocol */
-    char *,     /* host */
-    char *      /* port */
+     struct _Xtransport *,    /* transport */
+     const char *,            /* protocol */
+     const char *,            /* host */
+     const char *             /* port */
     );
 
     XtransConnInfo (*OpenCLTSClient)(
-    struct _Xtransport *,     /* transport */
-    char *,               /* protocol */
-    char *,               /* host */
-    char *               /* port */
+     struct _Xtransport *,    /* transport */
+     const char *,            /* protocol */
+     const char *,            /* host */
+     const char *             /* port */
     );
 
     XtransConnInfo (*OpenCLTSServer)(
-     struct _Xtransport *,   /* transport */
-     char *,     /* protocol */
-     char *,     /* host */
-     char *     /* port */
+     struct _Xtransport *,    /* transport */
+     const char *,            /* protocol */
+     const char *,            /* host */
+     const char *             /* port */
     );
 
     int     (*SetOption)(
@@ -826,9 +826,9 @@ the <code>#ifdef SUNSYSV</code> should be handled inside these functions.
       <funcprototype>
         <funcdef>XtransConnInfo *<function>OpenCOTSClient</function></funcdef>
         <paramdef>struct _Xtransport *<parameter>thistrans</parameter></paramdef>
-        <paramdef>char *<parameter>protocol</parameter></paramdef>
-        <paramdef>char *<parameter>host</parameter></paramdef>
-        <paramdef>char *<parameter>port</parameter></paramdef>
+        <paramdef>const char *<parameter>protocol</parameter></paramdef>
+        <paramdef>const char *<parameter>host</parameter></paramdef>
+        <paramdef>const char *<parameter>port</parameter></paramdef>
       </funcprototype>
     </funcsynopsis>
     <para>
@@ -850,9 +850,9 @@ this function.
       <funcprototype>
         <funcdef>XtransConnInfo *<function>OpenCOTSServer</function></funcdef>
         <paramdef>struct _Xtransport *<parameter>thistrans</parameter></paramdef>
-        <paramdef>char *<parameter>protocol</parameter></paramdef>
-        <paramdef>char *<parameter>host</parameter></paramdef>
-        <paramdef>char *<parameter>port</parameter></paramdef>
+        <paramdef>const char *<parameter>protocol</parameter></paramdef>
+        <paramdef>const char *<parameter>host</parameter></paramdef>
+        <paramdef>const char *<parameter>port</parameter></paramdef>
       </funcprototype>
     </funcsynopsis>
     <para>
@@ -872,9 +872,9 @@ will open the transport.
       <funcprototype>
         <funcdef>XtransConnInfo *<function>OpenCLTSClient</function></funcdef>
         <paramdef>struct _Xtransport *<parameter>thistrans</parameter></paramdef>
-        <paramdef>char *<parameter>protocol</parameter></paramdef>
-        <paramdef>char *<parameter>host</parameter></paramdef>
-        <paramdef>char *<parameter>port</parameter></paramdef>
+        <paramdef>const char *<parameter>protocol</parameter></paramdef>
+        <paramdef>const char *<parameter>host</parameter></paramdef>
+        <paramdef>const char *<parameter>port</parameter></paramdef>
       </funcprototype>
     </funcsynopsis>
     <para>
@@ -896,9 +896,9 @@ in by this function.
       <funcprototype>
         <funcdef>XtransConnInfo *<function>OpenCLTSServer</function></funcdef>
         <paramdef>struct _Xtransport *<parameter>thistrans</parameter></paramdef>
-        <paramdef>char *<parameter>protocol</parameter></paramdef>
-        <paramdef>char *<parameter>host</parameter></paramdef>
-        <paramdef>char *<parameter>port</parameter></paramdef>
+        <paramdef>const char *<parameter>protocol</parameter></paramdef>
+        <paramdef>const char *<parameter>host</parameter></paramdef>
+        <paramdef>const char *<parameter>port</parameter></paramdef>
       </funcprototype>
     </funcsynopsis>
     <para>

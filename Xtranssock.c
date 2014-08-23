@@ -596,8 +596,8 @@ TRANS(SocketOpenCOTSClientBase) (const char *transname, const char *protocol,
 }
 
 static XtransConnInfo
-TRANS(SocketOpenCOTSClient) (Xtransport *thistrans, char *protocol,
-			     char *host, char *port)
+TRANS(SocketOpenCOTSClient) (Xtransport *thistrans, const char *protocol,
+			     const char *host, const char *port)
 {
     return TRANS(SocketOpenCOTSClientBase)(
 			thistrans->TransName, protocol, host, port, -1);
@@ -610,8 +610,8 @@ TRANS(SocketOpenCOTSClient) (Xtransport *thistrans, char *protocol,
 #ifdef TRANS_SERVER
 
 static XtransConnInfo
-TRANS(SocketOpenCOTSServer) (Xtransport *thistrans, char *protocol,
-			     char *host, char *port)
+TRANS(SocketOpenCOTSServer) (Xtransport *thistrans, const char *protocol,
+			     const char *host, const char *port)
 
 {
     XtransConnInfo	ciptr;
@@ -677,8 +677,8 @@ TRANS(SocketOpenCOTSServer) (Xtransport *thistrans, char *protocol,
 #ifdef TRANS_CLIENT
 
 static XtransConnInfo
-TRANS(SocketOpenCLTSClient) (Xtransport *thistrans, char *protocol,
-			     char *host, char *port)
+TRANS(SocketOpenCLTSClient) (Xtransport *thistrans, const char *protocol,
+			     const char *host, const char *port)
 
 {
     XtransConnInfo	ciptr;
@@ -716,8 +716,8 @@ TRANS(SocketOpenCLTSClient) (Xtransport *thistrans, char *protocol,
 #ifdef TRANS_SERVER
 
 static XtransConnInfo
-TRANS(SocketOpenCLTSServer) (Xtransport *thistrans, char *protocol,
-			     char *host, char *port)
+TRANS(SocketOpenCLTSServer) (Xtransport *thistrans, const char *protocol,
+			     const char *host, const char *port)
 
 {
     XtransConnInfo	ciptr;
