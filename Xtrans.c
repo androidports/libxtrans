@@ -964,27 +964,6 @@ TRANS(IsLocal) (XtransConnInfo ciptr)
     return (ciptr->family == AF_UNIX);
 }
 
-
-int
-TRANS(GetMyAddr) (XtransConnInfo ciptr, int *familyp, int *addrlenp,
-		  Xtransaddr **addrp)
-
-{
-    prmsg (2,"GetMyAddr(%d)\n", ciptr->fd);
-
-    *familyp = ciptr->family;
-    *addrlenp = ciptr->addrlen;
-
-    if ((*addrp = malloc (ciptr->addrlen)) == NULL)
-    {
-	prmsg (1,"GetMyAddr: malloc failed\n");
-	return -1;
-    }
-    memcpy(*addrp, ciptr->addr, ciptr->addrlen);
-
-    return 0;
-}
-
 int
 TRANS(GetPeerAddr) (XtransConnInfo ciptr, int *familyp, int *addrlenp,
 		    Xtransaddr **addrp)

@@ -348,13 +348,6 @@ int TRANS(IsLocal)(
     XtransConnInfo	/* ciptr */
 );
 
-int TRANS(GetMyAddr)(
-    XtransConnInfo,	/* ciptr */
-    int *,		/* familyp */
-    int *,		/* addrlenp */
-    Xtransaddr **	/* addrp */
-);
-
 int TRANS(GetPeerAddr)(
     XtransConnInfo,	/* ciptr */
     int *,		/* familyp */
