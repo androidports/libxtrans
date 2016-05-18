@@ -215,14 +215,6 @@ static int TRANS(SocketINETClose) (XtransConnInfo ciptr);
 #define UNIX_PATH "/tmp/.ICE-unix/"
 #define UNIX_DIR "/tmp/.ICE-unix"
 #endif /* ICE_t */
-#if defined(TEST_t)
-#define UNIX_PATH "/tmp/.Test-unix/test"
-#define UNIX_DIR "/tmp/.Test-unix"
-#endif
-#if defined(LBXPROXY_t)
-#define UNIX_PATH "/tmp/.X11-unix/X"
-#define UNIX_DIR  "/tmp/.X11-unix"
-#endif
 
 
 #endif /* UNIXCONN */

@@ -111,21 +111,6 @@ static const char *__xtransname = "_IceTrans";
 #endif
 #endif /* ICE_t */
 
-#ifdef TEST_t
-#define TRANS(func) _TESTTrans##func
-#ifdef XTRANSDEBUG
-static const char *__xtransname = "_TESTTrans";
-#endif
-#endif /* TEST_t */
-
-#ifdef LBXPROXY_t
-#define TRANS(func) _LBXPROXYTrans##func
-#define X11_t		/* The server defines this - so should the LBX proxy */
-#ifdef XTRANSDEBUG
-static const char *__xtransname = "_LBXPROXYTrans";
-#endif
-#endif /* LBXPROXY_t */
-
 #if !defined(TRANS)
 #define TRANS(func) _XTrans##func
 #ifdef XTRANSDEBUG
