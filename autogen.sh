@@ -13,5 +13,5 @@ git config --local --get format.subjectPrefix ||
         git config --local format.subjectPrefix "PATCH libxtrans"
 
 if test -z "$NOCONFIGURE"; then
-    $srcdir/configure "$@"
+    exec $srcdir/configure "$@"
 fi
