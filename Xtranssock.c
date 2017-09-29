@@ -207,6 +207,10 @@ static int TRANS(SocketINETClose) (XtransConnInfo ciptr);
 #ifdef UNIXCONN
 
 
+#if defined(ANDROID) || defined(IPHONE)
+#define UNIX_PATH (getenv("UNIX_DOMAIN_SOCKET_BASE") ? getenv("UNIX_DOMAIN_SOCKET_BASE") : "/tmp/.X11-unix/X")
+#define UNIX_DIR (getenv("UNIX_DOMAIN_SOCKET_DIR") ? getenv("UNIX_DOMAIN_SOCKET_DIR") : "/tmp/.X11-unix")
+#else
 #if defined(X11_t)
 #define UNIX_PATH "/tmp/.X11-unix/X"
 #define UNIX_DIR "/tmp/.X11-unix"
@@ -230,6 +234,7 @@ static int TRANS(SocketINETClose) (XtransConnInfo ciptr);
 #if defined(LBXPROXY_t)
 #define UNIX_PATH "/tmp/.X11-unix/X"
 #define UNIX_DIR  "/tmp/.X11-unix"
+#endif
 #endif
 
 
